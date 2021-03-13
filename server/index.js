@@ -7,7 +7,7 @@ const SessionCookie = require('cookie-session');
 const morgan = require('morgan');
 
 
-require('./Models/user');
+// require('./Models/user');
 
 const keys = require('./Config/keys');
 
@@ -79,8 +79,8 @@ app.use((req, res, next) => {
 
 //authRoute return a function with app (express app) argument
 require('./Routes/authRoutes')(app);
-require('./Routes/dashboardRoutes')(app);
-require('./Routes/forgotPassRoutes')(app);
+// require('./Routes/dashboardRoutes')(app);
+// require('./Routes/forgotPassRoutes')(app);
 
 const PORT = process.env.PORT || 5000;
 
