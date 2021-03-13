@@ -6,6 +6,7 @@ const admin = require('firebase-admin');
 // const stream = require('stream');
 const jwt = require('jsonwebtoken');
 const keys = require('../Config/keys');
+const puppeteer = require('puppeteer');
 
 const { Storage } = require('@google-cloud/storage');
 
@@ -428,4 +429,46 @@ module.exports = app => {
 	// 	});
 	// });
 
+	// for doc pms code verification api
+    app.get('/auth/doctor_registration/pmc_code_verification', async (req, res) => {
+        try {
+            doc_id = '101959-P';
+            let doc_reg_No = 'https://www.pmc.gov.pk/Doctors/Details?regNo='+doc_id;
+
+            let browser = await puppeteer.launch();
+            let  page = await browser.newPage();
+        
+            await page.goto(doc_reg_No, { waitUntil: 'networkidle2' });
+        
+            let data = await page.evaluate(() => {
+                let reg_No = document.querySelector('div[class="fontLight"] > #reg_no').innerText;
+                let full_name = document.querySelector('div[class="fontLight"] > #full_name').innerText;
+                let father_name = document.querySelector('div[class="fontLight"] > #father_name').innerText;
+                let license_valid = document.querySelector('div[class="fontLight"] > #license_valid').innerText;
+        
+                return {
+                    reg_No,
+                    full_name,
+                    father_name,
+                    license_valid
+                }
+            });
+            console.log(data.reg_No);
+            // res.send('Data Found');
+            doc_pmc_value = '101959-P';
+            if (doc_pmc_value === data.reg_No) {
+                console.log('pmc code matched');
+                res.send('pmc code matched');
+            }
+            else {
+                console.log('pmc code not matched');
+                res.send('pmc code not matched');
+            }
+        
+            await browser.close();
+        }
+        catch (err) {
+            console.log(err)
+        }
+    });
 };
