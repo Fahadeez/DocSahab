@@ -9,7 +9,10 @@
 import React from 'react';
 import 'react-native-gesture-handler';
 import Home from './screens/Home';
-import Main from './screens/Main';
+import RegisterScreen from './screens/UserRegister';
+import DocRegisterScreen from './screens/DoctorRegister';
+import DoctorLogin from './screens/DoctorLogin';
+import UserLogin from './screens/UserLogin';
 import { createStackNavigator } from '@react-navigation/stack';
 import {
   SafeAreaView,
@@ -37,8 +40,45 @@ function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen name="Home" component={Home} />
-        <Stack.Screen name="Main" component={Main} />
+        <Stack.Screen options={{
+          headerShown: null
+        }} 
+        name="Home" component={Home} 
+        />
+        <Stack.Screen name="DoctorLogin" component={DoctorLogin} />
+        <Stack.Screen name="UserLogin" component={UserLogin} />
+        <Stack.Screen name="UserRegister" component = {RegisterScreen}
+        options={{
+          title: 'Register as a Patient',
+          headerTitleAlign: 'center',
+          headerStyle: {
+            backgroundColor: 'white',
+          },
+          headerTintColor: '#2A2AC0',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+          headerPosition: {
+
+          }
+        }}
+        />
+        <Stack.Screen name="DoctorRegister" component = {DocRegisterScreen}
+        options={{
+          title: 'Register as a Doctor ',
+          headerTitleAlign: 'center',
+          headerStyle: {
+            backgroundColor: 'white',
+          },
+          headerTintColor: '#2A2AC0',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+          headerPosition: {
+
+          }
+        }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
