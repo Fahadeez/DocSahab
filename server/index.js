@@ -7,12 +7,13 @@ const SessionCookie = require('cookie-session');
 const morgan = require('morgan');
 
 
-// require('./Models/user');
+require('./Models/user');
+require('./Models/doctorModel');
 
 const keys = require('./Config/keys');
 
 // require('./Services/firebase');
-// require('./Services/passport');
+require('./Services/passport');
 
 const app = express();
 

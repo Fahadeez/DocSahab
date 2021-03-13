@@ -1,8 +1,10 @@
 const mongoose = require('mongoose');
 var bcrypt = require('bcrypt-nodejs');
+const likedProfileSchema = require('./likedProfiles');
+const ratedBySchema = require('./ratedBy')
 const { Schema } = mongoose;
 
-const userSchema = new Schema({
+const doctorSchema = new Schema({
 
     firstName: String,
     lastName: String,
@@ -18,17 +20,21 @@ const userSchema = new Schema({
     qualification: String,
     gender: String,
     profilePic: String,
+    stars: Number,
+    rating: Number,
+    noOfReviews: { type: Number, default: 0 },
     resetPasswordToken: String,
     resetPasswordExpires: Date,
-  
+    likedProfiles: [likedProfileSchema],
+    ratedBy: [ratedBySchema]
 
 }, { timestamps: { createdAt: 'dateOfJoin' } })
 
-userSchema.methods.hashPassword = function (password) {
+doctorSchema.methods.hashPassword = function (password) {
     return bcrypt.hashSync(password, bcrypt.genSaltSync(10))
 }
-userSchema.methods.comparePassword = function (password, hash) {
+doctorSchema.methods.comparePassword = function (password, hash) {
     return bcrypt.compareSync(password, hash)
 }
 
-mongoose.model('users', userSchema);
+mongoose.model('doctors', doctorSchema);

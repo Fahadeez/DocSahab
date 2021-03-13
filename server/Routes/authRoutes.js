@@ -6,57 +6,192 @@ const admin = require('firebase-admin');
 // const stream = require('stream');
 const jwt = require('jsonwebtoken');
 const keys = require('../Config/keys');
-<<<<<<< HEAD
-const axios = require('axios');
-const rp = require('request-promise');
-const cheerio = require('cheerio');
-
-=======
 const puppeteer = require('puppeteer');
->>>>>>> 4d24b7c1a1fa8511d578896cfdc9be0266cdcd4a
 
 const { Storage } = require('@google-cloud/storage');
 
-// const User = mongoose.model('users');
+const User = mongoose.model('users');
+const Doctor = mongoose.model('doctors');
+
 
 module.exports = app => {
 
-	app.get('/getDataFromPMC', async (req, res) => {
-		var options = {
-			uri: 'https://www.pmc.gov.pk/Doctors/Details?regNo=44921-S',
-			method: 'GET',
-			resolveWithFullResponse: true,
-			transform: function (body, response) {
-                return response;
-            }
-		};
+	// for doc pms code verification api
+	app.post('/auth/getPMCRegCode', async (req, res) => {
+		const { reg_no } = req.body;
 		try {
-			const resp = await rp(options)
-			const $ = cheerio.load(resp);
-			console.log("data from pmc", $.html())
-			console.log("reg_no", $('h4[id="reg_no"]').text())
-			res.send('ok').status(200);
+			let site = 'https://www.pmc.gov.pk/Doctors/Details?regNo=' + reg_no;
+
+			let browser = await puppeteer.launch();
+			let page = await browser.newPage();
+
+			await page.goto(site, { waitUntil: 'networkidle2' });
+
+			let data = await page.evaluate(() => {
+				let reg_No = document.querySelector('div[class="fontLight"] > #reg_no').innerText;
+				let full_name = document.querySelector('div[class="fontLight"] > #full_name').innerText;
+				let father_name = document.querySelector('div[class="fontLight"] > #father_name').innerText;
+				let license_valid = document.querySelector('div[class="fontLight"] > #license_valid').innerText;
+				return {
+					reg_No,
+					full_name,
+					father_name,
+					license_valid
+				}
+			});
+			await browser.close();
+
+			console.log("doctor's data", data);
+			if (data.reg_No) {
+
+				return res.send("Doctor's record exists").status(200)
+			}
+			else {
+
+				return res.send("No record found").status(400)
+			}
+
 		}
-		catch (e) {
+		catch (err) {
+			console.log(err)
+			return res.send("Error").status(500)
 		}
-	})
+	});
 
-	// app.get('/auth/redirect', (req, res) => {
-	// 	//console.log(req.user.dataValues);
-	// 	res.send('ok').status(200);
+	app.post('/auth/login', (req, res, next) => {
+		passport.authenticate('local', (err, user, info) => {
+			if (err) {
+				console.log('Error1');
+				return next(err);
+			}
+			if (!user) {
+				console.log('Error2');
+				return res
+					.json({
+						error: 'Email or password is incorrect!',
+					})
+					.status(401);
+			}
+			req.login(user, function (err) {
+				// I added req.login() here and now deserializeUser is being called and req.user is being set correctly.
+				if (err) {
+					console.log("Error logging in user", err)
+					return res.status(401).json(err);
+				}
+				const token = jwt.sign(user.firstName, 'asdvasdasdasd123235@&^$%#@!ad');
+				return res.json({ user: req.user, token }).status(200);
+			});
+		})(req, res, next);
+	});
 
-	// });
+	app.post('/auth/signup', function (req, res, next) {
+		const d = Date();
+		let date = d.toString()
+		let body = req.body,
+			email = body.email,
+			password = body.password,
+			firstName = body.firstName,
+			lastName = body.lastName,
+			contact = body.contact,
+			city = body.city,
+			role = body.role;
+
+		if (role === "doctor") {
+			Doctor.findOne(
+				{
+					email: email,
+				},
+
+				function (err, user) {
+					if (err) {
+						return res.send('error occured').status(500);
+					} else {
+						if (user) {
+							return res.send('Email already exists').status(500);
+						} else {
+							const record = new Doctor();
+							record.email = email.trim();
+							record.firstName = firstName.trim();
+							record.lastName = lastName.trim();
+							record.contact = contact.trim();
+							record.city = city.trim();
+							record.role = role.trim();
+							record.password = record.hashPassword(password.trim());
+							record.save(function (err, user) {
+								if (err) {
+									return res.send('db error').status(400);
+								} else {
+									return res.send("Doctor's data added").status(200);
+								}
+							});
+						}
+
+					}
+				}
+			);
+		}
+		if (role === "user") {
+
+			User.findOne(
+				{
+					email: email,
+				},
+
+				function (err, user) {
+					if (err) {
+						return res.send('error occured').status(500);
+					} else {
+						if (user) {
+							return res.send('Email already exists').status(500);
+						} else {
+							const record = new User();
+							record.email = email.trim();
+							record.firstName = firstName.trim();
+							record.lastName = lastName.trim();
+							record.contact = contact.trim();
+							record.city = city.trim();
+							record.role = role.trim();
+							record.password = record.hashPassword(password.trim());
+							record.save(function (err, user) {
+								if (err) {
+									return res.send('db error').status(400);
+								} else {
+									return res.send("User's data added").status(200);
+								}
+							});
+						}
+
+					}
+				}
+			);
+		}
+
+	});
 
 
-	// app.get('/api/current_user', (req, res) => {
-	// 	res.send(req.user).status(200);
-	// });
+
+
+	app.get('/auth/current_user', (req, res) => {
+		res.send(req.user).status(200);
+	});
+
+	app.get('/auth/logout', (req, res) => {
+		req.logout();
+		res.send('ok').status(200);
+
+	});
+
 
 	// app.get('/api/user', async (req, res) => {
 	// 	if (req.user) {
 	// 		const user = await User.findById({ _id: req.user._id });
 	// 		res.send(user);
 	// 	}
+	// });
+		// app.get('/auth/redirect', (req, res) => {
+	// 	//console.log(req.user.dataValues);
+	// 	res.send('ok').status(200);
+
 	// });
 
 
@@ -73,56 +208,8 @@ module.exports = app => {
 	// });
 
 
-	// app.get('/api/logout', (req, res) => {
-	// 	req.logout();
-	// 	res.send('ok').status(200);
 
-	// });
 
-	// app.post('/auth/signup', function (req, res, next) {
-	// 	const d = Date();
-	// 	let date = d.toString()
-	// 	let body = req.body.data,
-	// 		email = body.email,
-	// 		password = body.password,
-	// 		firstName = body.firstName,
-	// 		lastName = body.lastName,
-	// 		role = body.role;
-
-	// 	User.findOne(
-	// 		{
-	// 			email: email,
-	// 		},
-
-	// 		function (err, user) {
-	// 			if (err) {
-	// 				return res.send('error occured').status(500);
-	// 			} else {
-	// 				if (user) {
-	// 					return res.send('Email already exists').status(500);
-	// 				} else {
-	// 					if (role === 'Tutor') {
-	// 						console.log('Role is tutor returning without saving data');
-	// 						return res.send().status(200);
-	// 					}
-	// 					const record = new User();
-	// 					record.email = email.trim();
-	// 					record.firstName = firstName.trim();
-	// 					record.lastName = lastName.trim();
-	// 					record.role = role.trim();
-	// 					record.password = record.hashPassword(password.trim());
-	// 					record.save(function (err, user) {
-	// 						if (err) {
-	// 							return res.send('db error').status(400);
-	// 						} else {
-	// 							return res.send().status(200);
-	// 						}
-	// 					});
-	// 				}
-	// 			}
-	// 		}
-	// 	);
-	// });
 
 	// app.post('/auth/signInAsTutor', async (req, res) => {
 	// 	console.log("req.body /auth/signInAsTutor", req.body)
@@ -296,31 +383,6 @@ module.exports = app => {
 
 	// });
 
-	// app.post('/auth/login', (req, res, next) => {
-	// 	passport.authenticate('local', (err, user, info) => {
-	// 		if (err) {
-	// 			console.log('Error1');
-	// 			return next(err);
-	// 		}
-	// 		if (!user) {
-	// 			console.log('Error2');
-	// 			return res
-	// 				.json({
-	// 					error: 'Email or password is incorrect!',
-	// 				})
-	// 				.status(401);
-	// 		}
-	// 		req.login(user, function (err) {
-	// 			// I added req.login() here and now deserializeUser is being called and req.user is being set correctly.
-	// 			if (err) {
-	// 				console.log("Error logging in user", err)
-	// 				return res.status(401).json(err);
-	// 			}
-	// 			const token = jwt.sign(user.firstName, 'asdvasdasdasd123235@&^$%#@!ad');
-	// 			return res.json({ user: req.user, token }).status(200);
-	// 		});
-	// 	})(req, res, next);
-	// });
 
 	// app.post('/auth/checkEmail', function (req, res, next) {
 	// 	var num = Math.floor(Math.random() * 90000) + 10000;
@@ -430,46 +492,4 @@ module.exports = app => {
 	// 	});
 	// });
 
-	// for doc pms code verification api
-    app.get('/auth/doctor_registration/pmc_code_verification', async (req, res) => {
-        try {
-            doc_id = '101959-P';
-            let doc_reg_No = 'https://www.pmc.gov.pk/Doctors/Details?regNo='+doc_id;
-
-            let browser = await puppeteer.launch();
-            let  page = await browser.newPage();
-        
-            await page.goto(doc_reg_No, { waitUntil: 'networkidle2' });
-        
-            let data = await page.evaluate(() => {
-                let reg_No = document.querySelector('div[class="fontLight"] > #reg_no').innerText;
-                let full_name = document.querySelector('div[class="fontLight"] > #full_name').innerText;
-                let father_name = document.querySelector('div[class="fontLight"] > #father_name').innerText;
-                let license_valid = document.querySelector('div[class="fontLight"] > #license_valid').innerText;
-        
-                return {
-                    reg_No,
-                    full_name,
-                    father_name,
-                    license_valid
-                }
-            });
-            console.log(data.reg_No);
-            // res.send('Data Found');
-            doc_pmc_value = '101959-P';
-            if (doc_pmc_value === data.reg_No) {
-                console.log('pmc code matched');
-                res.send('pmc code matched');
-            }
-            else {
-                console.log('pmc code not matched');
-                res.send('pmc code not matched');
-            }
-        
-            await browser.close();
-        }
-        catch (err) {
-            console.log(err)
-        }
-    });
 };
