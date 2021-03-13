@@ -16,6 +16,7 @@ const keys = require('./Config/keys');
 
 const app = express();
 
+// MIDDLEWARES
 // app.use(cors({
 // 	methods:['GET','POST'],
 // 	credentials: true,

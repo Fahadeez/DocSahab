@@ -31,7 +31,11 @@
     "nodemailer": "^6.5.0",
     "nodemon": "^2.0.7",
     "passport": "^0.4.1",
+<<<<<<< HEAD
     "request": "^2.88.2",
     "request-promise": "^4.2.6"
+=======
+    "puppeteer": "^8.0.0"
+>>>>>>> 4d24b7c1a1fa8511d578896cfdc9be0266cdcd4a
   }
 }
