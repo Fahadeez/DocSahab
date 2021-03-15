@@ -1,73 +1,72 @@
 import React from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
+import { CheckBox, StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
-const RegisterDetails = ({loginBtnText,screen}) => {
-    const navigation = useNavigation();
-    return (
-      <View style={styles.container}>
-        <View style={styles.inputView} >
-          <TextInput  
-            style={styles.inputText}
-            placeholder="First and Last Name..."
-            placeholderTextColor="#003f5c"
-            />
-        </View>
-
-        <View style={styles.inputView} >
-          <TextInput
-            style={styles.inputText}
-            placeholder="City"
-            placeholderTextColor="#003f5c"
-            />
-        </View>
-
-        <View style={styles.inputView} >
-          <TextInput
-            style={styles.inputText}
-            placeholder="CNIC No."
-            placeholderTextColor="#003f5c"
-            />
-        </View>
-
-        <View style={styles.inputView} >
-          <TextInput
-            style={styles.inputText}
-            placeholder="Phone No."
-            placeholderTextColor="#003f5c"
-            />
-        </View>
-
-        <View style={styles.inputView} >
-          <TextInput
-            style={styles.inputText}
-            placeholder="Age"
-            placeholderTextColor="#003f5c"
-            />
-        </View>
-
-        <View style={styles.inputView} >
-          <TextInput
-            numberOfLines={4}
-            style={styles.inputText}
-            placeholder="Enter your complete Address"
-            placeholderTextColor="#003f5c"
-            multiline = {true}
-            />
-        </View>
-
-
-
-        <TouchableOpacity style={styles.loginBtn}>
-          <Text style={styles.loginText}>{loginBtnText}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate(screen)}>
-          <Text style={{color: "#2A2AC0"}}>Already have an account? Login instead.</Text>
-        </TouchableOpacity>
-
-
+const RegisterDetails = ({loginBtnText, screen}) => {
+  const [isSelected, setSelection] = useState(false);
+  const navigation = useNavigation();
+  return (
+    <View style={styles.container}>
+      <View style={globalStyles.inputView} >
+        <TextInput  
+          style={globalStyles.inputText}
+          placeholder="First Name"
+          placeholderTextColor="#003f5c"
+          />
       </View>
-    );
+
+      <View style={globalStyles.inputView} >
+        <TextInput
+          style={globalStyles.inputText}
+          placeholder="Contact"
+          placeholderTextColor="#003f5c"
+          />
+      </View>
+
+      <View style={globalStyles.inputView} >
+        <TextInput
+          style={globalStyles.inputText}
+          placeholder="Email"
+          placeholderTextColor="#003f5c"
+          />
+      </View>
+
+      <View style={globalStyles.inputView} >
+        <TextInput
+          style={globalStyles.inputText}
+          numberOfLines={4}
+          multiline = {true}
+          placeholder="Address"
+          placeholderTextColor="#003f5c"
+          />
+      </View>
+
+      <View style={globalStyles.inputView} >
+        <TextInput
+          style={globalStyles.inputText}
+          placeholder="Password"
+          placeholderTextColor="#003f5c"
+          />
+      </View>
+
+      <View style={globalStyles.inputView} >
+        <TextInput
+          style={globalStyles.inputText}
+          placeholder="Confirm Password"
+          placeholderTextColor="#003f5c"
+          />
+      </View>
+
+
+      <TouchableOpacity style={styles.loginBtn}>
+        <Text style={styles.loginText}>{loginBtnText}</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => navigation.navigate(screen)}>
+        <Text style={{color: "#2A2AC0"}}>Already have an account? Login instead.</Text>
+      </TouchableOpacity>
+
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
