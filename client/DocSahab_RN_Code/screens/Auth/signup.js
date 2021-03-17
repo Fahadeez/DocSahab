@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, ScrollView,
- TouchableWithoutFeedback, Keyboard } from 'react-native';
+import {Text, View, TextInput, TouchableOpacity, ScrollView,
+ TouchableWithoutFeedback, Keyboard, StyleSheet } from 'react-native';
 import CheckBox from '@react-native-community/checkbox';
 import NavigationHeaderWithBtn from '../../components/navigationHeaderWithBtn';
 import { globalStyles } from '../../styles/globalStyles';
@@ -13,6 +13,7 @@ import Doctordetails from './DoctorDetails';
 import { Form, Formik, } from 'formik';
 import * as yup from 'yup';
 import { useNavigation } from '@react-navigation/native';
+import RNPickerSelect from "react-native-picker-select";
 
 // Sign Up validation schema
 const SignUpValSchema = yup.object({
@@ -46,9 +47,8 @@ const SignUpValSchema = yup.object({
 })
 
 const signup = () => {
-    const navigation = useNavigation();
     const [toggleCheckBox, setToggleCheckBox] = useState(false)
-    const [city, setSelectedCity] = useState("Lahore");
+    const [city, setSelectedCity] = useState();
   
     return (
         <View style={globalStyles.containerColor}>
@@ -62,9 +62,8 @@ const signup = () => {
                         initialValues={{ email: '', password: '', confirmPassword:'', firstName: '', lastName: '', contact: '', city: '', address: ''}}
                         validationSchema={SignUpValSchema}
                         onSubmit={(values, actions) => {
-                            console.log(values);
                             actions.resetForm();
-
+                            console.log(values);
                         }}
                     >
                     {(props) => (
@@ -143,31 +142,33 @@ const signup = () => {
                                     </View>
 
                                     <View style={globalStyles.pickerView}>
-                                        <Picker
-                                            selectedValue={city}
-                                            onValueChange={(itemValue, itemIndex) => {
-                                                console.log("picker",itemValue)
-                                                setSelectedCity(itemValue)
+                                        
+                                        <RNPickerSelect style={{ inputAndroid: { color: 'black' } }}
+                                             placeholder={{ label: "Select your City", value: '' }}
+                                             onValueChange={(city, value) => {
+                                                setSelectedCity(value)
                                                 props.values.city = city
-                                            } }
-                                        >
+                                                 }}
 
-                                            <Picker.Item label="Lahore" value="Lahore" />
-                                            <Picker.Item label="Karachi" value="Karachi" />
-                                            <Picker.Item label="Islamabad" value="Islamabad" />
-                                            <Picker.Item label="Peshawar" value="Peshawar" />
-                                            <Picker.Item label="Multan" value="Multan" />
-                                            <Picker.Item label="Rawalpindi" value="Rawalpindi" />
-                                            <Picker.Item label="Faisalabad" value="Faisalabad" />
-                                            <Picker.Item label="Quetta" value="Quetta" />
-                                            <Picker.Item label="Hyderabad" value="Hyderabad" />
-                                            <Picker.Item label="Thatta" value="Thatta" />
-                                        </Picker>
+                                             selectedValue={city}
+                                             items={[
+                                                 { label: "Lahore", value: "Lahore" },
+                                                 { label:"Karachi", value:"Karachi" },
+                                                 { label:"Islamabad", value:"Islamabad" },
+                                                 { label:"Peshawar", value:"Peshawar" },
+                                                 { label:"Multan", value:"Multan" },
+                                                 { label:"Rawalpindi", value:"Rawalpindi" },
+                                                 { label:"Faisalabad", value:"Faisalabad"} ,
+                                                 { label:"Quetta", value:"Quetta" },
+                                                 { label:"Hyderabad", value:"Hyderabad" },
+                                                 { label:"Thatta", value:"Thatta" },
+                                             ]}
+                                         />
                                     </View>
                                     <Text style={globalStyles.errorText}>{props.touched.selectedCity && props.errors.selectedCity}</Text>
 
 
-                                    <View style={globalStyles.modifiedinputView} >
+                                    <View style={globalStyles.modifiedinputView}>
                                         <TextInput
                                         style={globalStyles.inputText}
                                         numberOfLines={4}
