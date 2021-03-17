@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, ScrollView, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, ScrollView,
+ TouchableWithoutFeedback, Keyboard } from 'react-native';
 import CheckBox from '@react-native-community/checkbox';
 import NavigationHeaderWithBtn from '../../components/navigationHeaderWithBtn';
 import { globalStyles } from '../../styles/globalStyles';
@@ -9,7 +10,7 @@ import {Picker} from '@react-native-picker/picker';
 import SignUpBtnForPicker from '../../components/signUpBtnForPicker';
 import ProceedToDocDetBtn from '../../components/proceedToDocDetBtnForPicker';
 import Doctordetails from './DoctorDetails';
-import { Form, Formik, formik } from 'formik';
+import { Form, Formik, } from 'formik';
 import * as yup from 'yup';
 import { useNavigation } from '@react-navigation/native';
 
@@ -37,7 +38,7 @@ const SignUpValSchema = yup.object({
     contact: yup.string()
         .required('contact Number is required')
         .min(11, ({ min }) => `contact No must be at least ${min} characters`),
-    selectedCity: yup.string()
+    city: yup.string()
         .required('City is required'),
     address: yup.string()
         .required('address is required')
@@ -47,7 +48,8 @@ const SignUpValSchema = yup.object({
 const signup = () => {
     const navigation = useNavigation();
     const [toggleCheckBox, setToggleCheckBox] = useState(false)
-    const [selectedCity, setSelectedCity] = useState();
+    const [city, setSelectedCity] = useState("Lahore");
+  
     return (
         <View style={globalStyles.containerColor}>
             <ScrollView 
@@ -57,11 +59,12 @@ const signup = () => {
                 >
 
                     <Formik
-                        initialValues={{ email: '', password: '', confirmPassword:'', firstName: '', lastName: '', contact: '', selectedCity: '', address: ''}}
+                        initialValues={{ email: '', password: '', confirmPassword:'', firstName: '', lastName: '', contact: '', city: '', address: ''}}
                         validationSchema={SignUpValSchema}
                         onSubmit={(values, actions) => {
-                            actions.resetForm();
                             console.log(values);
+                            actions.resetForm();
+
                         }}
                     >
                     {(props) => (
@@ -141,9 +144,14 @@ const signup = () => {
 
                                     <View style={globalStyles.pickerView}>
                                         <Picker
-                                            selectedValue={selectedCity}
-                                            onValueChange={(itemValue, itemIndex) => setSelectedCity(itemValue) }
+                                            selectedValue={city}
+                                            onValueChange={(itemValue, itemIndex) => {
+                                                console.log("picker",itemValue)
+                                                setSelectedCity(itemValue)
+                                                props.values.city = city
+                                            } }
                                         >
+
                                             <Picker.Item label="Lahore" value="Lahore" />
                                             <Picker.Item label="Karachi" value="Karachi" />
                                             <Picker.Item label="Islamabad" value="Islamabad" />
@@ -211,26 +219,14 @@ const signup = () => {
                                         />
                                     </View>
 
-                                    {/* {
-                                        toggleCheckBox ? <ProceedToDocDetBtn />: <SignUpBtnForPicker onPress={props.handleSubmit}/>
-                                    } */}
-
-                                    <Text>
-                                        { toggleCheckBox ? "Please proceed to doctor details": "Proceed to sign up" }
-                                    </Text>
-
-                                    <TouchableOpacity 
+                                    {
+                                        toggleCheckBox ? <ProceedToDocDetBtn />: <TouchableOpacity 
                                         style={globalStyles.Button}
                                         onPress={props.handleSubmit}
-                                        >
+                                    >
                                         <Text style={globalStyles.buttonTxt}>Sign Up</Text>
                                     </TouchableOpacity>
-
-                                    <TouchableOpacity 
-                                        onPress={() => navigation.navigate(Doctordetails)}
-                                        style={globalStyles.Button}>
-                                        <Text style={globalStyles.buttonTxt}>Proceed To Doctor Details</Text>
-                                    </TouchableOpacity>
+                                    }
                                                             
                                     </View>
                                 </View>
