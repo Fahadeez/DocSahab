@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {Text, View, TextInput, TouchableOpacity, ScrollView,
  TouchableWithoutFeedback, Keyboard, StyleSheet } from 'react-native';
 import CheckBox from '@react-native-community/checkbox';
@@ -6,13 +6,9 @@ import NavigationHeaderWithBtn from '../../components/navigationHeaderWithBtn';
 import { globalStyles } from '../../styles/globalStyles';
 import Signin from '../Auth/login';
 import HeaderView from '../../components/headerView';
-import {Picker} from '@react-native-picker/picker';
-import SignUpBtnForPicker from '../../components/signUpBtnForPicker';
 import ProceedToDocDetBtn from '../../components/proceedToDocDetBtnForPicker';
-import Doctordetails from './DoctorDetails';
-import { Form, Formik, } from 'formik';
+import { Formik, } from 'formik';
 import * as yup from 'yup';
-import { useNavigation } from '@react-navigation/native';
 import RNPickerSelect from "react-native-picker-select";
 
 // Sign Up validation schema
@@ -59,7 +55,16 @@ const signup = () => {
                 >
 
                     <Formik
-                        initialValues={{ email: '', password: '', confirmPassword:'', firstName: '', lastName: '', contact: '', city: '', address: ''}}
+                        initialValues={{ 
+                                        email: '', 
+                                        password: '', 
+                                        confirmPassword:'', 
+                                        firstName: '', 
+                                        lastName: '', 
+                                        contact: '', 
+                                        city: '', 
+                                        address: ''
+                                    }}
                         validationSchema={SignUpValSchema}
                         onSubmit={(values, actions) => {
                             actions.resetForm();
@@ -143,12 +148,14 @@ const signup = () => {
 
                                     <View style={globalStyles.pickerView}>
                                         
-                                        <RNPickerSelect style={{ inputAndroid: { color: 'black' } }}
-                                             placeholder={{ label: "Select your City", value: '' }}
-                                             onValueChange={(city, value) => {
+                                        <RNPickerSelect 
+                                                style={{ inputAndroid: { color: 'black' } }}
+                                                placeholder={{ label: "Select your City", value: '' }}
+                                                onValueChange={(city, value) => {
                                                 setSelectedCity(value)
                                                 props.values.city = city
-                                                 }}
+                                                }
+                                            }
 
                                              selectedValue={city}
                                              items={[
@@ -165,7 +172,7 @@ const signup = () => {
                                              ]}
                                          />
                                     </View>
-                                    <Text style={globalStyles.errorText}>{props.touched.selectedCity && props.errors.selectedCity}</Text>
+                                    <Text style={globalStyles.errorText}>{props.touched.city && props.errors.city}</Text>
 
 
                                     <View style={globalStyles.modifiedinputView}>

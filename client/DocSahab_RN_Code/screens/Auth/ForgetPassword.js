@@ -1,45 +1,82 @@
-import React, {useState} from 'react';
-import { Text, View, TextInput, TouchableOpacity } from 'react-native';
+import React from 'react';
+import { Text, View, TextInput, TouchableOpacity, 
+    TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { globalStyles } from '../../styles/globalStyles';
 import NavigationHeaderWithBtn from '../../components/navigationHeaderWithBtn';
 import Signin from './login';
 import HeaderView from '../../components/headerView';
+import { Formik } from 'formik';
+import * as yup from 'yup';
 
-const forgetpassword = () => { 
+// Forget Password validation schema
+const ForgetPassSchema = yup.object({
+    email: yup.string()
+        .required('Email is required')
+        .email("Please enter valid email")
+        .max(40),
+})
+
+const forgetpassword = () => {
     return (
         <View style={globalStyles.containerColor}>
 
-            <NavigationHeaderWithBtn screenName={Signin}/>
+            <Formik
+                initialValues={{ 
+                                email: '', 
+                            }}
+                validationSchema={ForgetPassSchema}
+                onSubmit={(values, actions) => {
+                    actions.resetForm();
+                    console.log(values);
+                }}
+            >
+                {(props) => (
+                    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
 
-            <View style={{marginTop: '15%'}}>
-                <HeaderView titletxt='Reset Password'/>
-            </View>
+                        <View style={globalStyles.containerColor}>
 
-            <View style={{marginTop: 50}}>
-                <View style={globalStyles.subContainer}>
+                            <NavigationHeaderWithBtn screenName={Signin}/>
 
-                    <View style={globalStyles.inputLabel}>
-                        <Text style={globalStyles.inputLabelText}>
-                            Enter your email address
-                        </Text>
-                    </View>
+                                <View style={{marginTop: '15%'}}>
+                                    <HeaderView titletxt='Reset Password'/>
+                                </View>
 
-                    <View style={globalStyles.inputView}>
-                        <TextInput  
-                            style={globalStyles.inputText}
-                            placeholder="nabeelsiddiqui86@gmail.com"
-                            placeholderTextColor="#003f5c"
-                        />
-                    </View>
+                                <View style={{marginTop: 50}}>
+                                    <View style={globalStyles.subContainer}>
 
-                    <TouchableOpacity style={globalStyles.Button}>
-                        <Text style={globalStyles.buttonTxt}>Reset</Text>
-                    </TouchableOpacity>
+                                        <View style={globalStyles.inputLabel}>
+                                            <Text style={globalStyles.inputLabelText}>
+                                                Enter your email address
+                                            </Text>
+                                        </View>
 
-            </View>
-            </View>
+                                        <View style={globalStyles.inputView}>
+                                            <TextInput  
+                                                style={globalStyles.inputText}
+                                                placeholder="nabeelsiddiqui86@gmail.com"
+                                                placeholderTextColor="#003f5c"
+                                                onChangeText={props.handleChange('email')}
+                                                value={props.values.email}
+                                                onBlur={props.handleBlur('email')}
+                                            />
+                                        </View>
+                                        <Text style={globalStyles.errorText}>{props.touched.email && props.errors.email}</Text>
 
+                                        <TouchableOpacity 
+                                            style={globalStyles.Button}
+                                            onPress={props.handleSubmit} >
+                                            <Text style={globalStyles.buttonTxt}>Reset</Text>
+                                        </TouchableOpacity>
 
+                                    </View>
+                                </View>
+
+                        </View>
+
+                    </TouchableWithoutFeedback>
+                )}
+                            
+            </Formik>
         </View>
     );
 }

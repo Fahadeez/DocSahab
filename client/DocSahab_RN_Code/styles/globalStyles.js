@@ -129,5 +129,10 @@ export const globalStyles = StyleSheet.create({
         marginBottom: 15,
         textAlign: 'center',
     },
+    MultiSelect: {
+        width: '90%', 
+        justifyContent:"center",
+        marginTop: 5,
+    }
     // auth styles start here
 });
