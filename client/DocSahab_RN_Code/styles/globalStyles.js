@@ -130,9 +130,10 @@ export const globalStyles = StyleSheet.create({
         textAlign: 'center',
     },
     MultiSelect: {
-        width: '90%', 
-        justifyContent:"center",
-        marginTop: 5,
+        width: '90%',
+        backgroundColor:"white",
+        borderRadius:10,
+        marginBottom:20,
     }
     // auth styles start here
 });

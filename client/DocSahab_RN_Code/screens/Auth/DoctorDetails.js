@@ -8,7 +8,9 @@ import HeaderView from '../../components/headerView';
 import { Formik, } from 'formik';
 import * as yup from 'yup';
 import RNPickerSelect from "react-native-picker-select";
-import MultiSelect from 'react-native-multiple-select';
+import RNMultiSelect from "@freakycoder/react-native-multiple-select";
+import { object } from 'yup/lib/locale';
+
 
 // Sign Up validation schema
 const DocDetValSchema = yup.object({
@@ -27,31 +29,41 @@ const DocDetValSchema = yup.object({
 })
 
 // Data for the MutiSelect Time Slot
-const Time = [
-    {id: 1, time: '10:00 am'},
-    {id: 2, time: '12:00 pm'},
-    {id: 3, time: '2:00 pm'},
-    {id: 4, time: '4:00 pm'},
-    {id: 5, time: '6:00 pm'},
-    {id: 6, time: '8:00 pm'},
+var Time = [
+    {
+        id: 0,
+        value: "10:00 am",
+        isChecked: false, },
+    {
+        id: 1,
+        value: "12:00 pm",
+        isChecked: false, },
+    {
+        id: 2,
+        value: "2:00 pm",
+        isChecked: false, },
+    {
+        id: 3,
+        value: "4:00 pm",
+        isChecked: false, },
+    {
+        id: 4,
+        value: "6:00 pm",
+        isChecked: false, },
+    {
+        id: 5,
+        value: "8:00 pm",
+        isChecked: false, },
+    {
+        id: 6,
+        value: "10:00 pm",
+        isChecked: false, },
   ];
 
 const doctordetails = () => {
     const [qualification, setQualification] = useState();
     const [specialization, setSpecialization] = useState();
     const [timeSlot, setTimeSlot] = useState([]);
-
-    const setTimeSlotChange = (timeSlot) => {
-        setTimeSlot(timeSlot);
-        // console.log('only id number', timeSlot);
-    };
-
-    let finalSelectedTimeSlot = Time.filter((time) => {
-        return timeSlot.includes(time.id)
-      })
-
-    // returns an array of object [{"id": 6, "time": "8:00 pm"}]
-    console.log('finalSelectedTimeSlot: ', finalSelectedTimeSlot);
 
     return (
         <View style={globalStyles.containerColor}>
@@ -63,12 +75,13 @@ const doctordetails = () => {
             >
 
                 <Formik
+                    enableReinitialize
                     initialValues={{ 
                                     reg_No: '', 
                                     exp: '', 
                                     qualification:'', 
                                     specialization: '', 
-                                    timeSlot: [],
+                                    timeSlot: '',
                                 }}
                     validationSchema={DocDetValSchema}
                     onSubmit={(values, actions) => {
@@ -205,34 +218,25 @@ const doctordetails = () => {
                                     </View>
 
                                     <View style={globalStyles.MultiSelect}>
-                                        <MultiSelect
-                                            items={Time}
-                                            uniqueKey="id"
-                                            onSelectedItemsChange={setTimeSlotChange}
-                                            selectedItems={timeSlot}
-                                            onChangeInput={(timeSlot) => {
-                                                setTimeSlot(timeSlot, console.log('testing', timeSlot))}}
-                                            selectText="Select Your Available Time Slots"
-                                            searchInputPlaceholderText="Search Time Slots..."
-                                            tagRemoveIconColor="#CCC"
-                                            tagBorderColor="#CCC"
-                                            tagTextColor="#CCC"
-                                            selectedItemTextColor="#CCC"
-                                            selectedItemIconColor="#CCC"
-                                            itemTextColor="#000"
-                                            displayKey="time"
-                                            searchInputStyle={{color: '#CCC'}}
-                                            submitButtonColor="#2A2AC0"
-                                            submitButtonText="Select"
-                                            
-                                        />
+                                        
+                                        <RNMultiSelect
+                                            // disableAbsolute
+                                            data={Time}
+                                            placeholder={"Karachi"}
+                                            menuBarContainerHeight = {370}
+                                            onSelect={(timeSlot) => {
+                                                setTimeSlot(timeSlot)
+                                                props.values.timeSlot = timeSlot
+                                            }} 
+                                            // onDoneButtonPress={}
+                                            />
+                                                                                    
                                     </View>
-
-                                <Text style={globalStyles.errorText}>{props.touched.timeSlot && props.errors.timeSlot}</Text>
-
+                                    
+                                    {/* validation not working */}
+                                    <Text style={globalStyles.errorText}>{props.touched.timeSlot && props.errors.timeSlot}</Text>
 
                                     {/* Time Slot multiple selects ends */}
-
 
                                     <TouchableOpacity 
                                         style={globalStyles.Button}
@@ -241,18 +245,19 @@ const doctordetails = () => {
                                         <Text style={globalStyles.buttonTxt}>Sign Up</Text>
                                     </TouchableOpacity>
                                     
-                                    </View>
+                                    </View>                                    
 
                                 </View>
 
-                            </View>
+                            </View>                            
 
                         </TouchableWithoutFeedback>
                     )}
-
+                    
                 </Formik>
 
             </ScrollView>
+            
         </View>
     );
 }

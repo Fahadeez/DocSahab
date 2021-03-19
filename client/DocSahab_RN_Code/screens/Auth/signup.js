@@ -10,6 +10,7 @@ import ProceedToDocDetBtn from '../../components/proceedToDocDetBtnForPicker';
 import { Formik, } from 'formik';
 import * as yup from 'yup';
 import RNPickerSelect from "react-native-picker-select";
+import { boolean } from 'yup';
 
 // Sign Up validation schema
 const SignUpValSchema = yup.object({
@@ -37,13 +38,14 @@ const SignUpValSchema = yup.object({
         .min(11, ({ min }) => `contact No must be at least ${min} characters`),
     city: yup.string()
         .required('City is required'),
-    address: yup.string()
-        .required('address is required')
-        .max(100),
+    // No Need For Now.
+    // address: yup.string()
+    //     .required('address is required')
+    //     .max(100),
 })
 
 const signup = () => {
-    const [toggleCheckBox, setToggleCheckBox] = useState(false)
+    const [role, setRole] = useState(false)
     const [city, setSelectedCity] = useState();
   
     return (
@@ -62,8 +64,10 @@ const signup = () => {
                                         firstName: '', 
                                         lastName: '', 
                                         contact: '', 
-                                        city: '', 
-                                        address: ''
+                                        city: '',
+                                        role: ''
+                                        // No Need For Now.
+                                        // address: ''
                                     }}
                         validationSchema={SignUpValSchema}
                         onSubmit={(values, actions) => {
@@ -174,8 +178,8 @@ const signup = () => {
                                     </View>
                                     <Text style={globalStyles.errorText}>{props.touched.city && props.errors.city}</Text>
 
-
-                                    <View style={globalStyles.modifiedinputView}>
+                                    {/* No Need For Now. */}
+                                    {/* <View style={globalStyles.modifiedinputView}>
                                         <TextInput
                                         style={globalStyles.inputText}
                                         numberOfLines={4}
@@ -187,7 +191,7 @@ const signup = () => {
                                         onBlur={props.handleBlur('address')}
                                         />
                                     </View>
-                                    <Text style={globalStyles.errorText}>{props.touched.address && props.errors.address}</Text>
+                                    <Text style={globalStyles.errorText}>{props.touched.address && props.errors.address}</Text> */}
 
 
                                     <View style={globalStyles.modifiedinputView} >
@@ -222,13 +226,17 @@ const signup = () => {
                                         <Text style={globalStyles.label}>Are you a doctor?</Text>
                                         <CheckBox
                                             disabled={false}
-                                            value={toggleCheckBox}
-                                            onValueChange={(newValue) => setToggleCheckBox(newValue)}
+                                            value={role}
+                                            onValueChange={(value) => {
+                                                setRole(value, console.log('Role', value))
+                                                props.values.role = role
+                                                }
+                                            }
                                         />
                                     </View>
 
                                     {
-                                        toggleCheckBox ? <ProceedToDocDetBtn />: <TouchableOpacity 
+                                        role ? <ProceedToDocDetBtn />: <TouchableOpacity 
                                         style={globalStyles.Button}
                                         onPress={props.handleSubmit}
                                     >
