@@ -1,13 +1,14 @@
 import React from 'react';
 import {View, StyleSheet, Text, ScrollView, TextInput, TouchableOpacity, Image} from 'react-native';
 import HeaderView from '../../components/headerView';
-import NavigationHeaderWithBar from '../../../components/navigationHeaderWithBar';
-import { globalStyles } from '../styles/globalStyles';
+import NavigationHeaderWithBar from '../../components/navigationHeaderWithBar';
+import { globalStyles } from '../../styles/globalStyles';
 import Icon from 'react-native-vector-icons/Feather';
 
 const DashboardScreen = () => {
 	return (
 	<View style = {globalStyles.containerColor}>
+
 		<NavigationHeaderWithBar/>
 
 		<View style ={globalStyles.SearchbackgroundStyle}>

@@ -138,8 +138,7 @@ const signup = () => {
                                 {
                                     role ? <ProceedToDocDetBtn />: <TouchableOpacity
                                     style={globalStyles.Button}
-                                    onPress={() => signUp({ email, password, firstName, lastName, contact, city, role })} 
-                                    
+                                    onPress={() => signUp({ email, password, firstName, lastName, contact, city, role })}
                                 >
                                     <Text style={globalStyles.buttonTxt}>Sign Up</Text>
                                 </TouchableOpacity>
