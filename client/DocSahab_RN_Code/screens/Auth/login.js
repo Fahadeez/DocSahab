@@ -87,6 +87,13 @@ const login = () => {
                                 >
                                     <Text style={globalStyles.buttonTxt}>Sign In</Text>
                                 </TouchableOpacity>
+
+                                <TouchableOpacity 
+                                    style={globalStyles.Button}
+                                    onPress={() => navigation.navigate('dashboard')}
+                                >
+                                    <Text style={globalStyles.buttonTxt}>Dashboard</Text>
+                                </TouchableOpacity>
                                 
                                 <View style={ { marginTop: '10%' } }>
                                     <View style={{flex: 1, flexDirection: 'row'} }>
