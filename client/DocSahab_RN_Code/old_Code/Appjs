@@ -6,8 +6,11 @@ import doctordetails from './src/screens/Auth/DoctorDetails';
 import forgetpassword from './src/screens/Auth/ForgetPassword';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
-import DashboardScreen from './src/screens/Dashboard/dashboard';
+<<<<<<< HEAD
 import { Provider as AuthProvider} from './src/context/AuthContext';
+=======
+import DashboardScreen from './screens/dashboard';
+>>>>>>> a53705a349ccc31d13916801b25927ba008d5542
 
 const Stack = createStackNavigator();
 

@@ -83,7 +83,7 @@ export const globalStyles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'flex-start',
-        marginLeft: '5%'
+        marginLeft: '5%',
     },
     checkboxContainer: {
         flexDirection: "row",
@@ -97,7 +97,7 @@ export const globalStyles = StyleSheet.create({
     },
     scrollView: {
         flex: 1,
-        backgroundColor: '#ECF1FA',
+        backgroundColor: '#ECF1FA'
     },
     pickerView: {
         width:"90%",
@@ -134,6 +134,25 @@ export const globalStyles = StyleSheet.create({
         backgroundColor:"white",
         borderRadius:10,
         marginBottom:20,
-    }
-    // auth styles start here
+    },
+    // Search Bar
+    SearchbackgroundStyle: {
+    marginTop: '15%',
+    height: 50,
+    width: '90%',
+    backgroundColor: 'white',
+    borderRadius: 20,
+    marginHorizontal: 22,
+    flexDirection: 'row'
+  },
+  searchBar: {
+    borderColor: 'black',
+    flex: 1,
+    fontSize: 18
+  },
+  searchIcon: {
+    alignSelf: 'center',
+    fontSize: 35,
+    marginHorizontal: 15
+  }
 });

@@ -130,7 +130,6 @@ module.exports = app => {
 			);
 		}
 		if (role === "user") {
-
 			User.findOne(
 				{
 					email: email,

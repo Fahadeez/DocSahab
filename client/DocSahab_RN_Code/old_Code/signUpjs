@@ -1,16 +1,16 @@
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
 import {Text, View, TextInput, TouchableOpacity, ScrollView,
  TouchableWithoutFeedback, Keyboard, StyleSheet } from 'react-native';
 import CheckBox from '@react-native-community/checkbox';
-import NavigationHeaderWithBtn from '../../components/navigationHeaderWithBtn';
+import NavigationHeaderWithBtn from '../../../src/components/navigationHeaderWithBtn';
 import { globalStyles } from '../../styles/globalStyles';
-import Signin from '../Auth/login';
-import HeaderView from '../../components/headerView';
-import ProceedToDocDetBtn from '../../components/proceedToDocDetBtnForPicker';
+import Signin from './login';
+import HeaderView from '../../../src/components/headerView';
+import ProceedToDocDetBtn from '../../../src/components/proceedToDocDetBtnForPicker';
 import { Formik, } from 'formik';
 import * as yup from 'yup';
 import RNPickerSelect from "react-native-picker-select";
-import { boolean } from 'yup';
+import { Context as AuthContext } from '../../context/AuthContext';
 
 // Sign Up validation schema
 const SignUpValSchema = yup.object({
@@ -45,9 +45,20 @@ const SignUpValSchema = yup.object({
 })
 
 const signup = () => {
-    const [role, setRole] = useState(false)
-    const [city, setSelectedCity] = useState();
-  
+    const { state, signUp }   = useContext(AuthContext);
+    const [role, setRole] = useState()
+    const [city, setSelectedCity] = useState(false);
+    // to get the values from the formik states return object
+    // const [signupValues, setSignupValues] = useState({});
+
+    // remaining states
+    // const [email, setEmail] = useState('')
+    // const [password, setPassword] = useState('')
+    // const [firstName, setfirstName] = useState('')
+    // const [lastName, setlastName] = useState('')
+    // const [contact, setContact] = useState('')
+
+    
     return (
         <View style={globalStyles.containerColor}>
             <ScrollView 
@@ -65,15 +76,25 @@ const signup = () => {
                                         lastName: '', 
                                         contact: '', 
                                         city: '',
-                                        role: ''
+                                        role: false
                                         // No Need For Now.
                                         // address: ''
                                     }}
                         validationSchema={SignUpValSchema}
+                        // onSubmit={(values, actions) => {
+                        //     actions.resetForm();
+                        //     console.log(values);
+                        //     () => signUp(values.email, values.password, values.firstName, values.lastName, values.contact, values.city, values.role)
+                        // }
                         onSubmit={(values, actions) => {
                             actions.resetForm();
                             console.log(values);
-                        }}
+                            // signUp(values.email, values.password, values.firstName, values.lastName, values.contact, values.city, values.role)
+                            // values.email, values.password, values.firstName, values.lastName, values.contact, values.city, values.role
+                        }
+                        }
+                        // onSubmit={() => signUp({ email, password, firstName, lastName, contact, city, role })}
+                        // onSubmit={() => signUp({ email, password, firstName, lastName, contact, city, role })}
                     >
                     {(props) => (
 
@@ -96,6 +117,7 @@ const signup = () => {
                                             placeholder="First Name"
                                             placeholderTextColor="#003f5c"
                                             onChangeText={props.handleChange('firstName')}
+                                            // onChangeText={setfirstName}
                                             value={props.values.firstName}
                                             onBlur={props.handleBlur('firstName')}
                                             />
@@ -109,6 +131,7 @@ const signup = () => {
                                             placeholder="Last Name"
                                             placeholderTextColor="#003f5c"
                                             onChangeText={props.handleChange('lastName')}
+                                            // onChangeText={setlastName}
                                             value={props.values.lastName}
                                             onBlur={props.handleBlur('lastName')}
                                             />
@@ -122,6 +145,7 @@ const signup = () => {
                                         placeholder="Contact No"
                                         placeholderTextColor="#003f5c"
                                         onChangeText={props.handleChange('contact')}
+                                        // onChangeText={setContact}
                                         value={props.values.contact}
                                         onBlur={props.handleBlur('contact')}
                                         />
@@ -135,6 +159,7 @@ const signup = () => {
                                         placeholder="Email"
                                         placeholderTextColor="#003f5c"
                                         onChangeText={props.handleChange('email')}
+                                        // onChangeText={setEmail}
                                         value={props.values.email}
                                         onBlur={props.handleBlur('email')}
                                         />
@@ -159,7 +184,8 @@ const signup = () => {
                                                 setSelectedCity(value)
                                                 props.values.city = city
                                                 }
-                                            }
+                                                }
+                                                // onValueChange={setSelectedCity}
 
                                              selectedValue={city}
                                              items={[
@@ -201,6 +227,7 @@ const signup = () => {
                                         secureTextEntry
                                         placeholderTextColor="#003f5c"
                                         onChangeText={props.handleChange('password')}
+                                        // onChangeText={setPassword}
                                         value={props.values.password}
                                         onBlur={props.handleBlur('password')}
                                         />
@@ -227,11 +254,12 @@ const signup = () => {
                                         <CheckBox
                                             disabled={false}
                                             value={role}
-                                            onValueChange={(value) => {
-                                                setRole(value, console.log('Role', value))
-                                                props.values.role = role
-                                                }
-                                            }
+                                            // onValueChange={(value) => {
+                                            //     setRole(value, console.log('Role', value))
+                                            //     // props.values.role = role
+                                            //     }
+                                            // }
+                                            onValueChange={setRole}
                                         />
                                     </View>
 
@@ -239,6 +267,10 @@ const signup = () => {
                                         role ? <ProceedToDocDetBtn />: <TouchableOpacity 
                                         style={globalStyles.Button}
                                         onPress={props.handleSubmit}
+                                        // onPress={() => signUp({ email, password, firstName, lastName, contact, city, role })}
+                                        // onPress={() => signUp(  ) }
+                                        // // formik_state_values={props.handleSubmit}
+                                        // onPress={() => signUp({ props })}
                                     >
                                         <Text style={globalStyles.buttonTxt}>Sign Up</Text>
                                     </TouchableOpacity>
