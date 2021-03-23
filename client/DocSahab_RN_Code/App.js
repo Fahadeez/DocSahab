@@ -6,6 +6,7 @@ import doctordetails from './src/screens/Auth/DoctorDetails';
 import forgetpassword from './src/screens/Auth/ForgetPassword';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
+import DashboardScreen from './screens/dashboard';
 import { Provider as AuthProvider} from './src/context/AuthContext';
 
 const Stack = createStackNavigator();
@@ -36,6 +37,12 @@ function App() {
             headerShown: null
           }} 
           name="forgetpassword" component={forgetpassword}
+          />
+
+          <Stack.Screen options={{
+            headerShown: null
+          }} 
+          name="dashboard" component={DashboardScreen}
           />
           
       </Stack.Navigator>
