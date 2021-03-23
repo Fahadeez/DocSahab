@@ -16,7 +16,7 @@ const navigationHeaderWithBtn = (props) => {
                     </TouchableOpacity>
                 </Text>            
             </View>
-            <Image source={require('../assets/docsahab.png')} style = {{height: 100, width: 100, marginLeft: '30%', marginTop: '10%'}} />
+            <Image source={require('../../assets/docsahab.png')} style = {{height: 100, width: 100, marginLeft: '30%', marginTop: '10%'}} />
         </View>
     );
 };

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Text, View, TextInput, TouchableOpacity, Image, ScrollView, SafeAreaView, TouchableWithoutFeedback, Keyboard  } from 'react-native';
-import HeaderView from '../../components/headerView';
+import HeaderView from '../../../src/components/headerView';
 import { globalStyles } from '../../styles/globalStyles';
 import Signup from './signup';
 import ForgetPassword from './ForgetPassword';
@@ -34,7 +34,7 @@ const login = () => {
                         validationSchema={loginValSchema}
                         onSubmit={(values, actions) => {
                             actions.resetForm();
-                            console.log(values);
+                            console.log(values.email, values.password);
                         }}
                     >
                     {(props) => (
@@ -43,7 +43,7 @@ const login = () => {
                             <View style={globalStyles.container}>
                                 
                                 <View style={globalStyles.logoView}>
-                                    <Image source={require('../../assets/docsahab.png')} style = {{height: 150, width: 150}} />
+                                    <Image source={require('../../../assets/docsahab.png')} style = {{height: 150, width: 150}} />
                                 </View>
 
                                 <HeaderView titletxt='Welcome'/>

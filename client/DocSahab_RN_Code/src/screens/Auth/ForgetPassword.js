@@ -2,9 +2,9 @@ import React from 'react';
 import { Text, View, TextInput, TouchableOpacity, 
     TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { globalStyles } from '../../styles/globalStyles';
-import NavigationHeaderWithBtn from '../../components/navigationHeaderWithBtn';
+import NavigationHeaderWithBtn from '../../../src/components/navigationHeaderWithBtn';
 import Signin from './login';
-import HeaderView from '../../components/headerView';
+import HeaderView from '../../../src/components/headerView';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 

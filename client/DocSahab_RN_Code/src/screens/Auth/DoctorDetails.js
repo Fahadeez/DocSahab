@@ -9,7 +9,6 @@ import { Formik, } from 'formik';
 import * as yup from 'yup';
 import RNPickerSelect from "react-native-picker-select";
 import RNMultiSelect from "@freakycoder/react-native-multiple-select";
-import { object } from 'yup/lib/locale';
 
 
 // Sign Up validation schema

@@ -1,11 +1,12 @@
 import React from 'react';
 import 'react-native-gesture-handler';
-import login from './screens/Auth/login';
-import signup from './screens/Auth/signup';
-import doctordetails from './screens/Auth/DoctorDetails';
-import forgetpassword from './screens/Auth/ForgetPassword';
+import login from './src/screens/Auth/login';
+import signup from './src/screens/Auth/signup';
+import doctordetails from './src/screens/Auth/DoctorDetails';
+import forgetpassword from './src/screens/Auth/ForgetPassword';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
+import { Provider as AuthProvider} from './src/context/AuthContext';
 
 const Stack = createStackNavigator();
 
@@ -42,4 +43,13 @@ function App() {
   );
 }
 
-export default App;
+// export default App;
+const CustomApp = App;
+
+export default () => {
+  return (
+    <AuthProvider>
+      <CustomApp />
+  </AuthProvider>
+  );
+};
