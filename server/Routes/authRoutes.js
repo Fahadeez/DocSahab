@@ -10,14 +10,14 @@ const puppeteer = require('puppeteer');
 
 const { Storage } = require('@google-cloud/storage');
 
-const { forgotPassEmail } =require('../helpers/auth');
+const helpers = require('../helpers/auth');
 
 const User = mongoose.model('users');
 const Doctor = mongoose.model('doctors');
 
 
 module.exports = app => {
- 
+
 	// for doc pms code verification api
 	async function PMCRegCodeScrapping(reg_no) {
 		try {
@@ -168,8 +168,6 @@ module.exports = app => {
 	});
 
 
-
-
 	app.get('/auth/current_user', (req, res) => {
 		res.send(req.user).status(200);
 	});
@@ -304,58 +302,66 @@ module.exports = app => {
 		}).then(user => {
 			if (!user) {
 				console.log("email not in database searching in doctor's table");
-				Doctor.findOne({
-					email: req.body.email
-				}).then(user => {
-					if (!user) {
-						return res.json({ Error: 'Cannot find this email' }).status(403);
-					}
-					else{
-						forgotPassEmail("Doctor")
-					}
-				})
+				// Doctor.findOne({
+				// 	email: req.body.email
+				// }).then(user => {
+				// 	if (!user) {
+				// 		return res.json({ Error: 'Cannot find this email' }).status(403);
+				// 	}
+				// 	else{
+				// 		forgotPassEmail("Doctor")
+				// 	}
+				// })
+				return res.json({ Error: 'Cannot find this email' }).status(403);
+
 			} else {
-
-				const token = crypto.randomBytes(20).toString('hex');
-				User.updateOne(
-					{ _id: user._id },
-					{
-						resetPasswordToken: token,
-						resetPasswordExpires: Date.now() + 360000,
-					}
-				).then(user => { });
-				const transporter = nodemailer.createTransport({
-					service: 'gmail',
-					auth: {
-						user: 'fahadeez.paki@gmail.com',
-						pass: keys.gmailPass,
-					},
-				});
-				const mailOptions = {
-					from: 'fahadeez.paki@gmail.com',
-					to: `${user.email}`,
-					subject: 'Link To Reset Password',
-					text:
-						'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
-						'Please click on the following link, or paste this into your browser to complete the process within one hour of receiving it:\n\n' +
-						`http://192.168.10.7.xip.io:5000/auth/reset/${token}\n\n` +
-						'If you did not request this, please ignore this email and your password will remain unchanged.\n',
-				};
-
-				console.log('sending mail');
-				try {
-					transporter.sendMail(mailOptions, (err, response) => {
-						if (err) {
-							console.log('there was an error: ', err);
-							return res.json({ Error: 'There was an error!' }).status(400);
-						} else {
-							console.log('here is the res: ', response);
-							return res.status(200).json({ Email: req.body.email });
-						}
-					});
-				} catch (err) {
-					console.log(err);
+				const response = helpers.forgotPassEmail("user", req.body.email)
+				if (response === 'ok') {
+					return res.status(200).json({ Email: req.body.email });
 				}
+				else {
+					return res.json({ Error: 'There was an error!' }).status(400);
+				}
+				// const token = crypto.randomBytes(20).toString('hex');
+				// User.updateOne(
+				// 	{ _id: user._id },
+				// 	{
+				// 		resetPasswordToken: token,
+				// 		resetPasswordExpires: Date.now() + 360000,
+				// 	}
+				// ).then(user => { });
+				// const transporter = nodemailer.createTransport({
+				// 	service: 'gmail',
+				// 	auth: {
+				// 		user: 'no.reply.docSahab@gmail.com',
+				// 		pass: keys.gmailPass,
+				// 	},
+				// });
+				// const mailOptions = {
+				// 	from: 'no.reply.docSahab@gmail.com',
+				// 	to: `${user.email}`,
+				// 	subject: 'Link To Reset Password',
+				// 	text:
+				// 		'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
+				// 		'Please click on the following link, or paste this into your browser to complete the process within one hour of receiving it:\n\n' +
+				// 		`http://192.168.10.7.xip.io:5000/auth/reset/${token}\n\n` +
+				// 		'If you did not request this, please ignore this email and your password will remain unchanged.\n',
+				// };
+
+				// console.log('sending mail');
+				// try {
+				// 	transporter.sendMail(mailOptions, (err, response) => {
+				// 		if (err) {
+				// 			console.log('there was an error: ', err);
+				// 			return res.json({ Error: 'There was an error!' }).status(400);
+				// 		} else {
+				// 			console.log('here is the res: ', response);
+				// 			return res.status(200).json({ Email: req.body.email });
+				// 		}
+				// 	});
+				// } catch (err) {
+				// 	console.log(err);
+				// }
 			}
 		});
 	});

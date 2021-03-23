@@ -5,14 +5,15 @@ const keys = require('../Config/keys');
 const mongoose = require('mongoose');
 
 const User = mongoose.model('users');
+const Doctor = mongoose.model('doctors');
 
 passport.serializeUser((user, done) => {
-	done(null, user.id);
+  done(null, user.id);
 });
 passport.deserializeUser((id, done) => {
-	User.findById(id).then(user => {
-		done(null, user);
-	});
+  User.findById(id).then(user => {
+    done(null, user);
+  });
 });
 // passport.use(
 // 	new GoogleStrategy(
@@ -48,28 +49,70 @@ passport.deserializeUser((id, done) => {
 // );
 
 passport.use(new LocalStrategy({
-    usernameField: 'email',
-    passwordField: 'password',
-   	passReqToCallback: true,
-  },
-  function(req , email, password, done){
-    User.findOne({email: email}, function(err, user){
-      if(err){
-        return done(err);
-	  }
-	  
-      if(!user){
-        console.log("No User found");
-        return done(null, false);
+  usernameField: 'email',
+  passwordField: 'password',
+  passReqToCallback: true,
+},
+  function (req, email, password, done) {
+    User.findOne({ email: email }).then(user => {
+      if (user) {
+        if (!user.comparePassword(password, user.password)) {
+          console.log("Password was incorrect");
+          return done(null, false);
+        }
+        console.log("User was found");
+        return done(null, user);
       }
-      if(!user.comparePassword(password, user.password)){
-        console.log("Password was incorrect");
-        return done(null, false);
-	  }
-	  
-      console.log("User was found");
-      done(null, user);
-    });
+      else {
+        Doctor.findOne({ email: email }).then(doctor => {
+          if (doctor) {
+            if (!doctor.comparePassword(password, doctor.password)) {
+              console.log("Password was incorrect");
+              return done(null, false);
+            }
+            console.log("doctor was found");
+            return done(null, doctor);
+          }
+          else {
+            console.log("Doctor not found");
+            done(null, false);
+          }
+
+        }).catch(err => {
+          if (err) {
+            return done(err);
+          }
+        })
+      }
+    }).catch(err => {
+      if (err) {
+        return done(err);
+      }
+    })
+
+
+    // if (!user) {
+    //   console.log("No User found");
+    //   Doctor.findOne({ email: email }, function (err, doctor) {
+    //     if (err) {
+    //       return done(err);
+    //     }
+
+    //     if (!doctor) {
+    //       return done(null, false)
+    //     }
+
+    //     if (!doctor.comparePassword(password, doctor.password)) {
+    //       console.log("Password was incorrect");
+    //       return done(null, false);
+    //     }
+
+    //     return done(null, doctor);
+
+    //   })
+    //   // return done(null, false);
+    // }
+
   }
 ));
 // passport.use(new LocalStrategy({
