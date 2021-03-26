@@ -1,5 +1,6 @@
 import axios from 'axios';
 
 export default axios.create({
-    baseURL: 'http://localhost:5000/'
+    // just run the ipconfig in cmd and change the IPv4 address here
+    baseURL: 'http://192.168.1.104:5000'
 });
