@@ -95,7 +95,7 @@ module.exports = app => {
 			city = body.city,
 			role = body.role;
 
-		if (role === "doctor") {
+		if (role) {
 			Doctor.findOne(
 				{
 					email: email,
@@ -129,7 +129,7 @@ module.exports = app => {
 				}
 			);
 		}
-		if (role === "user") {
+		if (!role) {
 			User.findOne(
 				{
 					email: email,
@@ -163,12 +163,20 @@ module.exports = app => {
 				}
 			);
 		}
+		else{
+			return res.send("Please select any role").status(400)
+		}
 
 	});
 
 
 	app.get('/auth/current_user', (req, res) => {
-		res.send(req.user).status(200);
+		if(req.user){
+			return res.send(req.user).status(200);
+		}
+		else{
+           res.send("No user logged in").status(404);
+		}
 	});
 
 	app.get('/auth/logout', (req, res) => {
