@@ -1,10 +1,16 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import createDataContext from './CreateContextData';
 import DocSahabApi from '../api/DocSahabApi';
+import { navigate } from '../navigationRef';
 
 const authReducer = (state, action) => {
     switch (action.type){
-        case 'add_error':
-            return { ...state, errorMessage: action.payload };
+        case 'add_error_for_signIn':
+            return { ...state, errorMessageForSignIn: action.payload };
+        case 'add_error_for_signUp':
+            return { ...state, errorMessageForSignUp: action.payload };
+        case 'signIn':
+            return { errorMessageForSignIn: '', token: action.payload };
         default:
             return state;
     }
@@ -17,7 +23,7 @@ const signUp = (dispatch) => {
             console.log(response.data);
         } catch (err) {
             console.log(err.message);
-            dispatch({ type: 'add_error', payload: 'Please fill all the credentials!' })
+            dispatch({ type: 'add_error_for_signUp', payload: 'Please fill all the credentials!' })
         }
     };
 };
@@ -27,10 +33,19 @@ const signIn = (dispatch) => {
         try{
             const response = await DocSahabApi.post('/auth/login', {email, password})
             // to get our token back
-            console.log(response.data);
+            // console.log(response.data.token);
+
+            await AsyncStorage.setItem('token', response.data.token);
+            // await AsyncStorage.getItem('token');
+
+            dispatch({ type: 'signIn', payload: response.data.token });
+
+            // if user login
+            // navigate('dashboard');
+            
         } catch (err) {
             console.log(err.message);
-            dispatch({ type: 'add_error', payload: 'Email or password is incorrect!' })
+            dispatch({ type: 'add_error_for_signIn', payload: 'Email or password is incorrect!' })
         }
     };
 };
@@ -49,5 +64,6 @@ const signOut = (dispatch) => {
 export const { Provider, Context } = createDataContext(
     authReducer,
     { signUp, signIn, signOut },
-    { isSignedIn: false, errorMessage: ''}
+    // { isSignedIn: false, errorMessage: ''}
+    { token: null, errorMessageForSignIn: ''}
 );

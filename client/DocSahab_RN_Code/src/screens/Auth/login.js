@@ -1,6 +1,7 @@
 import React, { 
                 useState, 
-                useContext 
+                useContext,
+                forwardRef
     } from 'react';
 import { 
         Text, 
@@ -24,11 +25,13 @@ import {
 import { Context as AuthContext } from '../../context/AuthContext';
 
 const login = () => {
+    const { state, signIn } = useContext(AuthContext);
+
     const navigation = useNavigation();
     const [ email, setEmail ] = useState('');
     const [ password, setPassword ] = useState('');
-    const { state, signIn } = useContext(AuthContext);
-    console.log(state);
+    // console.log(state);
+    // console.log("state message: ", state.errorMessage);
 
     // for useForm
     const { control, handleSubmit, errors } = useForm();
@@ -39,11 +42,11 @@ const login = () => {
     })
 
     // ref for onfocus
-    const emailInputRef = React.useRef();
-    const passwordInputRef = React.useRef();
+    const emailInputRef = React.useRef(null);
+    const passwordInputRef = React.useRef(null);
 
     // show error after and before
-    console.log('Errors if any: ', errors);
+    // console.log('Errors if any: ', errors);
 
     return (
 
@@ -75,7 +78,7 @@ const login = () => {
                     <HeaderView titletxt='Welcome'/>
                                     
                     <Text style={globalStyles.subHeaderTxt}>Sign in to continue</Text>
-                                    
+
                     <View style={globalStyles.inputView} >
                         <Controller
                             name="email"
@@ -117,7 +120,7 @@ const login = () => {
                             onFocus={() => {
                                 passwordInputRef.current.focus();
                             }}
-                            render={(props) => (
+                            render={(props, {onBlur}) => (
                                 <TextInput
                                     {...props}
                                     secureTextEntry
@@ -131,6 +134,7 @@ const login = () => {
                                     },
                                     setPassword
                                     }
+                                    onBlur={onBlur}
                                     value={password}
                                     ref ={passwordInputRef}
                                 />
@@ -147,9 +151,9 @@ const login = () => {
                     </View>
                     
                     {/* after react hook form applied its not working */}
-                    {state.errorMessage ? (
+                    {state.errorMessageForSignIn ? (
                         <View style={globalStyles.inputText}>
-                            <Text style={globalStyles.errorText}>{state.errorMessage}</Text>
+                            <Text style={globalStyles.errorMessage}>{state.errorMessageForSignIn}</Text>
                         </View>
                         ) : null
                     }
