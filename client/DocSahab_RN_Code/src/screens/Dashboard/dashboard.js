@@ -5,7 +5,7 @@ import NavigationHeaderWithBar from '../../components/navigationHeaderWithBar';
 import { globalStyles } from '../../styles/globalStyles';
 import Icon from 'react-native-vector-icons/Feather';
 
-const DashboardScreen = () => {
+const DashboardScreen = ({navigation}) => {
 	return (
 	<View style = {globalStyles.containerColor}>
 
@@ -24,7 +24,6 @@ const DashboardScreen = () => {
 			<View style = {styles.miniParent}>
 
 				<TouchableOpacity style = {styles.childBox}>
-				
 				</TouchableOpacity>
 
 				<TouchableOpacity style = {styles.childBox}>
@@ -66,7 +65,7 @@ childBox: {
  height: '95%',
  marginTop: '5%',
  borderRadius: 20
-}
+},
 });
 
 export default DashboardScreen;

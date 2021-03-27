@@ -5,13 +5,13 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
-const navigationHeaderWithBar = (props) => {
+const navigationHeaderWithBar = () => {
     const navigation = useNavigation();
     return (
         <View style={ globalStyles.headerNavigation }>
             <View style = {{justifyContent: 'space-between', marginTop: '10%'}}>
                 <Text>
-                    <TouchableOpacity onPress={() => navigation.navigate(props.screenName)}>
+                    <TouchableOpacity onPress={() => navigation.toggleDrawer()}>
                         <Icon name='bars' size={30} color="#2A2AC0"/>
                     </TouchableOpacity>
                 </Text>
