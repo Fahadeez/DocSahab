@@ -7,11 +7,11 @@ export const globalStyles = StyleSheet.create({
         backgroundColor: '#ECF1FA',
         alignItems: 'center',
         justifyContent: 'center',
+        height: "100%"
     },
     containerColor: {
+        flex: 1,
         backgroundColor: '#ECF1FA',
-        width: '100%',
-        height: '100%',
     },
     headerTxt: {
         fontSize: 36,
@@ -54,7 +54,6 @@ export const globalStyles = StyleSheet.create({
     },
     inputText:{
         height:50,
-        // color:"white"
     },
     inputTitleTxt: {
         fontSize: 24,
@@ -67,14 +66,12 @@ export const globalStyles = StyleSheet.create({
         textAlign: 'right'
     },
     subHeaderTxt:{
-        // fontWeight:"light",
         fontSize:16,
-        // color:"#2A2AC0",
         color: 'black',
         marginBottom: 50,
     },
     logoView: {
-        marginTop: 600
+        marginBottom: "5%"
     },
     headerNavigation: {
         marginTop: '8%',
@@ -96,8 +93,7 @@ export const globalStyles = StyleSheet.create({
         margin: 8,
     },
     scrollView: {
-        flex: 1,
-        backgroundColor: '#ECF1FA'
+        backgroundColor: '#ECF1FA',
     },
     pickerView: {
         width:"90%",
@@ -126,7 +122,7 @@ export const globalStyles = StyleSheet.create({
     errorText: {
         color: 'crimson',
         fontWeight: 'bold',
-        marginBottom: 15,
+        marginBottom: 20,
         textAlign: 'center',
     },
     MultiSelect: {
@@ -135,6 +131,15 @@ export const globalStyles = StyleSheet.create({
         borderRadius:10,
         marginBottom:20,
     },
+    errorMessage:{
+        fontSize: 16,
+        color: 'red',
+        marginLeft: 15,
+        marginTop: 15
+    },
+    // auth styles ends here
+
+    // DashBoard styles start here
     // Search Bar
     SearchbackgroundStyle: {
     marginTop: '15%',
@@ -154,5 +159,6 @@ export const globalStyles = StyleSheet.create({
     alignSelf: 'center',
     fontSize: 35,
     marginHorizontal: 15
-  }
+  },
+// DashBoard styles ends here
 });

@@ -20,6 +20,7 @@ const signup = () => {
     const [lastName, setlastName] = useState('')
     const [contact, setContact] = useState('')
     const [role, setRole] = useState()
+    // const [role, setRole] = useState('')
     const [city, setSelectedCity] = useState(false);
 
     
@@ -43,7 +44,7 @@ const signup = () => {
                             <View style={{marginTop: 50}}>
                                 <View style={globalStyles.container}>
 
-                                <View style={globalStyles.modifiedinputView} >
+                                <View style={globalStyles.inputView} >
                                     <TextInput  
                                         style={globalStyles.inputText}
                                         placeholder="First Name"
@@ -54,7 +55,7 @@ const signup = () => {
                                 </View>
 
 
-                                <View style={globalStyles.modifiedinputView} >
+                                <View style={globalStyles.inputView} >
                                     <TextInput  
                                         style={globalStyles.inputText}
                                         placeholder="Last Name"
@@ -64,7 +65,7 @@ const signup = () => {
                                         />
                                 </View>
 
-                                <View style={globalStyles.modifiedinputView} >
+                                <View style={globalStyles.inputView} >
                                     <TextInput
                                     style={globalStyles.inputText}
                                     keyboardType="number-pad"
@@ -76,7 +77,7 @@ const signup = () => {
                                 </View>
 
 
-                                <View style={globalStyles.modifiedinputView} >
+                                <View style={globalStyles.inputView} >
                                     <TextInput
                                     style={globalStyles.inputText}
                                     placeholder="Email"
@@ -115,7 +116,7 @@ const signup = () => {
                                         />
                                 </View>
 
-                                <View style={globalStyles.modifiedinputView} >
+                                <View style={globalStyles.inputView} >
                                     <TextInput
                                     style={globalStyles.inputText}
                                     placeholder="Password"
@@ -125,6 +126,16 @@ const signup = () => {
                                     onChangeText={setPassword}
                                     />
                                 </View>
+
+                                {/* <View style={globalStyles.inputView} >
+                                    <TextInput
+                                    style={globalStyles.inputText}
+                                    placeholder="Role"
+                                    placeholderTextColor="#003f5c"
+                                    value={role}
+                                    onChangeText={setRole}
+                                    />
+                                </View> */}
 
                                 <View style={globalStyles.checkboxContainer}>
                                     <Text style={globalStyles.label}>Are you a doctor?</Text>
@@ -143,6 +154,13 @@ const signup = () => {
                                     <Text style={globalStyles.buttonTxt}>Sign Up</Text>
                                 </TouchableOpacity>
                                 }
+
+                                {/* <TouchableOpacity
+                                    style={globalStyles.Button}
+                                    onPress={() => signUp({ email, password, firstName, lastName, contact, city, role })}
+                                >
+                                    <Text style={globalStyles.buttonTxt}>Sign Up</Text>
+                                </TouchableOpacity> */}
                                                         
                                 </View>
                             </View>

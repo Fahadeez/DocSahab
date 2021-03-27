@@ -8,6 +8,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
 import DashboardScreen from './src/screens/Dashboard/dashboard';
 import { Provider as AuthProvider} from './src/context/AuthContext';
+import { setNavigator } from './src/navigationRef';
 
 const Stack = createStackNavigator();
 
@@ -50,13 +51,12 @@ function App() {
   );
 }
 
-// export default App;
 const CustomApp = App;
 
 export default () => {
   return (
     <AuthProvider>
-      <CustomApp />
+      <CustomApp ref={(navigator) => { setNavigator(navigator) }}/>
   </AuthProvider>
   );
 };

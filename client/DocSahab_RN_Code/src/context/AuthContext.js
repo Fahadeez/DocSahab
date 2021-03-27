@@ -1,53 +1,51 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import createDataContext from './CreateContextData';
 import DocSahabApi from '../api/DocSahabApi';
+import { navigate } from '../navigationRef';
 
 const authReducer = (state, action) => {
     switch (action.type){
+        case 'add_error_for_signIn':
+            return { ...state, errorMessageForSignIn: action.payload };
+        case 'add_error_for_signUp':
+            return { ...state, errorMessageForSignUp: action.payload };
+        case 'signIn':
+            return { errorMessageForSignIn: '', token: action.payload };
         default:
             return state;
     }
 };
 
-const signUpAsUser = (dispatch) => {
+const signUp = (dispatch) => {
     return async ({ email, password, firstName, lastName, contact, city, role }) => {
         try{
             const response = await DocSahabApi.post('/auth/signup', {email, firstName, lastName, contact, city, role, password})
+            console.log(response.data);
+        } catch (err) {
+            console.log(err.message);
+            dispatch({ type: 'add_error_for_signUp', payload: 'Please fill all the credentials!' })
+        }
+    };
+};
+
+const signIn = (dispatch) => {
+    return async ({email, password}) => {
+        try{
+            const response = await DocSahabApi.post('/auth/login', {email, password})
             // to get our token back
-            console.log(response.data);
+            // console.log(response.data.token);
+
+            await AsyncStorage.setItem('token', response.data.token);
+            // await AsyncStorage.getItem('token');
+
+            dispatch({ type: 'signIn', payload: response.data.token });
+
+            // if user login
+            // navigate('dashboard');
+            
         } catch (err) {
             console.log(err.message);
-        }
-    };
-};
-
-const signUpAsDoctor = (dispatch) => {
-    return async ({ email, password, firstName, lastName, contact, city, role, reg_No, exp, qualification, specialization, timeSlot }) => {
-        try{
-            const response = await DocSahabApi.post('/auth/signup')
-        } catch (err) {
-
-        }
-    };
-};
-
-const signInAsUser = (dispatch) => {
-    return async ({ email, password }) => {
-        try{
-            const response = await DocSahabApi.post('/auth/login', { email, password})
-            // to egt our token back
-            console.log(response.data);
-        } catch (err) {
-            console.log(err.message);
-        }
-    };
-};
-
-const signInAsDoctor = (dispatch) => {
-    return async ({ email, password }) => {
-        try{
-            const response = await DocSahabApi.post('/auth/login')
-        } catch (err) {
-
+            dispatch({ type: 'add_error_for_signIn', payload: 'Email or password is incorrect!' })
         }
     };
 };
@@ -65,6 +63,7 @@ const signOut = (dispatch) => {
 // action functions
 export const { Provider, Context } = createDataContext(
     authReducer,
-    { signUpAsUser, signUpAsDoctor, signInAsUser, signInAsDoctor, signOut },
-    { isSignedIn: false}
+    { signUp, signIn, signOut },
+    // { isSignedIn: false, errorMessage: ''}
+    { token: null, errorMessageForSignIn: ''}
 );

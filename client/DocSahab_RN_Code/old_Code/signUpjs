@@ -45,7 +45,7 @@ const SignUpValSchema = yup.object({
 })
 
 const signup = () => {
-    const { state, signUp }   = useContext(AuthContext);
+    const { state, signUp } = useContext(AuthContext);
     const [role, setRole] = useState()
     const [city, setSelectedCity] = useState(false);
     // to get the values from the formik states return object
