@@ -1,6 +1,6 @@
 import React, {useState, useContext} from 'react';
 import {Text, View, TextInput, TouchableOpacity, ScrollView,
- TouchableWithoutFeedback, Keyboard, Button } from 'react-native';
+ TouchableWithoutFeedback, Keyboard } from 'react-native';
 import CheckBox from '@react-native-community/checkbox';
 import NavigationHeaderWithBtn from '../../../src/components/navigationHeaderWithBtn';
 import { globalStyles } from '../../styles/globalStyles';

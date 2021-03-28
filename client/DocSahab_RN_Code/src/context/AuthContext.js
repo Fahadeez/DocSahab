@@ -8,8 +8,8 @@ const authReducer = (state, action) => {
     switch (action.type) {
         case 'add_error_for_signIn':
             return { ...state, errorMessageForSignIn: action.payload };
-        case 'add_error_for_signUp':
-            return { ...state, errorMessageForSignUp: action.payload };
+        // case 'add_error_for_signUp':
+        //     return { ...state, errorMessageForSignUp: action.payload };
         case 'signIn':
             return { errorMessageForSignIn: '', token: action.payload };
         default:
@@ -39,7 +39,7 @@ const signIn = (dispatch) => {
             // console.log(response.data.token);
 
             await AsyncStorage.setItem('token', response.data.token);
-            // await AsyncStorage.getItem('token');
+            // let token_value = await AsyncStorage.getItem('token');
 
             dispatch({ type: 'signIn', payload: response.data.token });
             // if user login
