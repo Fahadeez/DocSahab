@@ -9,7 +9,7 @@ const userSchema = new Schema({
     email: String,
     password: String,
     confirmPassword: String,
-    role: String,
+    doctor: Boolean,
     country: String,
     city: String,
     bio: String,
