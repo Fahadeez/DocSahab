@@ -38,7 +38,7 @@ const forgetpassword = () => {
                             <NavigationHeaderWithBtn screenName={Signin}/>
 
                                 <View style={{marginTop: '15%'}}>
-                                    <HeaderView titletxt='Reset Password'/>
+                                    <HeaderView titletxt='Forgot Password'/>
                                 </View>
 
                                 <View style={{marginTop: 50}}>

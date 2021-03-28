@@ -15,112 +15,97 @@ const crypto = require('crypto');
 let User = mongoose.model('users');
 let Doctor = mongoose.model('doctors');
 
-    // export const forgotPassEmail = (role) => {
-    //     const CommonUser = role === "User" ? User : Doctor
-    //     const token = crypto.randomBytes(20).toString('hex');
-    //     CommonUser.updateOne(
-    //         { _id: user._id },
-    //         {
-    //             resetPasswordToken: token,
-    //             resetPasswordExpires: Date.now() + 360000,
-    //         }
-    //     ).then(user => { });
-    //     const transporter = nodemailer.createTransport({
-    //         service: 'gmail',
-    //         auth: {
-    //             user: 'fahadeez.paki@gmail.com',
-    //             pass: keys.gmailPass,
-    //         },
-    //     });
-    //     const mailOptions = {
-    //         from: 'fahadeez.paki@gmail.com',
-    //         to: `${user.email}`,
-    //         subject: 'Link To Reset Password',
-    //         text:
-    //             'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
-    //             'Please click on the following link, or paste this into your browser to complete the process within one hour of receiving it:\n\n' +
-    //             `http://192.168.10.7.xip.io:5000/auth/reset/${token}\n\n` +
-    //             'If you did not request this, please ignore this email and your password will remain unchanged.\n',
-    //     };
+// export const forgotPassEmail = (role) => {
+//     const CommonUser = role === "User" ? User : Doctor
+//     const token = crypto.randomBytes(20).toString('hex');
+//     CommonUser.updateOne(
+//         { _id: user._id },
+//         {
+//             resetPasswordToken: token,
+//             resetPasswordExpires: Date.now() + 360000,
+//         }
+//     ).then(user => { });
+//     const transporter = nodemailer.createTransport({
+//         service: 'gmail',
+//         auth: {
+//             user: 'fahadeez.paki@gmail.com',
+//             pass: keys.gmailPass,
+//         },
+//     });
+//     const mailOptions = {
+//         from: 'fahadeez.paki@gmail.com',
+//         to: `${user.email}`,
+//         subject: 'Link To Reset Password',
+//         text:
+//             'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
+//             'Please click on the following link, or paste this into your browser to complete the process within one hour of receiving it:\n\n' +
+//             `http://192.168.10.7.xip.io:5000/auth/reset/${token}\n\n` +
+//             'If you did not request this, please ignore this email and your password will remain unchanged.\n',
+//     };
 
-    //     console.log('sending mail');
-    //     try {
-    //         transporter.sendMail(mailOptions, (err, response) => {
-    //             if (err) {
-    //                 console.log('there was an error: ', err);
-    //                 return res.json({ Error: 'There was an error!' }).status(400);
-    //             } else {
-    //                 console.log('here is the res: ', response);
-    //                 return res.status(200).json({ Email: req.body.email });
-    //             }
-    //         });
-    //     } catch (err) {
-    //         console.log(err);
-    //     }
-    // }
-    const forgotPassEmail = (role, email) => {
-        console.log('/auth/forgotPass req.body: ', role);
-        console.log(email);
-        User.findOne({
-            email: email,
-        }).then(user => {
-            if (!user) {
-                console.log("email not in database searching in doctor's table");
-                // Doctor.findOne({
-                // 	email: email
-                // }).then(user => {
-                // 	if (!user) {
-                // 		return res.json({ Error: 'Cannot find this email' }).status(403);
-                // 	}
-                // 	else{
-                // 		forgotPassEmail("Doctor")
-                // 	}
-                // })
-                return res.json({ Error: 'Cannot find this email' }).status(403);
+//     console.log('sending mail');
+//     try {
+//         transporter.sendMail(mailOptions, (err, response) => {
+//             if (err) {
+//                 console.log('there was an error: ', err);
+//                 return res.json({ Error: 'There was an error!' }).status(400);
+//             } else {
+//                 console.log('here is the res: ', response);
+//                 return res.status(200).json({ Email: req.body.email });
+//             }
+//         });
+//     } catch (err) {
+//         console.log(err);
+//     }
+// }
+const forgotPassEmail = (role, email) => {
+    console.log('/auth/forgotPass req.body: ', role);
+    console.log(email);
+    const CommonUser = role === "User" ? User : Doctor
 
-            } else {
-                const token = crypto.randomBytes(20).toString('hex');
-                User.updateOne(
-                    { _id: user._id },
-                    {
-                        resetPasswordToken: token,
-                        resetPasswordExpires: Date.now() + 360000,
-                    }
-                ).then(user => { });
-                const transporter = nodemailer.createTransport({
-                    service: 'gmail',
-                    auth: {
-                        user: 'no.repy.docSahab@gmail.com',
-                        pass: keys.gmailPass,
-                    },
-                });
-                const mailOptions = {
-                    from: 'no.repy.docSahab@gmail.com',
-                    to: `${user.email}`,
-                    subject: 'Link To Reset Password',
-                    text:
-                        'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
-                        'Please click on the following link, or paste this into your browser to complete the process within one hour of receiving it:\n\n' +
-                        `http://192.168.10.7:5000/auth/reset/${token}\n\n` +
-                        'If you did not request this, please ignore this email and your password will remain unchanged.\n',
-                };
+    const token = crypto.randomBytes(20).toString('hex');
+    CommonUser.updateOne(
+        { email: email },
+        {
+            resetPasswordToken: token,
+            resetPasswordExpires: Date.now() + 360000,
+        }
+    ).then(user => { });
+    const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: 'no.repy.docSahab@gmail.com',
+            pass: keys.gmailPass,
+        },
+    });
+    const mailOptions = {
+        from: 'no.repy.docSahab@gmail.com',
+        to: `${email}`,
+        subject: 'Link To Reset Password',
+        text:
+            'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
+            'Please click on the following link, or paste this into your browser to complete the process within one hour of receiving it:\n\n' +
+            `http://192.168.10.10:5000/auth/reset/${token}\n\n` +
+            'If you did not request this, please ignore this email and your password will remain unchanged.\n',
+    };
 
-                console.log('sending mail');
-                try {
-                    transporter.sendMail(mailOptions, (err, response) => {
-                        if (err) {
-                            console.log('there was an error: ', err);
-                            return "error"
-                        } else {
-                            console.log('here is the res: ', response);
-                            return 'ok'
-                        }
-                    });
-                } catch (err) {
-                    console.log(err);
+    console.log('sending mail');
+    try {
+        return new Promise((resolve, reject) => {
+            transporter.sendMail(mailOptions, (err, response) => {
+                if (err) {
+                    console.log('there was an error: ', err);
+                    reject("error")
+                } else {
+                    console.log('Email Sent: ', response);
+                    resolve("ok")
                 }
-            }
-        });
+            });
+        })
+    } catch (err) {
+        console.log(err);
     }
 
-    exports.forgotPassEmail = forgotPassEmail
+}
+
+exports.forgotPassEmail = forgotPassEmail

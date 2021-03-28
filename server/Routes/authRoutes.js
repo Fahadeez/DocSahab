@@ -94,7 +94,6 @@ module.exports = app => {
 			contact = body.contact,
 			city = body.city,
 			role = body.role;
-
 		if (role) {
 			Doctor.findOne(
 				{
@@ -116,11 +115,12 @@ module.exports = app => {
 							record.city = city.trim();
 							record.doctor = role;
 							record.password = record.hashPassword(password.trim());
-							record.save(function (err, user) {
-								if (err) {
-									return res.send('db error').status(400);
-								} else {
+							record.save().then((user) => {
+								if (user) {
 									return res.send("Doctor's data added").status(200);
+
+								} else {
+									return res.send('db error').status(400);
 								}
 							});
 						}
@@ -149,11 +149,12 @@ module.exports = app => {
 							record.city = city.trim();
 							record.doctor = role;
 							record.password = record.hashPassword(password.trim());
-							record.save(function (err, user) {
-								if (err) {
-									return res.send('db error').status(400);
-								} else {
+							record.save().then((user) => {
+								if (user) {
 									return res.send("User's data added").status(200);
+								} else {
+									return res.send('db error').status(400);
+
 								}
 							});
 						}
@@ -162,19 +163,15 @@ module.exports = app => {
 				}
 			);
 		}
-		else{
-			return res.send("Please select any role").status(400)
-		}
-
 	});
 
 
 	app.get('/auth/current_user', (req, res) => {
-		if(req.user){
+		if (req.user) {
 			return res.send(req.user).status(200);
 		}
-		else{
-           res.send("No user logged in").status(404);
+		else {
+			res.send("No user logged in").status(404);
 		}
 	});
 
@@ -305,71 +302,61 @@ module.exports = app => {
 		console.log(req.body.email);
 		User.findOne({
 			email: req.body.email,
-		}).then(user => {
+		}).then(async (user) => {
 			if (!user) {
 				console.log("email not in database searching in doctor's table");
-				// Doctor.findOne({
-				// 	email: req.body.email
-				// }).then(user => {
-				// 	if (!user) {
-				// 		return res.json({ Error: 'Cannot find this email' }).status(403);
-				// 	}
-				// 	else{
-				// 		forgotPassEmail("Doctor")
-				// 	}
-				// })
-				return res.json({ Error: 'Cannot find this email' }).status(403);
+				Doctor.findOne({
+					email: req.body.email
+				}).then(async (doctor) => {
+					if (!doctor) {
+						return res.json({ Error: 'Cannot find this email' }).status(403);
+					}
+					else {
+						const response = await helpers.forgotPassEmail("Doctor", req.body.email)
+						console.log("response email", response)
+						if (response == 'ok') {
+							return res.status(200).json({ Email: req.body.email });
+						}
+						else {
+							return res.json({ Error: 'There was an error!' }).status(400);
+						}
+					}
+				})
 
 			} else {
-				const response = helpers.forgotPassEmail("user", req.body.email)
-				if (response === 'ok') {
+				const response = await helpers.forgotPassEmail("User", req.body.email)
+				console.log("response email", response)
+				if (response == 'ok') {
 					return res.status(200).json({ Email: req.body.email });
 				}
 				else {
 					return res.json({ Error: 'There was an error!' }).status(400);
 				}
-				// const token = crypto.randomBytes(20).toString('hex');
-				// User.updateOne(
-				// 	{ _id: user._id },
-				// 	{
-				// 		resetPasswordToken: token,
-				// 		resetPasswordExpires: Date.now() + 360000,
-				// 	}
-				// ).then(user => { });
-				// const transporter = nodemailer.createTransport({
-				// 	service: 'gmail',
-				// 	auth: {
-				// 		user: 'no.reply.docSahab@gmail.com',
-				// 		pass: keys.gmailPass,
-				// 	},
-				// });
-				// const mailOptions = {
-				// 	from: 'no.reply.docSahab@gmail.com',
-				// 	to: `${user.email}`,
-				// 	subject: 'Link To Reset Password',
-				// 	text:
-				// 		'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
-				// 		'Please click on the following link, or paste this into your browser to complete the process within one hour of receiving it:\n\n' +
-				// 		`http://192.168.10.7.xip.io:5000/auth/reset/${token}\n\n` +
-				// 		'If you did not request this, please ignore this email and your password will remain unchanged.\n',
-				// };
-
-				// console.log('sending mail');
-				// try {
-				// 	transporter.sendMail(mailOptions, (err, response) => {
-				// 		if (err) {
-				// 			console.log('there was an error: ', err);
-				// 			return res.json({ Error: 'There was an error!' }).status(400);
-				// 		} else {
-				// 			console.log('here is the res: ', response);
-				// 			return res.status(200).json({ Email: req.body.email });
-				// 		}
-				// 	});
-				// } catch (err) {
-				// 	console.log(err);
-				// }
 			}
 		});
 	});
+
+	app.get('/auth/reset/:token', (req, res) => {
+		const token = req.params.token;
+
+		User.findOne({
+			resetPasswordToken: token,
+			resetPasswordExpires: {
+				$gt: Date.now(), //Find time greater than date.Now() or > date.now
+			},
+		}).then(user => {
+			if (!user) {
+				console.log('password reset link is invalid or has expired');
+				return res.send('password reset link is invalid or has expired').status(403);
+			} else {
+				// res.send({
+				//   message: 'password reset link a-ok',
+				// }).status(200);
+
+				return res.redirect('docsahab://resetpassword');
+			}
+		});
+	});
+
 
 };

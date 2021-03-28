@@ -12,7 +12,8 @@ import {
     Image,
     ScrollView,
     TouchableWithoutFeedback,
-    Keyboard
+    Keyboard,
+    Linking
 } from 'react-native';
 import HeaderView from '../../../src/components/headerView';
 import { globalStyles } from '../../styles/globalStyles';
@@ -43,7 +44,7 @@ const login = () => {
     // for context function
     const onSignIn = () => signIn({
         email, password
-    },navigate)
+    }, navigate)
 
     const navigate = () => {
         navigation.navigate('root');
@@ -58,20 +59,20 @@ const login = () => {
 
     useEffect(() => {
         //Just for testing logout,
-        async function logout(){
+        async function logout() {
             await DocSahabApi.get('auth/logout')
             await AsyncStorage.removeItem('token')
         }
-      
-        async function checkJwt(){
-        const jwt = await AsyncStorage.getItem('token')
-        if (jwt) {
-            navigation.navigate('root')
+
+        async function checkJwt() {
+            const jwt = await AsyncStorage.getItem('token')
+            if (jwt) {
+                navigation.navigate('root')
+            }
         }
-     }
-     checkJwt()
-    //  logout()
-    },[]);
+        checkJwt()
+        //  logout()
+    }, []);
 
     return (
 
