@@ -114,7 +114,7 @@ module.exports = app => {
 							record.lastName = lastName.trim();
 							record.contact = contact.trim();
 							record.city = city.trim();
-							record.role = role.trim();
+							record.doctor = role;
 							record.password = record.hashPassword(password.trim());
 							record.save(function (err, user) {
 								if (err) {
@@ -124,7 +124,6 @@ module.exports = app => {
 								}
 							});
 						}
-
 					}
 				}
 			);
@@ -148,7 +147,7 @@ module.exports = app => {
 							record.lastName = lastName.trim();
 							record.contact = contact.trim();
 							record.city = city.trim();
-							record.role = role.trim();
+							record.doctor = role;
 							record.password = record.hashPassword(password.trim());
 							record.save(function (err, user) {
 								if (err) {

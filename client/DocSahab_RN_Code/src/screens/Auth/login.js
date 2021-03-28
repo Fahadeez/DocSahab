@@ -1,35 +1,40 @@
-import React, { 
-                useState, 
-                useContext,
-                forwardRef
-    } from 'react';
-import { 
-        Text, 
-        View, 
-        TextInput, 
-        TouchableOpacity, 
-        Image, 
-        ScrollView, 
-        TouchableWithoutFeedback, 
-        Keyboard  
-    } from 'react-native';
+import React, {
+    useState,
+    useContext,
+    forwardRef,
+    useEffect
+} from 'react';
+import {
+    Text,
+    View,
+    TextInput,
+    TouchableOpacity,
+    Image,
+    ScrollView,
+    TouchableWithoutFeedback,
+    Keyboard
+} from 'react-native';
 import HeaderView from '../../../src/components/headerView';
 import { globalStyles } from '../../styles/globalStyles';
 import Signup from './signup';
 import ForgetPassword from './ForgetPassword';
 import { useNavigation } from '@react-navigation/native';
-import { 
-        useForm, 
-        Controller 
-    } from 'react-hook-form';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import DocSahabApi from '../../api/DocSahabApi';
+
+import {
+    useForm,
+    Controller
+} from 'react-hook-form';
 import { Context as AuthContext } from '../../context/AuthContext';
+import axios from 'axios';
 
 const login = () => {
     const { state, signIn } = useContext(AuthContext);
 
     const navigation = useNavigation();
-    const [ email, setEmail ] = useState('');
-    const [ password, setPassword ] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
     // console.log(state);
     // console.log("state message: ", state.errorMessage);
 
@@ -37,9 +42,13 @@ const login = () => {
     const { control, handleSubmit, errors } = useForm();
 
     // for context function
-    const onSignIn = () => signIn({ 
-        email, password 
-    })
+    const onSignIn = () => signIn({
+        email, password
+    },navigate)
+
+    const navigate = () => {
+        navigation.navigate('dashboard');
+    }
 
     // ref for onfocus
     const emailInputRef = React.useRef(null);
@@ -48,153 +57,163 @@ const login = () => {
     // show error after and before
     // console.log('Errors if any: ', errors);
 
+    useEffect(async () => {
+        // await DocSahabApi.get('auth/logout')
+        // await AsyncStorage.removeItem('token')
+
+        const jwt = await AsyncStorage.getItem('token')
+        if (jwt) {
+            navigation.navigate('dashboard')
+        }
+    },[]);
+
     return (
 
-        <View style={ globalStyles.containerColor }>
+        <View style={globalStyles.containerColor}>
 
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
 
-                <ScrollView 
+                <ScrollView
                     style={globalStyles.scrollView}
-                    showsVerticalScrollIndicator ={false}
+                    showsVerticalScrollIndicator={false}
                     showsHorizontalScrollIndicator={false}
-                    >
-                                
-                <View style={
-                    {
-                        flex: 1,
-                        backgroundColor: '#ECF1FA',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        marginTop: '10%'
-                    }
-                }>
+                >
 
-                                    
-                    <View style={globalStyles.logoView}>
-                        <Image source={require('../../../assets/docsahab.png')} style = {{height: 150, width: 150}} />
-                    </View>
-
-                    <HeaderView titletxt='Welcome'/>
-                                    
-                    <Text style={globalStyles.subHeaderTxt}>Sign in to continue</Text>
-
-                    <View style={globalStyles.inputView} >
-                        <Controller
-                            name="email"
-                            defaultValue="" 
-                            control={control}
-                            rules={{ required: 'Email is required' }}
-                            onFocus={() => {
-                                emailInputRef.current.focus();
-                            }}
-                            render={(props, {onBlur}) => (
-                                <TextInput
-                                    {...props}  
-                                    style={globalStyles.inputText}
-                                    placeholder="Email"
-                                    placeholderTextColor="#003f5c"
-                                    autoCapitalize="none"
-                                    autoCorrect={false}
-                                    onChangeText={(value) => {
-                                        props.onChange(value);
-                                    },
-                                    setEmail
-                                    }
-                                    onBlur={onBlur}
-                                    value={email}
-                                    ref={emailInputRef}
-                                />
-                                )
-                            }
-                        />
-                    </View>
-                    {errors.email && <Text style={globalStyles.errorText}>Email is required</Text>}
-                                    
-                    <View style={globalStyles.inputView} >
-                        <Controller
-                            name="password"
-                            defaultValue=""  
-                            control={control}
-                            rules={{ required: 'Password is required' }}
-                            onFocus={() => {
-                                passwordInputRef.current.focus();
-                            }}
-                            render={(props, {onBlur}) => (
-                                <TextInput
-                                    {...props}
-                                    secureTextEntry
-                                    style={globalStyles.inputText}
-                                    placeholder="Password"
-                                    placeholderTextColor="#003f5c"
-                                    autoCapitalize="none"
-                                    autoCorrect={false}
-                                    onChangeText={(value) => {
-                                        props.onChange(value);
-                                    },
-                                    setPassword
-                                    }
-                                    onBlur={onBlur}
-                                    value={password}
-                                    ref ={passwordInputRef}
-                                />
-                            )
-                            }
-                        />
-                    </View>
-                    {errors.password && <Text style={globalStyles.errorText}>Password is required</Text>}
-                                    
-                    <View style={ { alignSelf: 'flex-end', right: 25 } }>
-                        <TouchableOpacity onPress={() => navigation.navigate(ForgetPassword)}>
-                            <Text style={globalStyles.forgetPassLinkTxt}>Forgot Password?</Text>
-                        </TouchableOpacity>
-                    </View>
-                    
-                    {/* after react hook form applied its not working */}
-                    {state.errorMessageForSignIn ? (
-                        <View style={globalStyles.inputText}>
-                            <Text style={globalStyles.errorMessage}>{state.errorMessageForSignIn}</Text>
-                        </View>
-                        ) : null
-                    }
-
-                    <TouchableOpacity 
-                        style={globalStyles.Button}
-                        onPress={
-                            handleSubmit(onSignIn)
+                    <View style={
+                        {
+                            flex: 1,
+                            backgroundColor: '#ECF1FA',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            marginTop: '10%'
                         }
-                    >
-                        <Text style={globalStyles.buttonTxt}>Sign In</Text>
-                    </TouchableOpacity>
+                    }>
 
-                    <TouchableOpacity 
-                        style={globalStyles.Button}
-                        onPress={() => navigation.navigate('dashboard')}
-                    >
-                        <Text style={globalStyles.buttonTxt}>Dashboard</Text>
-                    </TouchableOpacity>
-                                    
-                    <View style={ { marginTop: '15%', marginBottom: '5%' } }>
-                        <View style={{ flexDirection: 'row' }}>
-                            <Text>
-                                Doesn't have account?
-                            </Text>
-                            <TouchableOpacity onPress={() => navigation.navigate(Signup)}>
-                                <Text style={{color: "#2A2AC0"}}> Sign up </Text>
-                            </TouchableOpacity>
-                            <Text>
-                                here
-                            </Text>
+
+                        <View style={globalStyles.logoView}>
+                            <Image source={require('../../../assets/docsahab.png')} style={{ height: 150, width: 150 }} />
                         </View>
+
+                        <HeaderView titletxt='Welcome' />
+
+                        <Text style={globalStyles.subHeaderTxt}>Sign in to continue</Text>
+
+                        <View style={globalStyles.inputView} >
+                            <Controller
+                                name="email"
+                                defaultValue=""
+                                control={control}
+                                rules={{ required: 'Email is required' }}
+                                onFocus={() => {
+                                    emailInputRef.current.focus();
+                                }}
+                                render={(props, { onBlur }) => (
+                                    <TextInput
+                                        {...props}
+                                        style={globalStyles.inputText}
+                                        placeholder="Email"
+                                        placeholderTextColor="#003f5c"
+                                        autoCapitalize="none"
+                                        autoCorrect={false}
+                                        onChangeText={(value) => {
+                                            props.onChange(value);
+                                        },
+                                            setEmail
+                                        }
+                                        onBlur={onBlur}
+                                        value={email}
+                                        ref={emailInputRef}
+                                    />
+                                )
+                                }
+                            />
+                        </View>
+                        {errors.email && <Text style={globalStyles.errorText}>Email is required</Text>}
+
+                        <View style={globalStyles.inputView} >
+                            <Controller
+                                name="password"
+                                defaultValue=""
+                                control={control}
+                                rules={{ required: 'Password is required' }}
+                                onFocus={() => {
+                                    passwordInputRef.current.focus();
+                                }}
+                                render={(props, { onBlur }) => (
+                                    <TextInput
+                                        {...props}
+                                        secureTextEntry
+                                        style={globalStyles.inputText}
+                                        placeholder="Password"
+                                        placeholderTextColor="#003f5c"
+                                        autoCapitalize="none"
+                                        autoCorrect={false}
+                                        onChangeText={(value) => {
+                                            props.onChange(value);
+                                        },
+                                            setPassword
+                                        }
+                                        onBlur={onBlur}
+                                        value={password}
+                                        ref={passwordInputRef}
+                                    />
+                                )
+                                }
+                            />
+                        </View>
+                        {errors.password && <Text style={globalStyles.errorText}>Password is required</Text>}
+
+                        <View style={{ alignSelf: 'flex-end', right: 25 }}>
+                            <TouchableOpacity onPress={() => navigation.navigate(ForgetPassword)}>
+                                <Text style={globalStyles.forgetPassLinkTxt}>Forgot Password?</Text>
+                            </TouchableOpacity>
+                        </View>
+
+                        {/* after react hook form applied its not working */}
+                        {state.errorMessageForSignIn ? (
+                            <View style={globalStyles.inputText}>
+                                <Text style={globalStyles.errorMessage}>{state.errorMessageForSignIn}</Text>
+                            </View>
+                        ) : null
+                        }
+
+                        <TouchableOpacity
+                            style={globalStyles.Button}
+                            onPress={
+                                handleSubmit(onSignIn)
+                            }
+                        >
+                            <Text style={globalStyles.buttonTxt}>Sign In</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                            style={globalStyles.Button}
+                            onPress={() => navigation.navigate('dashboard')}
+                        >
+                            <Text style={globalStyles.buttonTxt}>Dashboard</Text>
+                        </TouchableOpacity>
+
+                        <View style={{ marginTop: '15%', marginBottom: '5%' }}>
+                            <View style={{ flexDirection: 'row' }}>
+                                <Text>
+                                    Doesn't have account?
+                            </Text>
+                                <TouchableOpacity onPress={() => navigation.navigate(Signup)}>
+                                    <Text style={{ color: "#2A2AC0" }}> Sign up </Text>
+                                </TouchableOpacity>
+                                <Text>
+                                    here
+                            </Text>
+                            </View>
+                        </View>
+
                     </View>
+                </ScrollView>
 
-                </View>
-            </ScrollView>
+            </TouchableWithoutFeedback>
 
-        </TouchableWithoutFeedback>
+        </View>
 
-    </View>
-    
     );
 };
 

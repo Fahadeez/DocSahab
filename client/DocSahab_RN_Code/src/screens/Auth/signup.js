@@ -19,7 +19,8 @@ const signup = () => {
     const [firstName, setfirstName] = useState('')
     const [lastName, setlastName] = useState('')
     const [contact, setContact] = useState('')
-    const [role, setRole] = useState()
+    const [role, setRole] = useState(false)
+    const [confirmPassword,setConfrimPassword] = useState('')
     // const [role, setRole] = useState('')
     const [city, setSelectedCity] = useState(false);
 
@@ -126,6 +127,16 @@ const signup = () => {
                                     onChangeText={setPassword}
                                     />
                                 </View>
+                                <View style={globalStyles.inputView} >
+                                    <TextInput
+                                    style={globalStyles.inputText}
+                                    placeholder="Confirm password"
+                                    secureTextEntry
+                                    placeholderTextColor="#003f5c"
+                                    value={confirmPassword}
+                                    onChangeText={setConfrimPassword}
+                                    />
+                                </View>
 
                                 {/* <View style={globalStyles.inputView} >
                                     <TextInput
@@ -149,7 +160,7 @@ const signup = () => {
                                 {
                                     role ? <ProceedToDocDetBtn />: <TouchableOpacity
                                     style={globalStyles.Button}
-                                    onPress={() => signUp({ email, password, firstName, lastName, contact, city, role })}
+                                    onPress={() => signUp({ email, password,confirmPassword, firstName, lastName, contact, city, role })}
                                 >
                                     <Text style={globalStyles.buttonTxt}>Sign Up</Text>
                                 </TouchableOpacity>
