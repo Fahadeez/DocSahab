@@ -169,7 +169,7 @@ const login = () => {
 
                     <TouchableOpacity 
                         style={globalStyles.Button}
-                        onPress={() => navigation.navigate('dashboard')}
+                        onPress={() => navigation.navigate('root')}
                     >
                         <Text style={globalStyles.buttonTxt}>Dashboard</Text>
                     </TouchableOpacity>

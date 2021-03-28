@@ -32,6 +32,7 @@ const signIn = (dispatch) => {
     return async ({email, password}) => {
         try{
             const response = await DocSahabApi.post('/auth/login', {email, password})
+
             // to get our token back
             // console.log(response.data.token);
 
@@ -41,7 +42,7 @@ const signIn = (dispatch) => {
             dispatch({ type: 'signIn', payload: response.data.token });
 
             // if user login
-            // navigate('dashboard');
+            navigate('root');
             
         } catch (err) {
             console.log(err.message);

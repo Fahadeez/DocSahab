@@ -17,7 +17,7 @@ import {
 } from '@react-navigation/drawer';
 
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {globalStyles} from '../styles/globalStyles';
+import {globalStyles} from '../../styles/globalStyles';
 
 
 export function DrawerContent(props) {
