@@ -21,7 +21,6 @@ import ForgetPassword from './ForgetPassword';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DocSahabApi from '../../api/DocSahabApi';
-
 import {
     useForm,
     Controller
@@ -47,7 +46,7 @@ const login = () => {
     },navigate)
 
     const navigate = () => {
-        navigation.navigate('dashboard');
+        navigation.navigate('root');
     }
 
     // ref for onfocus
@@ -57,14 +56,21 @@ const login = () => {
     // show error after and before
     // console.log('Errors if any: ', errors);
 
-    useEffect(async () => {
-        // await DocSahabApi.get('auth/logout')
-        // await AsyncStorage.removeItem('token')
-
+    useEffect(() => {
+        //Just for testing logout,
+        async function logout(){
+            await DocSahabApi.get('auth/logout')
+            await AsyncStorage.removeItem('token')
+        }
+      
+        async function checkJwt(){
         const jwt = await AsyncStorage.getItem('token')
         if (jwt) {
-            navigation.navigate('dashboard')
+            navigation.navigate('root')
         }
+     }
+     checkJwt()
+    //  logout()
     },[]);
 
     return (

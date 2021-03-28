@@ -53,10 +53,11 @@ const signIn = (dispatch) => {
 };
 
 const signOut = (dispatch) => {
-    return async () => {
+    return async (navigate) => {
         try {
             const response = await DocSahabApi.get('/auth/logout')
             await AsyncStorage.removeItem('token')
+            navigate()
         } catch (err) {
 
         }

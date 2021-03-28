@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { View, StyleSheet } from 'react-native';
 import {
     useTheme,
@@ -18,11 +18,16 @@ import {
 
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {globalStyles} from '../../styles/globalStyles';
-
+import { Context as AuthContext } from '../../context/AuthContext';
+import { useNavigation } from '@react-navigation/native';
 
 export function DrawerContent(props) {
+    const { state, signOut } = useContext(AuthContext);
+    const navigation = useNavigation();
 
-
+     function navigate(){
+      navigation.navigate('login')
+     }
     return(
         <View style={styles.drawerContent}>
             <DrawerContentScrollView {...props}>
@@ -125,7 +130,7 @@ export function DrawerContent(props) {
                         />
                     )}
                     label="Logout"
-                    onPress={() => {signOut()}}
+                    onPress={() => {signOut(navigate)}}
                 />
             </Drawer.Section>
         </View>
