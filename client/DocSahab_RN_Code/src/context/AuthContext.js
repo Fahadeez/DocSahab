@@ -2,13 +2,15 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import createDataContext from './CreateContextData';
 import DocSahabApi from '../api/DocSahabApi';
 import { navigate } from '../navigationRef';
+import { useNavigation } from '@react-navigation/native';
+import DashboardScreen from '../screens/Dashboard/dashboard';
 
 const authReducer = (state, action) => {
     switch (action.type){
         case 'add_error_for_signIn':
             return { ...state, errorMessageForSignIn: action.payload };
-        case 'add_error_for_signUp':
-            return { ...state, errorMessageForSignUp: action.payload };
+        // case 'add_error_for_signUp':
+        //     return { ...state, errorMessageForSignUp: action.payload };
         case 'signIn':
             return { errorMessageForSignIn: '', token: action.payload };
         default:
@@ -29,6 +31,7 @@ const signUp = (dispatch) => {
 };
 
 const signIn = (dispatch) => {
+    // const navigation = useNavigation();
     return async ({email, password}) => {
         try{
             const response = await DocSahabApi.post('/auth/login', {email, password})
@@ -36,12 +39,22 @@ const signIn = (dispatch) => {
             // console.log(response.data.token);
 
             await AsyncStorage.setItem('token', response.data.token);
-            // await AsyncStorage.getItem('token');
+            // let token_value = await AsyncStorage.getItem('token');
 
             dispatch({ type: 'signIn', payload: response.data.token });
 
             // if user login
-            // navigate('dashboard');
+            navigate("dashboard");
+            // if ( token_value != null){
+            //     // navigate('dashboard');
+            //     const navigation = useNavigation();
+            //     navigation.navigate(DashboardScreen);
+            // }
+            // else{
+            //     console.log('no token');
+            // }
+
+            
             
         } catch (err) {
             console.log(err.message);
