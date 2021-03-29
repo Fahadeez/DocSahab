@@ -19,14 +19,18 @@ const DashboardScreen = ({navigation}) => {
 			  />
 	  </View>
 
+	  <ScrollView style = {{marginTop: '6%'}}>
+
 		<View style ={styles.parentBox}>
 
 			<View style = {styles.miniParent}>
 
 				<TouchableOpacity style = {styles.childBox}>
+				<Image source={require('../../../assets/appointment.png')} style = {styles.childBox} />
 				</TouchableOpacity>
 
 				<TouchableOpacity style = {styles.childBox}>
+				<Image source={require('../../../assets/records.png')} style = {styles.childBox} />
 				</TouchableOpacity>
 
 			</View>
@@ -34,13 +38,16 @@ const DashboardScreen = ({navigation}) => {
 
 			<View style = {styles.miniParent}>
 				<TouchableOpacity style = {styles.childBox}>
+				<Image source={require('../../../assets/settings.png')} style = {styles.childBox} />
 				</TouchableOpacity>
 
 				<TouchableOpacity style = {styles.childBox}>
+				<Image source={require('../../../assets/forum.png')} style = {styles.childBox} />
 				</TouchableOpacity>
 
 			</View>
         </View>
+        </ScrollView>
     
     </View>
 	)
@@ -61,8 +68,8 @@ flexGrow: 1
 
 childBox: {
  backgroundColor: 'white',
- width: '40%',
- height: '95%',
+ width: 150,
+ height: 200,
  marginTop: '5%',
  borderRadius: 20
 },
