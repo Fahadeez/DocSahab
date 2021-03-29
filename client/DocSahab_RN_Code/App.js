@@ -13,6 +13,7 @@ import { setNavigator } from './src/navigationRef';
 import { DrawerContent } from './src/screens/Drawer/DrawerContent'
 import resetPassword from './src/screens/Auth/ResetPassword';
 import { Linking } from 'react-native';
+
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 
@@ -26,7 +27,6 @@ const linking = {
   prefixes: ['docsahab://'],
   config,
 };
-
 
 function Root() {
   return (
@@ -42,8 +42,9 @@ function Root() {
 
 function Auth() {
   return (
-    <NavigationContainer linking={linking}>
-      <Stack.Navigator drawerContent={props => <DrawerContent{...props} />}>
+    <NavigationContainer>
+      {/* drawerContent = {props => <DrawerContent{...props}/> */}
+      <Stack.Navigator>
         <Stack.Screen options={{
           headerShown: null
         }}
@@ -58,8 +59,8 @@ function Auth() {
 
         <Stack.Screen options={{
           headerShown: null
-        }}
-          name="doctordetails" component={doctordetails}
+        }} 
+        name="doctordetails" component={doctordetails}
         />
 
         <Stack.Screen options={{
@@ -77,8 +78,8 @@ function Auth() {
           headerShown: null
         }}
           name="root" component={Root}
-        />
-
+          />          
+          
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -1,15 +1,13 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import createDataContext from './CreateContextData';
 import DocSahabApi from '../api/DocSahabApi';
-import { useNavigation } from '@react-navigation/native';
-
 
 const authReducer = (state, action) => {
     switch (action.type) {
         case 'add_error_for_signIn':
             return { ...state, errorMessageForSignIn: action.payload };
-        // case 'add_error_for_signUp':
-        //     return { ...state, errorMessageForSignUp: action.payload };
+        case 'add_error_for_signUp':
+            return { ...state, errorMessageForSignUp: action.payload };
         case 'signIn':
             return { errorMessageForSignIn: '', token: action.payload };
         default:
@@ -18,15 +16,49 @@ const authReducer = (state, action) => {
 };
 
 const signUp = (dispatch) => {
-    return async ({ email, password, firstName, lastName, contact, city, role }) => {
+    return async ({ email, password, firstName, lastName, contact, city, role }, navigate) => {
         try {
-            console.log("signup data", { email, password, firstName, lastName, contact, city, role })
+            // console.log("signup data", { email, password, firstName, lastName, contact, city, role })
             const response = await DocSahabApi.post('/auth/signup', { email, firstName, lastName, contact, city, role, password })
             console.log(response.data);
+            if(response.data == "User's data added"){
+                dispatch({ type: 'add_error_for_signUp', payload: 'Registration Successfull!' })
+            }
+            else if (response.data == 'Email already exists') {
+                dispatch({ type: 'add_error_for_signUp', payload: 'Email Already Exists!' })
+            }
+            else if (response.data == "Doctor's data added") {
+                navigate()
+            }
+            else {
+                console.log('Error')
+            }
         } catch (err) {
             console.log(err.message);
-            dispatch({ type: 'add_error_for_signUp', payload: 'Please fill all the credentials!' })
+            dispatch({ type: 'add_error_for_signUp', payload: 'Email Already Exists!' })
         }
+    };
+};
+
+const signUpAsDoctor = (dispatch) => {
+    return async ({ specialization, qualification, days, timeSlots, yearsOfExp, email, reg_no }) => {
+        try {
+            const response = await DocSahabApi.post('/auth/signup-as-doctor', { specialization, qualification, days, timeSlots, yearsOfExp, email, reg_no })
+            console.log(response.data);
+            if(response.data == "Doctor's details saved"){
+                dispatch({ type: 'add_error_for_signUp', payload: 'Registration Successfull!' })
+            }
+            else if (response.data == "Unable to store doctor's details") {
+                dispatch({ type: 'add_error_for_signUp', payload: 'Email Already Exists!' })
+            }
+            else {
+                console.log('Error')
+            }
+        } catch (err) {
+            console.log(err.message);
+            dispatch({ type: 'add_error_for_signUp', payload: 'Email Already Exists!' })
+        }
+
     };
 };
 
@@ -67,7 +99,7 @@ const signOut = (dispatch) => {
 // action functions
 export const { Provider, Context } = createDataContext(
     authReducer,
-    { signUp, signIn, signOut },
+    { signUp, signUpAsDoctor, signIn, signOut },
     // { isSignedIn: false, errorMessage: ''}
-    { token: null, errorMessageForSignIn: '' }
+    { token: null, errorMessageForSignIn: '', errorMessageForSignUp: '' }
 );

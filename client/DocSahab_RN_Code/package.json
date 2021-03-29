@@ -29,6 +29,7 @@
     "react-hook-form": "^6.15.5",
     "react-native": "^0.63.4",
     "react-native-bouncy-checkbox": "^1.0.8",
+    "react-native-elements": "^3.3.2",
     "react-native-gesture-handler": "^1.10.3",
     "react-native-multi-selectbox": "^1.4.8",
     "react-native-multiple-select": "^0.5.6",

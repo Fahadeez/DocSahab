@@ -52,11 +52,15 @@ const signup = () => {
     // const [signupValues, setSignupValues] = useState({});
 
     // remaining states
-    // const [email, setEmail] = useState('')
-    // const [password, setPassword] = useState('')
-    // const [firstName, setfirstName] = useState('')
-    // const [lastName, setlastName] = useState('')
-    // const [contact, setContact] = useState('')
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    const [firstName, setfirstName] = useState('')
+    const [lastName, setlastName] = useState('')
+    const [contact, setContact] = useState('')
+
+    const onSignUp = () => signUp({
+        email, password, firstName, lastName, contact, role, city
+    })
 
     
     return (
@@ -119,6 +123,7 @@ const signup = () => {
                                             onChangeText={props.handleChange('firstName')}
                                             // onChangeText={setfirstName}
                                             value={props.values.firstName}
+                                            value={firstName}
                                             onBlur={props.handleBlur('firstName')}
                                             />
                                     </View>

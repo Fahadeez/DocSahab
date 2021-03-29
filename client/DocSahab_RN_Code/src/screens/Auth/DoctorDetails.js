@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
 import { Text, View, TextInput, TouchableOpacity, ScrollView, 
     TouchableWithoutFeedback, Keyboard } from 'react-native';
 import SignUp from '../Auth/signup';
@@ -9,13 +9,17 @@ import { Formik, } from 'formik';
 import * as yup from 'yup';
 import RNPickerSelect from "react-native-picker-select";
 import RNMultiSelect from "@freakycoder/react-native-multiple-select";
-
+import { Context as AuthContext } from '../../context/AuthContext';
 
 // Sign Up validation schema
 const DocDetValSchema = yup.object({
+    email: yup.string()
+        .required('Email is required')
+        .email("Please enter valid email")
+        .max(40),
     reg_No: yup.string()
         .required('Registration is required')
-        .min(8),
+        .min(7),
     exp: yup.number()
         .required('Experience is required')
         .min(1),
@@ -25,6 +29,8 @@ const DocDetValSchema = yup.object({
         .required('Specialization is required'),
     timeSlot: yup.array()
         .required('Available Time is required'),
+    day: yup.array()
+        .required('Day is required'),
 })
 
 // Data for the MutiSelect Time Slot
@@ -59,10 +65,52 @@ var Time = [
         isChecked: false, },
   ];
 
+var Day = [
+    {   
+        id: 0,
+        value: "Monday",
+        isChecked: false
+    },
+    {   
+        id: 0,
+        value: "Tuesday",
+        isChecked: false
+    },
+    {   
+        id: 0,
+        value: "Wednesday",
+        isChecked: false
+    },
+    {   
+        id: 0,
+        value: "Thursday",
+        isChecked: false
+    },
+    {   
+        id: 0,
+        value: "Friday",
+        isChecked: false
+    },
+    {   
+        id: 0,
+        value: "Saturday",
+        isChecked: false
+    },
+    {   
+        id: 0,
+        value: "Sunday",
+        isChecked: false
+    }
+];
+
 const doctordetails = () => {
+
+    const { state, signUpAsDoctor } = useContext(AuthContext);
+
     const [qualification, setQualification] = useState();
     const [specialization, setSpecialization] = useState();
     const [timeSlot, setTimeSlot] = useState([]);
+    const [day, setDay] = useState([]);
 
     return (
         <View style={globalStyles.containerColor}>
@@ -75,15 +123,18 @@ const doctordetails = () => {
 
                 <Formik
                     enableReinitialize
-                    initialValues={{ 
+                    initialValues={{
+                                    email: '', 
                                     reg_No: '', 
                                     exp: '', 
                                     qualification:'', 
                                     specialization: '', 
                                     timeSlot: '',
+                                    day: ''
                                 }}
                     validationSchema={DocDetValSchema}
                     onSubmit={(values, actions) => {
+                        signUpAsDoctor(values);
                         actions.resetForm();
                         console.log(values);
                     }}
@@ -100,6 +151,18 @@ const doctordetails = () => {
 
                                 <View style={{marginTop: 50}}>
                                     <View style={globalStyles.container}>
+
+                                    <View style={globalStyles.modifiedinputView} >
+                                        <TextInput
+                                        style={globalStyles.inputText}
+                                        placeholder="Email"
+                                        placeholderTextColor="#003f5c"
+                                        onChangeText={props.handleChange('email')}
+                                        value={props.values.email}
+                                        onBlur={props.handleBlur('email')}
+                                        />
+                                    </View>
+                                    <Text style={globalStyles.errorText}>{props.touched.email && props.errors.email}</Text>
                                         
 
 
@@ -207,9 +270,7 @@ const doctordetails = () => {
                                     </View>
                                     <Text style={globalStyles.errorText}>{props.touched.specialization && props.errors.specialization}</Text>
 
-                                    {/* Time Slot multiple selects start */}                                    
-
-                                    {/* Time Slot Mutliple Select */}
+                                    {/* Time Slot multiple selects start */}
                                     <View style={globalStyles.inputLabel}>
                                         <Text style={globalStyles.inputLabelText}>
                                             Select Your Available Time Slots
@@ -228,14 +289,35 @@ const doctordetails = () => {
                                                 props.values.timeSlot = timeSlot
                                             }} 
                                             // onDoneButtonPress={}
-                                            />
-                                                                                    
+                                            />                                       
                                     </View>
-                                    
-                                    {/* validation not working */}
                                     <Text style={globalStyles.errorText}>{props.touched.timeSlot && props.errors.timeSlot}</Text>
-
                                     {/* Time Slot multiple selects ends */}
+
+
+                                    {/* Day multiple selects start */}
+                                    <View style={globalStyles.inputLabel}>
+                                        <Text style={globalStyles.inputLabelText}>
+                                            Select Your Available Days
+                                        </Text>
+                                    </View>
+
+                                    <View style={globalStyles.MultiSelect}>
+                                        
+                                        <RNMultiSelect
+                                            // disableAbsolute
+                                            data={Day}
+                                            placeholder={"Monday"}
+                                            menuBarContainerHeight = {370}
+                                            onSelect={(day) => {
+                                                setDay(day)
+                                                props.values.day = day
+                                            }} 
+                                            // onDoneButtonPress={}
+                                            />                                       
+                                    </View>
+                                    <Text style={globalStyles.errorText}>{props.touched.day && props.errors.day}</Text>
+                                    {/* Day multiple selects ends */}
 
                                     <TouchableOpacity 
                                         style={globalStyles.Button}

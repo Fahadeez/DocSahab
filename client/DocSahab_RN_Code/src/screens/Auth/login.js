@@ -1,7 +1,6 @@
 import React, {
     useState,
     useContext,
-    forwardRef,
     useEffect
 } from 'react';
 import {
@@ -27,7 +26,6 @@ import {
     Controller
 } from 'react-hook-form';
 import { Context as AuthContext } from '../../context/AuthContext';
-import axios from 'axios';
 
 const login = () => {
     const { state, signIn } = useContext(AuthContext);
@@ -176,7 +174,6 @@ const login = () => {
                             </TouchableOpacity>
                         </View>
 
-                        {/* after react hook form applied its not working */}
                         {state.errorMessageForSignIn ? (
                             <View style={globalStyles.inputText}>
                                 <Text style={globalStyles.errorMessage}>{state.errorMessageForSignIn}</Text>
@@ -191,13 +188,6 @@ const login = () => {
                             }
                         >
                             <Text style={globalStyles.buttonTxt}>Sign In</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity
-                            style={globalStyles.Button}
-                            onPress={() => navigation.navigate('dashboard')}
-                        >
-                            <Text style={globalStyles.buttonTxt}>Dashboard</Text>
                         </TouchableOpacity>
 
                         <View style={{ marginTop: '15%', marginBottom: '5%' }}>
