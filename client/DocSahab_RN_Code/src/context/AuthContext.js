@@ -3,7 +3,6 @@ import createDataContext from './CreateContextData';
 import DocSahabApi from '../api/DocSahabApi';
 import { useNavigation } from '@react-navigation/native';
 
-
 const authReducer = (state, action) => {
     switch (action.type) {
         case 'add_error_for_signIn':
