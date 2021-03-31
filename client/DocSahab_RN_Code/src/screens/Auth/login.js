@@ -72,7 +72,7 @@ const login = () => {
             }
         }
         checkJwt()
-        navigate() // For testing doctors details page
+        // navigate() // For testing doctors details page
         //  logout()
     }, []);
 

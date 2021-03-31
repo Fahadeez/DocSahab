@@ -11,6 +11,8 @@ const authReducer = (state, action) => {
             return { ...state, errorMessageForSignUp: action.payload };
         case 'signIn':
             return { errorMessageForSignIn: '', token: action.payload };
+        case 'add_error_for_forgetpassword':
+            return { ...state, errorMessageForgetPassword: action.payload };
         default:
             return state;
     }
@@ -97,10 +99,42 @@ const signOut = (dispatch) => {
     };
 };
 
+const forgetPassword = (dispatch) => {
+    return async ({ email }) => {
+        try {
+            const response = await DocSahabApi.post('/auth/forgot-password', { email })
+            if (response.data == "Cannot find this email") {
+                dispatch({ type: 'add_error_for_forgetpassword', payload: 'Cannot find this email!' })
+            }
+            else {
+                console.log('error')
+            }
+        } catch (err) {
+            console.log(err.message);
+        }
+    };
+};
+
+const resetPassword = (dispatch) => {
+    return async ({ email }) => {
+        try {
+            const response = await DocSahabApi.post('/auth/', { email })
+            if (response.data == "Cannot find this email") {
+                dispatch({ type: 'add_error_for_resetPassword', payload: 'Cannot find this email!' })
+            }
+            else {
+                console.log('error')
+            }
+        } catch (err) {
+            console.log(err.message);
+        }
+    };
+};
+
 // action functions
 export const { Provider, Context } = createDataContext(
     authReducer,
-    { signUp, signUpAsDoctor, signIn, signOut },
+    { signUp, signUpAsDoctor, signIn, signOut, forgetPassword, resetPassword },
     // { isSignedIn: false, errorMessage: ''}
-    { token: null, errorMessageForSignIn: '', errorMessageForSignUp: '' }
+    { token: null, errorMessageForSignIn: '', errorMessageForSignUp: '', errorMessageForgetPassword: '' }
 );

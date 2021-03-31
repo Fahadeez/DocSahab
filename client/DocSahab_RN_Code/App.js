@@ -14,12 +14,14 @@ import { DrawerContent } from './src/screens/Drawer/DrawerContent'
 import resetPassword from './src/screens/Auth/ResetPassword';
 import { Linking } from 'react-native';
 
+
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 
 const config = {
   screens: {
     resetPassword: 'resetpassword',
+    // resetPassword: 'resetPassword',
   },
 };
 
@@ -42,7 +44,7 @@ function Root() {
 
 function Auth() {
   return (
-    <NavigationContainer>
+    <NavigationContainer linking={linking}>
       {/* drawerContent = {props => <DrawerContent{...props}/> */}
       <Stack.Navigator>
         <Stack.Screen options={{
@@ -89,7 +91,6 @@ function Auth() {
 const CustomApp = Auth;
 
 export default class App extends Component {
-
   componentDidMount = () => {
     Linking.getInitialURL().then((url) => {
       if (url) {

@@ -7,6 +7,8 @@ const admin = require('firebase-admin');
 const jwt = require('jsonwebtoken');
 const keys = require('../Config/keys');
 const puppeteer = require('puppeteer');
+const bcrypt = require('bcrypt');
+const BCRYPT_SALT_ROUNDS = 10;
 
 const { Storage } = require('@google-cloud/storage');
 
@@ -19,7 +21,7 @@ const Doctor = mongoose.model('doctors');
 module.exports = app => {
 
 	// for doc pms code verification api
-	async function PMCRegCodeScrapping(reg_no) {
+	async function PMCRegCodeScrapping(reg_no, res) {
 		try {
 			let site = 'https://www.pmc.gov.pk/Doctors/Details?regNo=' + reg_no;
 
@@ -182,36 +184,11 @@ module.exports = app => {
 	});
 
 
-	// app.get('/api/user', async (req, res) => {
-	// 	if (req.user) {
-	// 		const user = await User.findById({ _id: req.user._id });
-	// 		res.send(user);
-	// 	}
-	// });
-	// app.get('/auth/redirect', (req, res) => {
-	// 	//console.log(req.user.dataValues);
-	// 	res.send('ok').status(200);
-
-	// });
-
-
-	// app.post('/auth/role', async (req, res) => {
-	// 	if (req.body && req.user) {
-	// 		const user = await User.findByIdAndUpdate({ _id: req.user._id },
-	// 			{ role: req.body.role });
-	// 		user.save();
-	// 		res.send('record updated').status(200);
-	// 	}
-
-	// 	console.log("User not logged in")
-
-	// });
-
 	app.post('/auth/signup-as-doctor', async (req, res) => {
 		console.log("req.body /auth/signup-as-doctor", req.body)
 		let { specialization, qualification, days, timeSlots, yearsOfExp, email, reg_no } = req.body;
 		if (req.body) {
-			const resp = await PMCRegCodeScrapping(reg_no)
+			const resp = await PMCRegCodeScrapping(reg_no, res)
 			if (resp) {
 				Doctor.findOne(
 					{
@@ -241,61 +218,104 @@ module.exports = app => {
 			}
 		}
 	});
+	
+	app.post('/auth/verify-email', function (req, res, next) {
+		const { email, role } = req.body;
+		var num = Math.floor(Math.random() * 90000) + 10000;
+		if (role === 'doctor') {
+			Doctor.findOne(
+				{
+					email: email,
+				}).then(doctor => {
+					if (doctor) {
+						return res.send('Email already exists').status(500);
+					}
+					else {
+						const transporter = nodemailer.createTransport({
+							service: 'gmail',
+							port: 587,
+							secure: false,
+							requireTLS: true,
+							auth: {
+								user: 'no.repy.docSahab@gmail.com',
+								pass: keys.gmailPass,
+							},
+						});
 
+						const mailOptions = {
+							from: 'no.repy.docSahab@gmail.com',
+							to: `${email}`,
+							subject: 'Email verification code from Doc Sahab',
+							html:
+								`<div><p>You have requested to use this email address to access your Doc Sahab account <br>
+							  Please enter following code to verify your account</p> <br> <b>Code: ${num} </b></div>`
+						};
+						console.log('sending mail');
+						try {
+							transporter.sendMail(mailOptions, (err, response) => {
+								if (err) {
+									console.log(err)
+									return res.send('There was an error!').status(400);
+								} else {
+									return res.json({ code: num }).status(200);
+								}
+							});
+						} catch (err) {
+							console.log(err);
+						}
+					}
+				}).catch(err => {
+					return res.send('Server error, Please try again').status(500);
+				})
+		}
+		if (role === 'user') {
+			User.findOne(
+				{
+					email: email,
+				}).then(user => {
+					if (user) {
+						return res.send('Email already exists').status(500);
+					}
+					else {
+						const transporter = nodemailer.createTransport({
+							service: 'gmail',
+							port: 587,
+							secure: false,
+							requireTLS: true,
+							auth: {
+								user: 'no.repy.docSahab@gmail.com',
+								pass: keys.gmailPass,
+							},
+						});
 
-	// app.post('/auth/checkEmail', function (req, res, next) {
-	// 	var num = Math.floor(Math.random() * 90000) + 10000;
+						const mailOptions = {
+							from: 'no.repy.docSahab@gmail.com',
+							to: `${email}`,
+							subject: 'Email verification code from Doc Sahab',
+							html:
+								`<div><p>You have requested to use this email address to access your Doc Sahab account <br>
+							  Please enter following code to verify your account</p> <br> <b>Code: ${num} </b></div>`
+						};
+						console.log('sending mail');
+						try {
+							transporter.sendMail(mailOptions, (err, response) => {
+								if (err) {
+									console.log(err)
+									return res.send('There was an error!').status(400);
+								} else {
+									return res.json({ code: num }).status(200);
+								}
+							});
+						} catch (err) {
+							console.log(err);
+						}
+					}
+				}).catch(err => {
+					return res.send('Server error, Please try again').status(500);
+				})
+		}
 
-	// 	User.findOne(
-	// 		{
-	// 			email: req.body.email,
-	// 		},
-
-	// 		function (err, user) {
-	// 			if (err) {
-	// 				return res.send('error occured').status(500);
-	// 			} else {
-	// 				if (user) {
-	// 					return res.send('Email already exists').status(500);
-	// 				} else {
-	// 					const transporter = nodemailer.createTransport({
-	// 						service: 'gmail',
-	// 						port: 587,
-	// 						secure: false,
-	// 						requireTLS: true,
-	// 						auth: {
-	// 							user: 'no.reply.teachinn@gmail.com',
-	// 							pass: keys.gmailPass,
-	// 						},
-	// 					});
-
-	// 					const mailOptions = {
-	// 						from: 'no.reply.teachinn@gmail.com',
-	// 						to: `${req.body.email}`,
-	// 						subject: 'Email verification code from TeachInn',
-	// 						html:
-	// 							`<div><p>You requested to use this email address to access your TeachInn account <br>
-	// 						  Please enter following code to verify your account</p> <br> <b>Code: ${num} </b></div>`
-	// 					};
-	// 					console.log('sending mail');
-	// 					try {
-
-	// 						transporter.sendMail(mailOptions, (err, response) => {
-	// 							if (err) {
-	// 								console.log(err)
-	// 								return res.send('There was an error!').status(400);
-	// 							} else {
-	// 								return res.json({ code: num }).status(200);
-	// 							}
-	// 						});
-	// 					} catch (err) {
-	// 						console.log(err);
-	// 					}
-	// 				}
-	// 			}
-	// 		}
-	// 	);
-	// });
+	});
 
 	app.post('/auth/forgot-password', (req, res) => {
 		console.log('/auth/forgotPass req.body: ', req.body);
@@ -348,14 +368,69 @@ module.exports = app => {
 			if (!user) {
 				return res.send('password reset link is invalid or has expired').status(403);
 			} else {
-				// res.send({
-				//   message: 'password reset link a-ok',
-				// }).status(200);
-
+			
 				return res.redirect('docsahab://resetpassword');
 			}
 		});
 	});
+
+	app.post('/auth/updatePassword', (req, res) => {
+		const { Email, Password } = req.body;
+		User.findOne({
+			email: req.body.Email,
+			//resetPasswordExpires: Date.now(),
+		}).then(user => {
+			if (!user) {
+				console.log('user not found');
+				Doctor.findOne({
+					email: Email
+				}).then(doctor => {
+					if (!doctor) {
+						console.log('doctor not found');
+						return res.send('password reset link is invalid or has expired, Try again').status(403);
+					}
+					else {
+						console.log('doctor found in db');
+						bcrypt
+							.hash(Password, BCRYPT_SALT_ROUNDS)
+							.then(hashedPassword => {
+								Doctor.findByIdAndUpdate(
+									{ _id: doctor._id },
+									{
+										password: hashedPassword,
+									}
+								).then(doctor => {
+									doctor.save();
+								});
+							})
+
+							.then(() => {
+								return res.send('ok').status(200);
+							});
+					}
+				})
+			} else {
+				console.log('user found in db');
+				bcrypt
+					.hash(Password, BCRYPT_SALT_ROUNDS)
+					.then(hashedPassword => {
+						User.findByIdAndUpdate(
+							{ _id: user._id },
+							{
+								password: hashedPassword,
+							}
+						).then(user => {
+							user.save();
+						});
+					})
+
+					.then(() => {
+						res.send('ok').status(200);
+					});
+			}
+		});
+	});
+
 
 
 };
