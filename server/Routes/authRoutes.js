@@ -19,7 +19,7 @@ const Doctor = mongoose.model('doctors');
 module.exports = app => {
 
 	// for doc pms code verification api
-	async function PMCRegCodeScrapping(reg_no) {
+	async function PMCRegCodeScrapping(reg_no, res) {
 		try {
 			let site = 'https://www.pmc.gov.pk/Doctors/Details?regNo=' + reg_no;
 
@@ -211,7 +211,7 @@ module.exports = app => {
 		console.log("req.body /auth/signup-as-doctor", req.body)
 		let { specialization, qualification, days, timeSlots, yearsOfExp, email, reg_no } = req.body;
 		if (req.body) {
-			const resp = await PMCRegCodeScrapping(reg_no)
+			const resp = await PMCRegCodeScrapping(reg_no, res)
 			if (resp) {
 				Doctor.findOne(
 					{
@@ -354,6 +354,7 @@ module.exports = app => {
 				// }).status(200);
 
 				return res.redirect('docsahab://resetpassword');
+				// return res.redirect('docsahab://resetPassword');
 			}
 		});
 	});

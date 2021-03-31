@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Text, View, TextInput, TouchableOpacity, 
     TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { globalStyles } from '../../styles/globalStyles';
@@ -7,6 +7,9 @@ import Signin from './login';
 import HeaderView from '../../../src/components/headerView';
 import { Formik } from 'formik';
 import * as yup from 'yup';
+import { Context as AuthContext } from '../../context/AuthContext';
+// import resetPassword from '../Auth/ResetPassword';
+import { useNavigation } from '@react-navigation/native';
 
 // Forget Password validation schema
 const ForgetPassSchema = yup.object({
@@ -17,6 +20,9 @@ const ForgetPassSchema = yup.object({
 })
 
 const forgetpassword = () => {
+    const { state, forgetPassword } = useContext(AuthContext);
+    const navigation = useNavigation();
+
     return (
         <View style={globalStyles.containerColor}>
 
@@ -26,6 +32,7 @@ const forgetpassword = () => {
                             }}
                 validationSchema={ForgetPassSchema}
                 onSubmit={(values, actions) => {
+                    forgetPassword(values);
                     actions.resetForm();
                     console.log(values);
                 }}
@@ -50,7 +57,7 @@ const forgetpassword = () => {
                                             </Text>
                                         </View>
 
-                                        <View style={globalStyles.inputView}>
+                                        <View style={globalStyles.inputViewForForgetPassword}>
                                             <TextInput  
                                                 style={globalStyles.inputText}
                                                 placeholder="nabeelsiddiqui86@gmail.com"
@@ -62,11 +69,26 @@ const forgetpassword = () => {
                                         </View>
                                         <Text style={globalStyles.errorText}>{props.touched.email && props.errors.email}</Text>
 
+                                        {state.errorMessageForgetPassword ? (
+                                            <View style={globalStyles.inputText}>
+                                                <Text style={globalStyles.errorMessage}>{state.errorMessageForgetPassword}</Text>
+                                            </View>
+                                        ) : null
+                                        }
+
                                         <TouchableOpacity 
-                                            style={globalStyles.Button}
+                                            style={globalStyles.modifiedBtn}
                                             onPress={props.handleSubmit} >
                                             <Text style={globalStyles.buttonTxt}>Reset</Text>
                                         </TouchableOpacity>
+
+                                        {/* for testing the reset password screen */}
+
+                                        {/* <TouchableOpacity 
+                                            style={globalStyles.Button}
+                                            onPress={() => navigation.navigate(resetPassword)} >
+                                            <Text style={globalStyles.buttonTxt}>Reset Screen</Text>
+                                        </TouchableOpacity> */}
 
                                     </View>
                                 </View>

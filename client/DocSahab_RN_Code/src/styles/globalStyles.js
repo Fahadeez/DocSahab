@@ -30,16 +30,34 @@ export const globalStyles = StyleSheet.create({
         marginTop:40,
         marginBottom:10,
     },
+    modifiedBtn: {
+        width:"90%",
+        color: 'white',
+        backgroundColor: '#2A2AC0',
+        borderRadius:25,
+        height:50,
+        alignItems:"center",
+        justifyContent:"center",
+    },
     buttonTxt: {
         color: 'white',
         fontSize: 18,
     },
-    inputView:{
+    inputView: {
         width:"90%",
         backgroundColor:"white",
         borderRadius:10,
         height:50,
         marginBottom:20,
+        justifyContent:"center",
+        padding:20
+    },
+    inputViewForForgetPassword: {
+        width:"90%",
+        backgroundColor:"white",
+        borderRadius:10,
+        height:50,
+        marginBottom:5,
         justifyContent:"center",
         padding:20
     },
@@ -52,7 +70,7 @@ export const globalStyles = StyleSheet.create({
         justifyContent:"center",
         padding:20
     },
-    inputText:{
+    inputText: {
         height:50,
     },
     inputTitleTxt: {

@@ -82,10 +82,11 @@ const forgotPassEmail = (role, email) => {
         from: 'no.repy.docSahab@gmail.com',
         to: `${email}`,
         subject: 'Link To Reset Password',
+        // change ip address
         text:
             'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
             'Please click on the following link, or paste this into your browser to complete the process within one hour of receiving it:\n\n' +
-            `http://192.168.10.10:5000/auth/reset/${token}\n\n` +
+            `http://192.168.0.104:5000/auth/reset/${token}\n\n` +
             'If you did not request this, please ignore this email and your password will remain unchanged.\n',
     };
 
