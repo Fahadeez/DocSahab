@@ -23,13 +23,15 @@ module.exports = app => {
 	// for doc pms code verification api
 	async function PMCRegCodeScrapping(reg_no, res) {
 		try {
-			let site = 'https://www.pmc.gov.pk/Doctors/Details?regNo=' + reg_no;
+			let site = 'https://www.pmc.gov.pk/Doctors/Details?regNo='+reg_no;
 
 			let browser = await puppeteer.launch();
 			let page = await browser.newPage();
 
-			await page.goto(site, { waitUntil: 'networkidle2' });
+			await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/90.0.4427.0 Safari/537.36');
 
+			await page.goto(site, { waitUntil: 'networkidle2' });
+			// await page.waitForSelector('#reg_no');
 			let data = await page.evaluate(() => {
 				let reg_No = document.querySelector('div[class="fontLight"] > #reg_no').innerText;
 				let full_name = document.querySelector('div[class="fontLight"] > #full_name').innerText;
