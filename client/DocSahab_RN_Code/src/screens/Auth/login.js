@@ -61,7 +61,10 @@ const login = () => {
             await DocSahabApi.get('auth/logout')
             await AsyncStorage.removeItem('token')
         }
-
+        function navigate(){
+            navigation.navigate('doctordetails')
+        }
+       
         async function checkJwt() {
             const jwt = await AsyncStorage.getItem('token')
             if (jwt) {
@@ -69,6 +72,7 @@ const login = () => {
             }
         }
         checkJwt()
+        navigate() // For testing doctors details page
         //  logout()
     }, []);
 

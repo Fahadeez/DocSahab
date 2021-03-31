@@ -10,6 +10,7 @@ import * as yup from 'yup';
 import RNPickerSelect from "react-native-picker-select";
 import RNMultiSelect from "@freakycoder/react-native-multiple-select";
 import { Context as AuthContext } from '../../context/AuthContext';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 // Sign Up validation schema
 const DocDetValSchema = yup.object({

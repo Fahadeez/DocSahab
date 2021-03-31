@@ -346,7 +346,6 @@ module.exports = app => {
 			},
 		}).then(user => {
 			if (!user) {
-				console.log('password reset link is invalid or has expired');
 				return res.send('password reset link is invalid or has expired').status(403);
 			} else {
 				// res.send({
