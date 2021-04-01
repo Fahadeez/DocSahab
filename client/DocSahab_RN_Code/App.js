@@ -9,10 +9,10 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import { NavigationContainer } from '@react-navigation/native';
 import DashboardScreen from './src/screens/Dashboard/dashboard';
 import { Provider as AuthProvider } from './src/context/AuthContext';
-import { setNavigator } from './src/navigationRef';
 import { DrawerContent } from './src/screens/Drawer/DrawerContent'
 import resetPassword from './src/screens/Auth/ResetPassword';
 import { Linking } from 'react-native';
+import { navigationRef } from './src/RootNavigation';
 
 
 const Stack = createStackNavigator();
@@ -44,7 +44,7 @@ function Root() {
 
 function Auth() {
   return (
-    <NavigationContainer linking={linking}>
+    <NavigationContainer linking={linking} ref={navigationRef}>
       {/* drawerContent = {props => <DrawerContent{...props}/> */}
       <Stack.Navigator>
         <Stack.Screen options={{

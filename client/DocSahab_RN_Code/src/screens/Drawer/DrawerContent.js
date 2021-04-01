@@ -19,14 +19,12 @@ import {
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {globalStyles} from '../../styles/globalStyles';
 import { Context as AuthContext } from '../../context/AuthContext';
-import { useNavigation } from '@react-navigation/native';
 
 export function DrawerContent(props) {
     const { state, signOut } = useContext(AuthContext);
-    const navigation = useNavigation();
 
      function navigate(){
-      navigation.navigate('login')
+      props.navigation.navigate('login')
      }
     return(
         <View style={styles.drawerContent}>

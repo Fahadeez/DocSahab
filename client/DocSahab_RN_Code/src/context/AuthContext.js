@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import createDataContext from './CreateContextData';
 import DocSahabApi from '../api/DocSahabApi';
 import { useNavigation } from '@react-navigation/native';
+import * as RootNavigation from '../RootNavigation.js';
 
 const authReducer = (state, action) => {
     switch (action.type) {
@@ -78,7 +79,8 @@ const signIn = (dispatch) => {
 
             dispatch({ type: 'signIn', payload: response.data.token });
             // if user login
-            navigate()
+            RootNavigation.navigate('root')
+          });
 
         } catch (err) {
             console.log(err.message);
