@@ -28,8 +28,11 @@ module.exports = app => {
 			let browser = await puppeteer.launch();
 			let page = await browser.newPage();
 
-			await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/90.0.4427.0 Safari/537.36');
+			// it has to be Chrome! not HeadlessChrome
 
+			await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4427.0 Safari/537.36');
+			// await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/90.0.4427.0 Safari/537.36');
+			
 			await page.goto(site, { waitUntil: 'networkidle2' });
 			// await page.waitForSelector('#reg_no');
 			let data = await page.evaluate(() => {
