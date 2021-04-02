@@ -12,8 +12,8 @@ const authReducer = (state, action) => {
             return { ...state, errorMessageForSignUp: action.payload };
         case 'signIn':
             return { errorMessageForSignIn: '', token: action.payload };
-        case 'add_error_for_forgetpassword':
-            return { ...state, errorMessageForgetPassword: action.payload };
+        case 'add_error_for_updatepassword':
+            return { ...state, errorMessageUpdatePassword: action.payload };
         default:
             return state;
     }
@@ -79,15 +79,15 @@ const signIn = (dispatch) => {
 
             dispatch({ type: 'signIn', payload: response.data.token });
             // if user login
-            RootNavigation.navigate('root')
-          });
-
+            RootNavigation.navigate('root');
+          
         } catch (err) {
             console.log(err.message);
             dispatch({ type: 'add_error_for_signIn', payload: 'Email or password is incorrect!' })
         }
     };
 };
+
 
 const signOut = (dispatch) => {
     return async (navigate) => {
@@ -117,12 +117,13 @@ const forgetPassword = (dispatch) => {
     };
 };
 
-const resetPassword = (dispatch) => {
-    return async ({ email }) => {
+const updatePassword = (dispatch) => {
+    return async ({ email, password }) => {
         try {
-            const response = await DocSahabApi.post('/auth/', { email })
+            const response = await DocSahabApi.post('/auth/updatePassword', { email, password })
+
             if (response.data == "Cannot find this email") {
-                dispatch({ type: 'add_error_for_resetPassword', payload: 'Cannot find this email!' })
+                dispatch({ type: 'add_error_for_updatepassword', payload: 'Cannot find this email!' })
             }
             else {
                 console.log('error')
@@ -136,7 +137,7 @@ const resetPassword = (dispatch) => {
 // action functions
 export const { Provider, Context } = createDataContext(
     authReducer,
-    { signUp, signUpAsDoctor, signIn, signOut, forgetPassword, resetPassword },
+    { signUp, signUpAsDoctor, signIn, signOut, forgetPassword, updatePassword },
     // { isSignedIn: false, errorMessage: ''}
-    { token: null, errorMessageForSignIn: '', errorMessageForSignUp: '', errorMessageForgetPassword: '' }
+    { token: null, errorMessageForSignIn: '', errorMessageForSignUp: '', errorMessageUpdatePassword: '' }
 );

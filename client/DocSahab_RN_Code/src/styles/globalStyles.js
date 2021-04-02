@@ -131,7 +131,13 @@ export const globalStyles = StyleSheet.create({
     },
     inputLabelText: {
         fontSize: 15,
-        color: 'black'
+        color: 'black',
+        textAlign: 'center'
+    },
+    inputLabelTextUpdatePassword: {
+        fontSize: 15,
+        color: 'black',
+        textAlign: 'center'
     },
     subContainer: {
         alignItems: 'center',

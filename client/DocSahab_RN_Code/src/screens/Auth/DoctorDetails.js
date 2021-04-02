@@ -283,7 +283,7 @@ const doctordetails = () => {
                                         <RNMultiSelect
                                             // disableAbsolute
                                             data={Time}
-                                            placeholder={"Karachi"}
+                                            placeholder={"10:00 AM"}
                                             menuBarContainerHeight = {370}
                                             onSelect={(timeSlot) => {
                                                 setTimeSlot(timeSlot)

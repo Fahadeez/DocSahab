@@ -1,18 +1,23 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import {
     Text, View, TextInput, TouchableOpacity,
     TouchableWithoutFeedback, Keyboard
 } from 'react-native';
 import { globalStyles } from '../../styles/globalStyles';
-import NavigationHeaderWithBtn from '../../../src/components/navigationHeaderWithBtn';
+import NavigationHeaderWithBtn from '../../components/navigationHeaderWithBtn';
 import Signin from './login';
-import HeaderView from '../../../src/components/headerView';
+import HeaderView from '../../components/headerView';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import { useNavigation } from '@react-navigation/native';
+import { Context as AuthContext } from '../../context/AuthContext';
 
 // Forget Password validation schema
 const ForgetPassSchema = yup.object({
+    email: yup.string()
+    .required('Email is required')
+    .email("Please enter valid email")
+    .max(40),
     password: yup.string()
         .required('Password is required')
         .min(8, ({ min }) => `Password must be at least ${min} characters`),
@@ -26,16 +31,20 @@ const ForgetPassSchema = yup.object({
 
 const resetPassword = () => {
 
+    const { state, updatePassword } = useContext(AuthContext);
+
     return (
         <View style={globalStyles.containerColor}>
 
             <Formik
                 initialValues={{
+                    email: '',
                     password: '',
                     confirmPassword: '',
                 }}
                 validationSchema={ForgetPassSchema}
                 onSubmit={(values, actions) => {
+                    updatePassword(values);
                     actions.resetForm();
                     console.log(values);
                 }}
@@ -55,10 +64,22 @@ const resetPassword = () => {
                                 <View style={globalStyles.subContainer}>
 
                                     <View style={globalStyles.inputLabel}>
-                                        <Text style={globalStyles.inputLabelText}>
-                                            Enter your new password
+                                        <Text style={globalStyles.inputLabelTextUpdatePassword}>
+                                            Enter your email and new password
                                             </Text>
                                     </View>
+
+                                    <View style={globalStyles.modifiedinputView} >
+                                        <TextInput
+                                        style={globalStyles.inputText}
+                                        placeholder="Email"
+                                        placeholderTextColor="#003f5c"
+                                        onChangeText={props.handleChange('email')}
+                                        value={props.values.email}
+                                        onBlur={props.handleBlur('email')}
+                                        />
+                                    </View>
+                                    <Text style={globalStyles.errorText}>{props.touched.email && props.errors.email}</Text>
 
                                     <View style={globalStyles.modifiedinputView}>
                                         <TextInput
