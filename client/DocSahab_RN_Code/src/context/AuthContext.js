@@ -20,10 +20,10 @@ const authReducer = (state, action) => {
 };
 
 const signUp = (dispatch) => {
-    return async ({ email, password, firstName, lastName, contact, city, role }, navigate) => {
+    return async ({ email, password, firstName, lastName, contact, city, gender, role }, navigate) => {
         try {
             // console.log("signup data", { email, password, firstName, lastName, contact, city, role })
-            const response = await DocSahabApi.post('/auth/signup', { email, firstName, lastName, contact, city, role, password })
+            const response = await DocSahabApi.post('/auth/signup', { email, firstName, lastName, contact, city, gender, role, password })
             console.log(response.data);
             if (response.data == "User's data added") {
                 dispatch({ type: 'add_error_for_signUp', payload: 'Registration Successfull!' })

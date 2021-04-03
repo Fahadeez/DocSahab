@@ -36,13 +36,16 @@ const SignUpValSchema = yup.object({
         .required('contact Number is required')
         .min(11, ({ min }) => `contact No must be at least ${min} characters`),
     city: yup.string()
-        .required('City is required')
+        .required('City is required'),
+    gender: yup.string()
+        .required('Gender is required')
 })
 
 const signup = () => {
     const { state, signUp } = useContext(AuthContext);
     const [role, setRole] = useState(false)
     const [city, setSelectedCity] = useState(false);
+    const [gender, setGender] = useState(false);
 
     const navigation = useNavigation();
 
@@ -75,6 +78,7 @@ const signup = () => {
                                         lastName: '', 
                                         contact: '', 
                                         city: '',
+                                        gender: '',
                                         role: false
                                     }}
                         validationSchema={SignUpValSchema}
@@ -185,6 +189,28 @@ const signup = () => {
                                          />
                                     </View>
                                     <Text style={globalStyles.errorText}>{props.touched.city && props.errors.city}</Text>
+
+                                    {/* gender drop down */}
+                                    <View style={globalStyles.pickerView}>
+                                        
+                                        <RNPickerSelect 
+                                                style={{ inputAndroid: { color: 'black' } }}
+                                                placeholder={{ label: "Select your Gender", value: '' }}
+                                                onValueChange={(gender, value) => {
+                                                setGender(value)
+                                                props.values.gender = gender
+                                                }
+                                                }
+
+                                             selectedValue={city}
+                                             items={[
+                                                 { label: "Male", value: "Male" },
+                                                 { label:"Female", value:"Female" },
+                                             ]}
+                                         />
+                                    </View>
+                                    <Text style={globalStyles.errorText}>{props.touched.gender && props.errors.gender}</Text>
+
 
                                     <View style={globalStyles.modifiedinputView} >
                                         <TextInput
