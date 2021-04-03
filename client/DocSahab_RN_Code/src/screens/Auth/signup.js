@@ -1,21 +1,16 @@
 import React, {useState, useContext} from 'react';
 import {Text, View, TextInput, TouchableOpacity, ScrollView,
  TouchableWithoutFeedback, Keyboard, Switch } from 'react-native';
-// import CheckBox from '@react-native-community/checkbox';
 import NavigationHeaderWithBtn from '../../../src/components/navigationHeaderWithBtn';
 import { globalStyles } from '../../styles/globalStyles';
 import Signin from './login';
 import HeaderView from '../../../src/components/headerView';
-// import ProceedToDocDetBtn from '../../../src/components/proceedToDocDetBtnForPicker';
 import RNPickerSelect from "react-native-picker-select";
 import { Context as AuthContext } from '../../context/AuthContext';
-// import login from '../Auth/login';
 import { Formik, } from 'formik';
 import * as yup from 'yup';
-// import Doctordetails from './DoctorDetails';
+import Doctordetails from './DoctorDetails';
 import { useNavigation } from '@react-navigation/native';
-// import { CheckBox } from 'react-native-elements';
-// import { values } from 'lodash-es';
 
 const SignUpValSchema = yup.object({
     email: yup.string()
@@ -41,19 +36,22 @@ const SignUpValSchema = yup.object({
         .required('contact Number is required')
         .min(11, ({ min }) => `contact No must be at least ${min} characters`),
     city: yup.string()
-        .required('City is required')
+        .required('City is required'),
+    gender: yup.string()
+        .required('Gender is required')
 })
 
 const signup = () => {
     const { state, signUp } = useContext(AuthContext);
     const [role, setRole] = useState(false)
     const [city, setSelectedCity] = useState(false);
+    const [gender, setGender] = useState(false);
+
+    const navigation = useNavigation();
 
     // const navigate = () => {
     //     navigation.navigate(login);
     // }
-
-    const navigation = useNavigation();
 
     // const navigateToDocDetails = () => {
     //     navigation.navigate(Doctordetails);
@@ -80,6 +78,7 @@ const signup = () => {
                                         lastName: '', 
                                         contact: '', 
                                         city: '',
+                                        gender: '',
                                         role: false
                                     }}
                         validationSchema={SignUpValSchema}
@@ -191,6 +190,28 @@ const signup = () => {
                                     </View>
                                     <Text style={globalStyles.errorText}>{props.touched.city && props.errors.city}</Text>
 
+                                    {/* gender drop down */}
+                                    <View style={globalStyles.pickerView}>
+                                        
+                                        <RNPickerSelect 
+                                                style={{ inputAndroid: { color: 'black' } }}
+                                                placeholder={{ label: "Select your Gender", value: '' }}
+                                                onValueChange={(gender, value) => {
+                                                setGender(value)
+                                                props.values.gender = gender
+                                                }
+                                                }
+
+                                             selectedValue={city}
+                                             items={[
+                                                 { label: "Male", value: "Male" },
+                                                 { label:"Female", value:"Female" },
+                                             ]}
+                                         />
+                                    </View>
+                                    <Text style={globalStyles.errorText}>{props.touched.gender && props.errors.gender}</Text>
+
+
                                     <View style={globalStyles.modifiedinputView} >
                                         <TextInput
                                         style={globalStyles.inputText}
@@ -285,6 +306,13 @@ const signup = () => {
                                             <Text style={globalStyles.buttonTxt}>Sign Up</Text>
                                         </TouchableOpacity>
                                     }
+
+                                    <TouchableOpacity
+                                        style={globalStyles.Button}
+                                        onPress={() => navigation.navigate(Doctordetails)}
+                                    >
+                                        <Text style={globalStyles.buttonTxt}>Doctor Details</Text>
+                                    </TouchableOpacity>
                                                             
                                     </View>
                                 </View>

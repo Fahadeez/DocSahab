@@ -132,7 +132,6 @@ export const globalStyles = StyleSheet.create({
     inputLabelText: {
         fontSize: 15,
         color: 'black',
-        textAlign: 'center'
     },
     inputLabelTextUpdatePassword: {
         fontSize: 15,
@@ -150,6 +149,8 @@ export const globalStyles = StyleSheet.create({
         textAlign: 'center',
     },
     MultiSelect: {
+        alignItems: 'center',
+        alignContent: 'center',
         width: '90%',
         backgroundColor:"white",
         borderRadius:10,

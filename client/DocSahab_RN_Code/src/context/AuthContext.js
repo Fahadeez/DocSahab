@@ -20,10 +20,10 @@ const authReducer = (state, action) => {
 };
 
 const signUp = (dispatch) => {
-    return async ({ email, password, firstName, lastName, contact, city, role }, navigate) => {
+    return async ({ email, password, firstName, lastName, contact, city, gender, role }, navigate) => {
         try {
             // console.log("signup data", { email, password, firstName, lastName, contact, city, role })
-            const response = await DocSahabApi.post('/auth/signup', { email, firstName, lastName, contact, city, role, password })
+            const response = await DocSahabApi.post('/auth/signup', { email, firstName, lastName, contact, city, gender, role, password })
             console.log(response.data);
             if (response.data == "User's data added") {
                 dispatch({ type: 'add_error_for_signUp', payload: 'Registration Successfull!' })
@@ -47,7 +47,7 @@ const signUp = (dispatch) => {
 
 const signUpAsDoctor = (dispatch) => {
     return async ({ specialization, qualification, days, timeSlots, yearsOfExp, reg_no }) => {
-        console.log("authContext",{ specialization, qualification, days, timeSlots, yearsOfExp, reg_no })
+        console.log("authContext: ",{ specialization, qualification, days, timeSlots, yearsOfExp, reg_no })
         try {
             const email = await AsyncStorage.getItem('doctorSignUpEmail')
 
@@ -133,6 +133,16 @@ const updatePassword = (dispatch) => {
             else {
                 console.log('error')
             }
+        } catch (err) {
+            console.log(err.message);
+        }
+    };
+};
+
+const verifyEmail = (dispatch) => {
+    return async ({  }) => {
+        try {
+
         } catch (err) {
             console.log(err.message);
         }
