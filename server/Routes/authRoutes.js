@@ -10,7 +10,7 @@ const puppeteer = require('puppeteer');
 const bcrypt = require('bcrypt');
 const BCRYPT_SALT_ROUNDS = 10;
 
-const { Storage } = require('@google-cloud/storage');
+// const { Storage } = require('@google-cloud/storage');
 
 const helpers = require('../helpers/auth');
 
@@ -26,7 +26,7 @@ module.exports = app => {
 
 			let browser = await puppeteer.launch();
 			let page = await browser.newPage();
-			
+
 			// it has to be Chrome! not HeadlessChrome
 
 			await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4427.0 Safari/537.36');
@@ -99,6 +99,7 @@ module.exports = app => {
 			lastName = body.lastName,
 			contact = body.contact,
 			city = body.city,
+			gender = body.gender,
 			role = body.role;
 		if (role) {
 			Doctor.findOne(
@@ -120,6 +121,7 @@ module.exports = app => {
 							record.contact = contact.trim();
 							record.city = city.trim();
 							record.doctor = role;
+							record.gender = gender;
 							record.password = record.hashPassword(password.trim());
 							record.save().then((user) => {
 								if (user) {
@@ -154,6 +156,7 @@ module.exports = app => {
 							record.contact = contact.trim();
 							record.city = city.trim();
 							record.doctor = role;
+							record.gender = gender;
 							record.password = record.hashPassword(password.trim());
 							record.save().then((user) => {
 								if (user) {
