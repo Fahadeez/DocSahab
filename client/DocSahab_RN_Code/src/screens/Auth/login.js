@@ -67,6 +67,10 @@ const login = () => {
        
         async function checkJwt() {
             const jwt = await AsyncStorage.getItem('token')
+            const email = await AsyncStorage.getItem('userEmail')
+            console.log("userEmail",email)
+            console.log("jwt",jwt)
+
             if (jwt) {
                 navigation.navigate('root')
             }

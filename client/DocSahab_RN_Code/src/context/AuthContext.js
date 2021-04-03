@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import createDataContext from './CreateContextData';
 import DocSahabApi from '../api/DocSahabApi';
 import { useNavigation } from '@react-navigation/native';
+import { ToastAndroid } from 'react-native';
 import * as RootNavigation from '../RootNavigation.js';
 
 const authReducer = (state, action) => {
@@ -26,13 +27,16 @@ const signUp = (dispatch) => {
             const response = await DocSahabApi.post('/auth/signup', { email, firstName, lastName, contact, city, gender, role, password })
             console.log(response.data);
             if (response.data == "User's data added") {
+                await AsyncStorage.setItem('userEmail', email)
                 dispatch({ type: 'add_error_for_signUp', payload: 'Registration Successfull!' })
+                navigate()
             }
             else if (response.data == 'Email already exists') {
                 dispatch({ type: 'add_error_for_signUp', payload: 'Email Already Exists!' })
             }
             else if (response.data == "Doctor's data added") {
                 await AsyncStorage.setItem('doctorSignUpEmail', email)
+                await AsyncStorage.setItem('userEmail', email)
                 navigate()
             }
             else {
@@ -47,12 +51,12 @@ const signUp = (dispatch) => {
 
 const signUpAsDoctor = (dispatch) => {
     return async ({ specialization, qualification, days, timeSlots, yearsOfExp, reg_no }) => {
-        console.log("authContext: ",{ specialization, qualification, days, timeSlots, yearsOfExp, reg_no })
+        console.log("authContext: ", { specialization, qualification, days, timeSlots, yearsOfExp, reg_no })
         try {
             const email = await AsyncStorage.getItem('doctorSignUpEmail')
 
             const response = await DocSahabApi.post('/auth/signup-as-doctor',
-             { specialization, qualification, days, timeSlots, yearsOfExp, email, reg_no })
+                { specialization, qualification, days, timeSlots, yearsOfExp, email, reg_no })
             console.log(response.data);
             if (response.data == "Doctor's details saved") {
                 dispatch({ type: 'add_error_for_signUp', payload: 'Registration Successfull!' })
@@ -114,7 +118,7 @@ const forgetPassword = (dispatch) => {
                 dispatch({ type: 'add_error_for_forgetpassword', payload: 'Cannot find this email!' })
             }
             else {
-                console.log('error')
+                ToastAndroid.show("We have sent you a link through email, Check you email please", ToastAndroid.LONG);
             }
         } catch (err) {
             console.log(err.message);
@@ -123,15 +127,20 @@ const forgetPassword = (dispatch) => {
 };
 
 const updatePassword = (dispatch) => {
-    return async ({ email, password }) => {
+    return async ({ password },navigate) => {
         try {
+            const email = await AsyncStorage.getItem('userEmail');
+            console.log("userEmail", email)
+            console.log("password updatePassword", password)
+
             const response = await DocSahabApi.post('/auth/updatePassword', { email, password })
 
             if (response.data == "Cannot find this email") {
                 dispatch({ type: 'add_error_for_updatepassword', payload: 'Cannot find this email!' })
             }
             else {
-                console.log('error')
+                ToastAndroid.show("Password updated successfully!", ToastAndroid.LONG);
+                navigate()
             }
         } catch (err) {
             console.log(err.message);
@@ -140,7 +149,7 @@ const updatePassword = (dispatch) => {
 };
 
 const verifyEmail = (dispatch) => {
-    return async ({  }) => {
+    return async ({ }) => {
         try {
 
         } catch (err) {

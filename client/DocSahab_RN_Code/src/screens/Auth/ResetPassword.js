@@ -14,37 +14,36 @@ import { Context as AuthContext } from '../../context/AuthContext';
 
 // Forget Password validation schema
 const ForgetPassSchema = yup.object({
-    email: yup.string()
-    .required('Email is required')
-    .email("Please enter valid email")
-    .max(40),
     password: yup.string()
         .required('Password is required')
         .min(8, ({ min }) => `Password must be at least ${min} characters`),
     confirmPassword: yup.string().when("password", {
         is: val => (val && val.length > 0 ? true : false),
         then: yup.string().oneOf(
-        [yup.ref("password")],
-        "Both password need to be the same")
+            [yup.ref("password")],
+            "Both password need to be the same")
     }),
 })
 
 const resetPassword = () => {
 
     const { state, updatePassword } = useContext(AuthContext);
+    const navigation = useNavigation();
 
+    const navigate = () => {
+       navigation.navigate('login')
+    }
     return (
         <View style={globalStyles.containerColor}>
 
             <Formik
                 initialValues={{
-                    email: '',
                     password: '',
                     confirmPassword: '',
                 }}
                 validationSchema={ForgetPassSchema}
                 onSubmit={(values, actions) => {
-                    updatePassword(values);
+                    updatePassword(values,navigate);
                     actions.resetForm();
                     console.log(values);
                 }}
@@ -65,21 +64,9 @@ const resetPassword = () => {
 
                                     <View style={globalStyles.inputLabel}>
                                         <Text style={globalStyles.inputLabelTextUpdatePassword}>
-                                            Enter your email and new password
+                                            Enter your new password
                                             </Text>
                                     </View>
-
-                                    <View style={globalStyles.modifiedinputView} >
-                                        <TextInput
-                                        style={globalStyles.inputText}
-                                        placeholder="Email"
-                                        placeholderTextColor="#003f5c"
-                                        onChangeText={props.handleChange('email')}
-                                        value={props.values.email}
-                                        onBlur={props.handleBlur('email')}
-                                        />
-                                    </View>
-                                    <Text style={globalStyles.errorText}>{props.touched.email && props.errors.email}</Text>
 
                                     <View style={globalStyles.modifiedinputView}>
                                         <TextInput

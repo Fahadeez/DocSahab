@@ -382,15 +382,16 @@ module.exports = app => {
 	});
 
 	app.post('/auth/updatePassword', (req, res) => {
-		const { Email, Password } = req.body;
+		console.log("auth/updatePassword",req.body)
+		const { email, password } = req.body;
 		User.findOne({
-			email: req.body.Email,
+			email: email,
 			//resetPasswordExpires: Date.now(),
 		}).then(user => {
 			if (!user) {
 				console.log('user not found');
 				Doctor.findOne({
-					email: Email
+					email: email
 				}).then(doctor => {
 					if (!doctor) {
 						console.log('doctor not found');
@@ -399,7 +400,7 @@ module.exports = app => {
 					else {
 						console.log('doctor found in db');
 						bcrypt
-							.hash(Password, BCRYPT_SALT_ROUNDS)
+							.hash(password, BCRYPT_SALT_ROUNDS)
 							.then(hashedPassword => {
 								Doctor.findByIdAndUpdate(
 									{ _id: doctor._id },
@@ -419,7 +420,7 @@ module.exports = app => {
 			} else {
 				console.log('user found in db');
 				bcrypt
-					.hash(Password, BCRYPT_SALT_ROUNDS)
+					.hash(password, BCRYPT_SALT_ROUNDS)
 					.then(hashedPassword => {
 						User.findByIdAndUpdate(
 							{ _id: user._id },

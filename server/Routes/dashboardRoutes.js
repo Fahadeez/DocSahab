@@ -131,7 +131,6 @@ module.exports = app => {
 		//return res.send().status(400);
 	});
 
-
 	app.post('/api/select-doctor-with-name', async (req, res) => {
 		const { limit } = req.query;
 		const lim = parseInt(limit)

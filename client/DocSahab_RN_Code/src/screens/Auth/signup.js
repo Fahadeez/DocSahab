@@ -49,15 +49,15 @@ const signup = () => {
 
     const navigation = useNavigation();
 
-    // const navigate = () => {
-    //     navigation.navigate(login);
-    // }
+    const navigate = () => {
+        navigation.navigate('login');
+    }
 
     // const navigateToDocDetails = () => {
     //     navigation.navigate(Doctordetails);
     // }
 
-    const navigate = () => {
+    const navigateTodoctorDetails = () => {
         navigation.navigate('doctordetails');
     }
 
@@ -309,7 +309,7 @@ const signup = () => {
 
                                     <TouchableOpacity
                                         style={globalStyles.Button}
-                                        onPress={() => navigation.navigate(Doctordetails)}
+                                        onPress={() => navigation.navigate('doctordetails')}
                                     >
                                         <Text style={globalStyles.buttonTxt}>Doctor Details</Text>
                                     </TouchableOpacity>
