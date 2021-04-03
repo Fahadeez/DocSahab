@@ -25,13 +25,14 @@ const signUp = (dispatch) => {
             // console.log("signup data", { email, password, firstName, lastName, contact, city, role })
             const response = await DocSahabApi.post('/auth/signup', { email, firstName, lastName, contact, city, role, password })
             console.log(response.data);
-            if(response.data == "User's data added"){
+            if (response.data == "User's data added") {
                 dispatch({ type: 'add_error_for_signUp', payload: 'Registration Successfull!' })
             }
             else if (response.data == 'Email already exists') {
                 dispatch({ type: 'add_error_for_signUp', payload: 'Email Already Exists!' })
             }
             else if (response.data == "Doctor's data added") {
+                await AsyncStorage.setItem('doctorSignUpEmail', email)
                 navigate()
             }
             else {
@@ -45,11 +46,15 @@ const signUp = (dispatch) => {
 };
 
 const signUpAsDoctor = (dispatch) => {
-    return async ({ specialization, qualification, days, timeSlots, yearsOfExp, email, reg_no }) => {
+    return async ({ specialization, qualification, days, timeSlots, yearsOfExp, reg_no }) => {
+        console.log("authContext",{ specialization, qualification, days, timeSlots, yearsOfExp, reg_no })
         try {
-            const response = await DocSahabApi.post('/auth/signup-as-doctor', { specialization, qualification, days, timeSlots, yearsOfExp, email, reg_no })
+            const email = await AsyncStorage.getItem('doctorSignUpEmail')
+
+            const response = await DocSahabApi.post('/auth/signup-as-doctor',
+             { specialization, qualification, days, timeSlots, yearsOfExp, email, reg_no })
             console.log(response.data);
-            if(response.data == "Doctor's details saved"){
+            if (response.data == "Doctor's details saved") {
                 dispatch({ type: 'add_error_for_signUp', payload: 'Registration Successfull!' })
             }
             else if (response.data == "Unable to store doctor's details") {
@@ -80,7 +85,7 @@ const signIn = (dispatch) => {
             dispatch({ type: 'signIn', payload: response.data.token });
             // if user login
             RootNavigation.navigate('root');
-          
+
         } catch (err) {
             console.log(err.message);
             dispatch({ type: 'add_error_for_signIn', payload: 'Email or password is incorrect!' })

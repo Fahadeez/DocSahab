@@ -14,10 +14,6 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 
 // Sign Up validation schema
 const DocDetValSchema = yup.object({
-    email: yup.string()
-        .required('Email is required')
-        .email("Please enter valid email")
-        .max(40),
     reg_No: yup.string()
         .required('Registration is required')
         .min(7),
@@ -125,19 +121,19 @@ const doctordetails = () => {
                 <Formik
                     enableReinitialize
                     initialValues={{
-                                    email: '', 
                                     reg_No: '', 
                                     exp: '', 
                                     qualification:'', 
                                     specialization: '', 
-                                    timeSlot: '',
-                                    day: ''
+                                    timeSlot: [],
+                                    day: []
                                 }}
                     validationSchema={DocDetValSchema}
                     onSubmit={(values, actions) => {
                         signUpAsDoctor(values);
-                        actions.resetForm();
                         console.log(values);
+                        actions.resetForm();
+
                     }}
                 >
                     {(props) => (
@@ -153,7 +149,7 @@ const doctordetails = () => {
                                 <View style={{marginTop: 50}}>
                                     <View style={globalStyles.container}>
 
-                                    <View style={globalStyles.modifiedinputView} >
+                                    {/* <View style={globalStyles.modifiedinputView} >
                                         <TextInput
                                         style={globalStyles.inputText}
                                         placeholder="Email"
@@ -164,8 +160,7 @@ const doctordetails = () => {
                                         />
                                     </View>
                                     <Text style={globalStyles.errorText}>{props.touched.email && props.errors.email}</Text>
-                                        
-
+                                         */}
 
                                     <View style={globalStyles.inputView} >
                                         <TextInput  
@@ -294,7 +289,6 @@ const doctordetails = () => {
                                     </View>
                                     <Text style={globalStyles.errorText}>{props.touched.timeSlot && props.errors.timeSlot}</Text>
                                     {/* Time Slot multiple selects ends */}
-
 
                                     {/* Day multiple selects start */}
                                     <View style={globalStyles.inputLabel}>

@@ -18,8 +18,6 @@ const bucket = 'e-tutor-9f2c2.appspot.com/';
 // const storage = new Storage();
 module.exports = app => {
 
-
-
 	app.get('/api/selectAllTutors', async (req, res) => {
 		const { limit } = req.query;
 		const lim = parseInt(limit)
