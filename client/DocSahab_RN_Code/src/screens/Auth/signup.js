@@ -1,21 +1,16 @@
 import React, {useState, useContext} from 'react';
 import {Text, View, TextInput, TouchableOpacity, ScrollView,
  TouchableWithoutFeedback, Keyboard, Switch } from 'react-native';
-// import CheckBox from '@react-native-community/checkbox';
 import NavigationHeaderWithBtn from '../../../src/components/navigationHeaderWithBtn';
 import { globalStyles } from '../../styles/globalStyles';
 import Signin from './login';
 import HeaderView from '../../../src/components/headerView';
-// import ProceedToDocDetBtn from '../../../src/components/proceedToDocDetBtnForPicker';
 import RNPickerSelect from "react-native-picker-select";
 import { Context as AuthContext } from '../../context/AuthContext';
-// import login from '../Auth/login';
 import { Formik, } from 'formik';
 import * as yup from 'yup';
-// import Doctordetails from './DoctorDetails';
+import Doctordetails from './DoctorDetails';
 import { useNavigation } from '@react-navigation/native';
-// import { CheckBox } from 'react-native-elements';
-// import { values } from 'lodash-es';
 
 const SignUpValSchema = yup.object({
     email: yup.string()
@@ -49,11 +44,11 @@ const signup = () => {
     const [role, setRole] = useState(false)
     const [city, setSelectedCity] = useState(false);
 
+    const navigation = useNavigation();
+
     // const navigate = () => {
     //     navigation.navigate(login);
     // }
-
-    const navigation = useNavigation();
 
     // const navigateToDocDetails = () => {
     //     navigation.navigate(Doctordetails);
@@ -285,6 +280,13 @@ const signup = () => {
                                             <Text style={globalStyles.buttonTxt}>Sign Up</Text>
                                         </TouchableOpacity>
                                     }
+
+                                    <TouchableOpacity
+                                        style={globalStyles.Button}
+                                        onPress={() => navigation.navigate(Doctordetails)}
+                                    >
+                                        <Text style={globalStyles.buttonTxt}>Doctor Details</Text>
+                                    </TouchableOpacity>
                                                             
                                     </View>
                                 </View>

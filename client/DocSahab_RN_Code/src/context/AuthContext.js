@@ -47,7 +47,7 @@ const signUp = (dispatch) => {
 
 const signUpAsDoctor = (dispatch) => {
     return async ({ specialization, qualification, days, timeSlots, yearsOfExp, reg_no }) => {
-        console.log("authContext",{ specialization, qualification, days, timeSlots, yearsOfExp, reg_no })
+        console.log("authContext: ",{ specialization, qualification, days, timeSlots, yearsOfExp, reg_no })
         try {
             const email = await AsyncStorage.getItem('doctorSignUpEmail')
 
@@ -133,6 +133,16 @@ const updatePassword = (dispatch) => {
             else {
                 console.log('error')
             }
+        } catch (err) {
+            console.log(err.message);
+        }
+    };
+};
+
+const verifyEmail = (dispatch) => {
+    return async ({  }) => {
+        try {
+
         } catch (err) {
             console.log(err.message);
         }
