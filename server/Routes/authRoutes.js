@@ -371,11 +371,23 @@ module.exports = app => {
 			resetPasswordExpires: {
 				$gt: Date.now(), //Find time greater than date.Now() or > date.now
 			},
-		}).then(user => {
+		}).then( user => {
 			if (!user) {
-				return res.send('password reset link is invalid or has expired').status(403);
-			} else {
-			
+				Doctor.findOne({
+					resetPasswordToken: token,
+					resetPasswordExpires: {
+						$gt: Date.now(), //Find time greater than date.Now() or > date.now
+					},
+				}).then( doctor => {
+					if (!doctor) {
+						return res.send('password reset link is invalid or has expired').status(403);
+					}
+					else {
+						return res.redirect('docsahab://resetpassword');
+					}
+				});
+			}
+			else {
 				return res.redirect('docsahab://resetpassword');
 			}
 		});
