@@ -13,6 +13,7 @@ import { DrawerContent } from './src/screens/Drawer/DrawerContent'
 import resetPassword from './src/screens/Auth/ResetPassword';
 import { Linking } from 'react-native';
 import { navigationRef } from './src/RootNavigation';
+import Verifyemail from './src/screens/Auth/VerifyEmail';
 
 
 const Stack = createStackNavigator();
@@ -70,10 +71,17 @@ function Auth() {
         }}
           name="forgetpassword" component={forgetpassword}
         />
+
         <Stack.Screen options={{
           headerShown: null
         }}
           name="resetPassword" component={resetPassword}
+        />
+
+        <Stack.Screen options={{
+          headerShown: null
+        }}
+          name="Verifyemail" component={Verifyemail}
         />
 
         <Stack.Screen options={{

@@ -10,6 +10,7 @@ import { Context as AuthContext } from '../../context/AuthContext';
 import { Formik, } from 'formik';
 import * as yup from 'yup';
 import Doctordetails from './DoctorDetails';
+import Verifyemail from './VerifyEmail';
 import { useNavigation } from '@react-navigation/native';
 
 const SignUpValSchema = yup.object({
@@ -307,11 +308,21 @@ const signup = () => {
                                         </TouchableOpacity>
                                     }
 
+                                    {/* for test purposes */}
                                     <TouchableOpacity
                                         style={globalStyles.Button}
                                         onPress={() => navigation.navigate('doctordetails')}
                                     >
                                         <Text style={globalStyles.buttonTxt}>Doctor Details</Text>
+                                    </TouchableOpacity>
+
+                                    {/* for test purposes */}
+
+                                    <TouchableOpacity
+                                        style={globalStyles.Button}
+                                        onPress={() => navigation.navigate(Verifyemail)}
+                                    >
+                                        <Text style={globalStyles.buttonTxt}>Verify Email</Text>
                                     </TouchableOpacity>
                                                             
                                     </View>
