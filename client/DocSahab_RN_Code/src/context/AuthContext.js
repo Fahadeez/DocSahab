@@ -5,6 +5,10 @@ import { useNavigation } from '@react-navigation/native';
 import { ToastAndroid } from 'react-native';
 import * as RootNavigation from '../RootNavigation.js';
 
+const initialState = {
+    signUpData: {}
+};
+
 const authReducer = (state, action) => {
     switch (action.type) {
         case 'add_error_for_signIn':
@@ -15,38 +19,49 @@ const authReducer = (state, action) => {
             return { errorMessageForSignIn: '', token: action.payload };
         case 'add_error_for_updatepassword':
             return { ...state, errorMessageUpdatePassword: action.payload };
+        case 'add_error_for_updatepassword':
+            return { ...state, errorMessageUpdatePassword: action.payload };
         default:
             return state;
     }
 };
 
 const signUp = (dispatch) => {
-    return async ({ email, password, firstName, lastName, contact, city, gender, role }, navigate) => {
+    return async (navigate) => {
         try {
             // console.log("signup data", { email, password, firstName, lastName, contact, city, role })
-            const response = await DocSahabApi.post('/auth/signup', { email, firstName, lastName, contact, city, gender, role, password })
-            console.log(response.data);
-            if (response.data == "User's data added") {
-                await AsyncStorage.setItem('userEmail', email)
-                dispatch({ type: 'add_error_for_signUp', payload: 'Registration Successfull!' })
-                navigate()
-            }
-            else if (response.data == 'Email already exists') {
-                dispatch({ type: 'add_error_for_signUp', payload: 'Email Already Exists!' })
-            }
-            else if (response.data == "Doctor's data added") {
-                await AsyncStorage.setItem('doctorSignUpEmail', email)
-                await AsyncStorage.setItem('userEmail', email)
-                navigate()
-            }
-            else {
-                console.log('Error')
+            const jsonData = await AsyncStorage.getItem('SignUpData')
+            if (jsonData) {
+                const data = JSON.parse(jsonData);
+                let { email, firstName, lastName, contact, city, gender, role, password } = data;
+
+                const response = await DocSahabApi.post('/auth/signup', { email, firstName, lastName, contact, city, gender, role, password })
+                console.log(response.data);
+                if (response.data == "User's data added") {
+                    await AsyncStorage.setItem('userEmail', email)
+                    dispatch({ type: 'add_error_for_signUp', payload: 'Registration Successfull!' })
+                    navigate()
+                }
+                else if (response.data == 'Email already exists') {
+                    dispatch({ type: 'add_error_for_signUp', payload: 'Email Already Exists!' })
+                }
+                else if (response.data == "Doctor's data added") {
+                    await AsyncStorage.setItem('doctorSignUpEmail', email)
+                    await AsyncStorage.setItem('userEmail', email)
+                    navigate()
+                }
+                else {
+                    console.log('Error')
+                }
             }
         } catch (err) {
             console.log(err.message);
             dispatch({ type: 'add_error_for_signUp', payload: 'Email Already Exists!' })
         }
+
+
     };
+
 };
 
 const signUpAsDoctor = (dispatch) => {
@@ -127,7 +142,7 @@ const forgetPassword = (dispatch) => {
 };
 
 const updatePassword = (dispatch) => {
-    return async ({ password },navigate) => {
+    return async ({ password }, navigate) => {
         try {
             const email = await AsyncStorage.getItem('userEmail');
             console.log("userEmail", email)
@@ -148,10 +163,20 @@ const updatePassword = (dispatch) => {
     };
 };
 
-const verifyEmail = (dispatch) => {
-    return async ({ }) => {
+export const verifyEmail = (dispatch) => {
+    return async ({ email, role }, navigate) => {
+        let r = role === true ? 'doctor' : 'user';
+        console.log("R", r)
         try {
+            const response = await DocSahabApi.post('/auth/verify-email', { email, role: r })
+            if (response.data.code) {
+                console.log("code",response.data.code)
+                await AsyncStorage.setItem('verifyEmailCode', JSON.stringify(response.data.code))
+                ToastAndroid.show("We have sent you a verification code via email, Please enter that code here",
+                    ToastAndroid.LONG);
+                navigate()
 
+            }
         } catch (err) {
             console.log(err.message);
         }
@@ -161,7 +186,7 @@ const verifyEmail = (dispatch) => {
 // action functions
 export const { Provider, Context } = createDataContext(
     authReducer,
-    { signUp, signUpAsDoctor, signIn, signOut, forgetPassword, updatePassword },
+    { signUp, signUpAsDoctor, signIn, signOut, forgetPassword, updatePassword, verifyEmail },
     // { isSignedIn: false, errorMessage: ''}
     { token: null, errorMessageForSignIn: '', errorMessageForSignUp: '', errorMessageUpdatePassword: '' }
 );
