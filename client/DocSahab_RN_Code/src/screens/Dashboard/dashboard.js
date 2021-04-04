@@ -4,12 +4,13 @@ import HeaderView from '../../components/headerView';
 import NavigationHeaderWithBar from '../../components/navigationHeaderWithBar';
 import { globalStyles } from '../../styles/globalStyles';
 import Icon from 'react-native-vector-icons/Feather';
+import SearchDocScreen from '../SearchDoc'
 
 const DashboardScreen = ({navigation}) => {
 	return (
 	<View style = {globalStyles.containerColor}>
 
-		<NavigationHeaderWithBar/>
+		<NavigationHeaderWithBar title= "Dashboard"/>
 
 		<View style ={globalStyles.SearchbackgroundStyle}>
 			  <Icon name='search' size={30} color="grey" style = {globalStyles.searchIcon}/>
@@ -25,7 +26,7 @@ const DashboardScreen = ({navigation}) => {
 
 			<View style = {styles.miniParent}>
 
-				<TouchableOpacity style = {styles.childBox}>
+				<TouchableOpacity style = {styles.childBox} onPress = {() => navigation.navigate('SearchDoc')}>
 				<Image source={require('../../../assets/appointment.png')} style = {styles.childBox} />
 				</TouchableOpacity>
 

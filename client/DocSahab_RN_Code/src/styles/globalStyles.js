@@ -29,6 +29,7 @@ export const globalStyles = StyleSheet.create({
         justifyContent:"center",
         marginTop:40,
         marginBottom:10,
+        alignSelf: 'center'
     },
     modifiedBtn: {
         width:"90%",
@@ -36,7 +37,6 @@ export const globalStyles = StyleSheet.create({
         backgroundColor: '#2A2AC0',
         borderRadius:25,
         height:50,
-        alignItems:"center",
         justifyContent:"center",
     },
     buttonTxt: {
@@ -160,7 +160,16 @@ export const globalStyles = StyleSheet.create({
     // DashBoard styles start here
     // Search Bar
     SearchbackgroundStyle: {
-    marginTop: '15%',
+    marginTop: '17%',
+    height: 50,
+    width: '90%',
+    backgroundColor: 'white',
+    borderRadius: 20,
+    marginHorizontal: 22,
+    flexDirection: 'row'
+  },
+  belowSearchbackgroundStyle: {
+    marginTop: '7%',
     height: 50,
     width: '90%',
     backgroundColor: 'white',

@@ -80,9 +80,9 @@ const signIn = (dispatch) => {
             dispatch({ type: 'signIn', payload: response.data.token });
             // if user login
             RootNavigation.navigate('root')
-          });
+          }
 
-        } catch (err) {
+         catch (err) {
             console.log(err.message);
             dispatch({ type: 'add_error_for_signIn', payload: 'Email or password is incorrect!' })
         }

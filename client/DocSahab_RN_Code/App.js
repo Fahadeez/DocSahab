@@ -4,6 +4,7 @@ import login from './src/screens/Auth/login';
 import signup from './src/screens/Auth/signup';
 import doctordetails from './src/screens/Auth/DoctorDetails';
 import forgetpassword from './src/screens/Auth/ForgetPassword';
+import SearchDocScreen from './src/screens/SearchDoc';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { NavigationContainer } from '@react-navigation/native';
@@ -13,6 +14,7 @@ import { DrawerContent } from './src/screens/Drawer/DrawerContent'
 import resetPassword from './src/screens/Auth/ResetPassword';
 import { Linking } from 'react-native';
 import { navigationRef } from './src/RootNavigation';
+
 
 
 const Stack = createStackNavigator();
@@ -30,13 +32,18 @@ const linking = {
   config,
 };
 
-function Root() {
+function Root({route, navigation}) {
   return (
     <Drawer.Navigator drawerContent={props => <DrawerContent{...props} />}>
       <Drawer.Screen options={{
         headerShown: null
       }}
-        name="dashboard" component={DashboardScreen}
+        name="dashboard" component={SearchDocScreen}
+      />
+      <Drawer.Screen options={{
+        headerShown: null
+      }}
+        name="SearchDoc" component={DashboardScreen}
       />
     </Drawer.Navigator>
   );
