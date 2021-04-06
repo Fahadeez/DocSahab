@@ -14,6 +14,7 @@ import resetPassword from './src/screens/Auth/ResetPassword';
 import { Linking } from 'react-native';
 import { navigationRef } from './src/RootNavigation';
 import Verifyemail from './src/screens/Auth/VerifyEmail';
+import BookAppoinment from './src/screens/Dashboard/bookAppointment';
 
 
 const Stack = createStackNavigator();
@@ -88,7 +89,13 @@ function Auth() {
           headerShown: null
         }}
           name="root" component={Root}
-          />          
+        />
+
+        <Stack.Screen options={{
+          headerShown: null
+        }}
+          name="BookAppoinment" component={BookAppoinment}
+        />  
           
       </Stack.Navigator>
     </NavigationContainer>

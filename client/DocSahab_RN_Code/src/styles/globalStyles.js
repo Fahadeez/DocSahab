@@ -164,7 +164,7 @@ export const globalStyles = StyleSheet.create({
     },
     // auth styles ends here
 
-    // DashBoard styles start here
+    // User DashBoard styles start here
     // Search Bar
     SearchbackgroundStyle: {
     marginTop: '15%',
@@ -185,5 +185,10 @@ export const globalStyles = StyleSheet.create({
     fontSize: 35,
     marginHorizontal: 15
   },
-// DashBoard styles ends here
+  containerForBookAppointment: {
+    flex: 1,
+    backgroundColor: '#ECF1FA',
+  },
+
+// User DashBoard styles ends here
 });
