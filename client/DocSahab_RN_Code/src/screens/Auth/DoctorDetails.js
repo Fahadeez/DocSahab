@@ -14,23 +14,19 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 
 // Sign Up validation schema
 const DocDetValSchema = yup.object({
-    email: yup.string()
-        .required('Email is required')
-        .email("Please enter valid email")
-        .max(40),
-    reg_No: yup.string()
+    reg_no: yup.string()
         .required('Registration is required')
         .min(7),
-    exp: yup.number()
+    yearsOfExp: yup.number()
         .required('Experience is required')
         .min(1),
     qualification: yup.string()
         .required('Qualification is required'),
     specialization: yup.string()
         .required('Specialization is required'),
-    timeSlot: yup.array()
+    timeSlots: yup.array()
         .required('Available Time is required'),
-    day: yup.array()
+    days: yup.array()
         .required('Day is required'),
 })
 
@@ -38,31 +34,51 @@ const DocDetValSchema = yup.object({
 var Time = [
     {
         id: 0,
-        value: "10:00 am",
+        value: "8:00 am - 9:00 am",
         isChecked: false, },
     {
         id: 1,
-        value: "12:00 pm",
+        value: "9:00 am - 10:00 am",
         isChecked: false, },
     {
         id: 2,
-        value: "2:00 pm",
+        value: "10:00 am - 11:00 am",
         isChecked: false, },
     {
         id: 3,
-        value: "4:00 pm",
+        value: "12:00 am - 1:00 pm",
         isChecked: false, },
     {
         id: 4,
-        value: "6:00 pm",
+        value: "1:00 pm - 2:00 pm",
         isChecked: false, },
     {
         id: 5,
-        value: "8:00 pm",
+        value: "2:00 pm - 3:00 pm",
         isChecked: false, },
     {
         id: 6,
-        value: "10:00 pm",
+        value: "3:00 pm - 4:00 pm",
+        isChecked: false, },
+    {
+        id: 7,
+        value: "4:00 pm - 5:00 pm",
+        isChecked: false, },
+    {
+        id: 8,
+        value: "5:00 pm - 6:00 pm",
+        isChecked: false, },
+    {
+        id: 9,
+        value: "6:00 pm - 7:00 pm",
+        isChecked: false, },
+    {
+        id: 10,
+        value: "8:00 pm - 9:00 pm",
+        isChecked: false, },
+    {
+        id: 11,
+        value: "9:00 pm - 10:00 pm",
         isChecked: false, },
   ];
 
@@ -110,8 +126,8 @@ const doctordetails = () => {
 
     const [qualification, setQualification] = useState();
     const [specialization, setSpecialization] = useState();
-    const [timeSlot, setTimeSlot] = useState([]);
-    const [day, setDay] = useState([]);
+    const [timeSlots, setTimeSlot] = useState([]);
+    const [days, setDay] = useState([]);
 
     return (
         <View style={globalStyles.containerColor}>
@@ -125,19 +141,19 @@ const doctordetails = () => {
                 <Formik
                     enableReinitialize
                     initialValues={{
-                                    email: '', 
-                                    reg_No: '', 
-                                    exp: '', 
+                                    reg_no: '', 
+                                    yearsOfExp: '', 
                                     qualification:'', 
                                     specialization: '', 
-                                    timeSlot: '',
-                                    day: ''
+                                    timeSlots: [],
+                                    days: []
                                 }}
                     validationSchema={DocDetValSchema}
                     onSubmit={(values, actions) => {
                         signUpAsDoctor(values);
-                        actions.resetForm();
                         console.log(values);
+                        actions.resetForm();
+
                     }}
                 >
                     {(props) => (
@@ -153,7 +169,7 @@ const doctordetails = () => {
                                 <View style={{marginTop: 50}}>
                                     <View style={globalStyles.container}>
 
-                                    <View style={globalStyles.modifiedinputView} >
+                                    {/* <View style={globalStyles.modifiedinputView} >
                                         <TextInput
                                         style={globalStyles.inputText}
                                         placeholder="Email"
@@ -164,32 +180,31 @@ const doctordetails = () => {
                                         />
                                     </View>
                                     <Text style={globalStyles.errorText}>{props.touched.email && props.errors.email}</Text>
-                                        
-
+                                         */}
 
                                     <View style={globalStyles.inputView} >
                                         <TextInput  
                                             style={globalStyles.inputText}
                                             placeholder="PMC Verification No"
                                             placeholderTextColor="#003f5c"
-                                            onChangeText={props.handleChange('reg_No')}
-                                            value={props.values.reg_No}
-                                            onBlur={props.handleBlur('reg_No')}
+                                            onChangeText={props.handleChange('reg_no')}
+                                            value={props.values.reg_no}
+                                            onBlur={props.handleBlur('reg_no')}
                                             />
                                     </View>
-                                    <Text style={globalStyles.errorText}>{props.touched.reg_No && props.errors.reg_No}</Text>
+                                    <Text style={globalStyles.errorText}>{props.touched.reg_no && props.errors.reg_no}</Text>
 
                                     <View style={globalStyles.inputView} >
                                         <TextInput
                                         style={globalStyles.inputText}
                                         placeholder="Years Of Experience"
                                         placeholderTextColor="#003f5c"
-                                        onChangeText={props.handleChange('exp')}
-                                        value={props.values.exp}
-                                        onBlur={props.handleBlur('exp')}
+                                        onChangeText={props.handleChange('yearsOfExp')}
+                                        value={props.values.yearsOfExp}
+                                        onBlur={props.handleBlur('yearsOfExp')}
                                         />
                                     </View>
-                                    <Text style={globalStyles.errorText}>{props.touched.exp && props.errors.exp}</Text>
+                                    <Text style={globalStyles.errorText}>{props.touched.yearsOfExp && props.errors.yearsOfExp}</Text>
 
                                     {/* qualification drop down */}
                                     <View style={globalStyles.inputLabel}>
@@ -282,19 +297,19 @@ const doctordetails = () => {
                                         
                                         <RNMultiSelect
                                             // disableAbsolute
+                                            width= {'100%'}
                                             data={Time}
-                                            placeholder={"Karachi"}
-                                            menuBarContainerHeight = {370}
-                                            onSelect={(timeSlot) => {
-                                                setTimeSlot(timeSlot)
-                                                props.values.timeSlot = timeSlot
+                                            placeholder={"10:00 am - 11:00 am"}
+                                            menuBarContainerHeight = {600}
+                                            onSelect={(timeSlots) => {
+                                                setTimeSlot(timeSlots)
+                                                props.values.timeSlots = timeSlots
                                             }} 
                                             // onDoneButtonPress={}
                                             />                                       
                                     </View>
-                                    <Text style={globalStyles.errorText}>{props.touched.timeSlot && props.errors.timeSlot}</Text>
+                                    <Text style={globalStyles.errorText}>{props.touched.timeSlots && props.errors.timeSlots}</Text>
                                     {/* Time Slot multiple selects ends */}
-
 
                                     {/* Day multiple selects start */}
                                     <View style={globalStyles.inputLabel}>
@@ -307,17 +322,18 @@ const doctordetails = () => {
                                         
                                         <RNMultiSelect
                                             // disableAbsolute
+                                            width= {'100%'}
                                             data={Day}
                                             placeholder={"Monday"}
                                             menuBarContainerHeight = {370}
-                                            onSelect={(day) => {
-                                                setDay(day)
-                                                props.values.day = day
+                                            onSelect={(days) => {
+                                                setDay(days)
+                                                props.values.days = days
                                             }} 
                                             // onDoneButtonPress={}
                                             />                                       
                                     </View>
-                                    <Text style={globalStyles.errorText}>{props.touched.day && props.errors.day}</Text>
+                                    <Text style={globalStyles.errorText}>{props.touched.days && props.errors.days}</Text>
                                     {/* Day multiple selects ends */}
 
                                     <TouchableOpacity 

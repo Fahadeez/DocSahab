@@ -1,15 +1,16 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import {
     Text, View, TextInput, TouchableOpacity,
     TouchableWithoutFeedback, Keyboard
 } from 'react-native';
 import { globalStyles } from '../../styles/globalStyles';
-import NavigationHeaderWithBtn from '../../../src/components/navigationHeaderWithBtn';
+import NavigationHeaderWithBtn from '../../components/navigationHeaderWithBtn';
 import Signin from './login';
-import HeaderView from '../../../src/components/headerView';
+import HeaderView from '../../components/headerView';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import { useNavigation } from '@react-navigation/native';
+import { Context as AuthContext } from '../../context/AuthContext';
 
 // Forget Password validation schema
 const ForgetPassSchema = yup.object({
@@ -19,13 +20,19 @@ const ForgetPassSchema = yup.object({
     confirmPassword: yup.string().when("password", {
         is: val => (val && val.length > 0 ? true : false),
         then: yup.string().oneOf(
-        [yup.ref("password")],
-        "Both password need to be the same")
+            [yup.ref("password")],
+            "Both password need to be the same")
     }),
 })
 
 const resetPassword = () => {
 
+    const { state, updatePassword } = useContext(AuthContext);
+    const navigation = useNavigation();
+
+    const navigate = () => {
+       navigation.navigate('login')
+    }
     return (
         <View style={globalStyles.containerColor}>
 
@@ -36,6 +43,7 @@ const resetPassword = () => {
                 }}
                 validationSchema={ForgetPassSchema}
                 onSubmit={(values, actions) => {
+                    updatePassword(values,navigate);
                     actions.resetForm();
                     console.log(values);
                 }}
@@ -55,7 +63,7 @@ const resetPassword = () => {
                                 <View style={globalStyles.subContainer}>
 
                                     <View style={globalStyles.inputLabel}>
-                                        <Text style={globalStyles.inputLabelText}>
+                                        <Text style={globalStyles.inputLabelTextUpdatePassword}>
                                             Enter your new password
                                             </Text>
                                     </View>

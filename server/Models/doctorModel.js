@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-var bcrypt = require('bcrypt-nodejs');
+var bcrypt = require('bcrypt');
 const likedProfileSchema = require('./likedProfiles');
 const ratedBySchema = require('./ratedBy')
 const { Schema } = mongoose;

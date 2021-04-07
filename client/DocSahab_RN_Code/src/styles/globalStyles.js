@@ -131,7 +131,12 @@ export const globalStyles = StyleSheet.create({
     },
     inputLabelText: {
         fontSize: 15,
-        color: 'black'
+        color: 'black',
+    },
+    inputLabelTextUpdatePassword: {
+        fontSize: 15,
+        color: 'black',
+        textAlign: 'center'
     },
     subContainer: {
         alignItems: 'center',
@@ -144,6 +149,8 @@ export const globalStyles = StyleSheet.create({
         textAlign: 'center',
     },
     MultiSelect: {
+        alignItems: 'center',
+        alignContent: 'center',
         width: '90%',
         backgroundColor:"white",
         borderRadius:10,
@@ -157,7 +164,7 @@ export const globalStyles = StyleSheet.create({
     },
     // auth styles ends here
 
-    // DashBoard styles start here
+    // User DashBoard styles start here
     // Search Bar
     SearchbackgroundStyle: {
     marginTop: '17%',
@@ -187,5 +194,10 @@ export const globalStyles = StyleSheet.create({
     fontSize: 35,
     marginHorizontal: 15
   },
-// DashBoard styles ends here
+  containerForBookAppointment: {
+    flex: 1,
+    backgroundColor: '#ECF1FA',
+  },
+
+// User DashBoard styles ends here
 });

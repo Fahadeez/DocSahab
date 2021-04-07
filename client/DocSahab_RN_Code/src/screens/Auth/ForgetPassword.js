@@ -8,7 +8,6 @@ import HeaderView from '../../../src/components/headerView';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import { Context as AuthContext } from '../../context/AuthContext';
-// import resetPassword from '../Auth/ResetPassword';
 import { useNavigation } from '@react-navigation/native';
 
 // Forget Password validation schema

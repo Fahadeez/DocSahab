@@ -26,6 +26,7 @@ import {
     Controller
 } from 'react-hook-form';
 import { Context as AuthContext } from '../../context/AuthContext';
+import BookAppoinment from '../Dashboard/bookAppointment';
 
 const login = () => {
     const { state, signIn } = useContext(AuthContext);
@@ -67,6 +68,10 @@ const login = () => {
        
         async function checkJwt() {
             const jwt = await AsyncStorage.getItem('token')
+            const email = await AsyncStorage.getItem('userEmail')
+            console.log("userEmail",email)
+            console.log("jwt",jwt)
+
             if (jwt) {
                 navigation.navigate('root')
             }
@@ -192,6 +197,16 @@ const login = () => {
                             }
                         >
                             <Text style={globalStyles.buttonTxt}>Sign In</Text>
+                        </TouchableOpacity>
+
+                        {/* for testing purposes */}
+                        <TouchableOpacity
+                            style={globalStyles.Button}
+                            onPress={
+                                () => navigation.navigate(BookAppoinment)
+                            }
+                        >
+                            <Text style={globalStyles.buttonTxt}>Book Appoinment</Text>
                         </TouchableOpacity>
 
                         <View style={{ marginTop: '15%', marginBottom: '5%' }}>
