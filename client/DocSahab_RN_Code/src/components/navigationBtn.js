@@ -5,10 +5,12 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
+// styling={ globalStyles.headerNavigation }
+
 const navigationBtn = (props) => {
     const navigation = useNavigation();
     return (
-        <View style={ globalStyles.headerNavigation }>
+        <View style={ props.styling }>
             <View>
                 <Text>
                     <TouchableOpacity onPress={() => navigation.navigate(props.screenName)}>

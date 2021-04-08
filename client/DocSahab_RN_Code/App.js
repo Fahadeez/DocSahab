@@ -16,6 +16,8 @@ import { Linking } from 'react-native';
 import { navigationRef } from './src/RootNavigation';
 import Verifyemail from './src/screens/Auth/VerifyEmail';
 import BookAppoinment from './src/screens/Dashboard/bookAppointment';
+import FeedBack from './src/screens/Dashboard/FeedBack';
+import AppointmentConfirm from './src/screens/Dashboard/AppointmentConfirm';
 
 
 
@@ -102,7 +104,19 @@ function Auth() {
           headerShown: null
         }}
           name="BookAppoinment" component={BookAppoinment}
-        />  
+        />
+
+        <Stack.Screen options={{
+          headerShown: null
+        }}
+          name="FeedBack" component={FeedBack}
+        />
+
+        <Stack.Screen options={{
+          headerShown: null
+        }}
+          name="AppointmentConfirm" component={AppointmentConfirm}
+        /> 
           
       </Stack.Navigator>
     </NavigationContainer>
