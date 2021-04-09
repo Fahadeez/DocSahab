@@ -47,9 +47,10 @@ const DashboardScreen = ({navigation}) => {
 				</TouchableOpacity>
 
 			</View>
+
         </View>
         </ScrollView>
-    
+        
     </View>
 	)
 }

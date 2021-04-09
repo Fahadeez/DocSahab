@@ -31,7 +31,9 @@ import BookAppoinment from '../Dashboard/bookAppointment';
 import FeedBack from '../Dashboard/FeedBack';
 import AppoinmentConfirm from '../Dashboard/AppointmentConfirm';
 
-const login = () => {
+const login = (props) => {
+
+    
     const { state, signIn } = useContext(AuthContext);
 
     const navigation = useNavigation();

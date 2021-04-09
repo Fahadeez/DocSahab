@@ -1,11 +1,15 @@
-import React from 'react';
+import React,{useState} from 'react';
 import {View, StyleSheet, Text, TextInput, TouchableOpacity, FlatList, Image, ScrollView, SafeAreaView} from 'react-native';
-import NavigationHeaderWithBar from '../components/navigationHeaderWithBar';
+import NavigationBtn from '../components/navigationBtn';
 import { globalStyles } from '../styles/globalStyles';
 import Icon from 'react-native-vector-icons/Feather';
+import RNPickerSelect from "react-native-picker-select";
 
 
 const SeachDocScreen = () => {
+
+const [gender, setSelectedGender] = useState();
+const [qualification, setQualification] = useState();
 
 var objects = [
 {id: 1, name: 'Shahzaib Khan', speciality: 'Cardiologist', location: 'Johar, Karachi', image:'https://i.imgflip.com/3ko73y.png'},
@@ -18,47 +22,77 @@ var objects = [
 	return (
 	<View style = {globalStyles.containerColor}>
 
-	<NavigationHeaderWithBar title = "Book appointment"/>
+	<NavigationBtn screenName = "dashboard" title = "Book an appointment"/>
 
 
 	<View style = {{marginTop: '15%'}}>
 	<ScrollView>
 
-
+	<View style = {globalStyles.container}>
 	<View style ={globalStyles.SearchbackgroundStyle}>
-			  <Icon name='search' size={30} color="grey" style = {globalStyles.searchIcon}/>
+			  <Icon name='search' size={30} color="#2A2AC0" style = {globalStyles.searchIcon}/>
 			  <TextInput
 			  placeholder= 'Doctor, Specialities...'
 			  style = {globalStyles.searchBar}
 			  />
 	  </View>
 
-	  <View style ={globalStyles.belowSearchbackgroundStyle}>
-			  <Icon name='map-pin' size={30} color="grey" style = {globalStyles.searchIcon}/>
-			  <TextInput
-			  placeholder= 'Select Area'
-			  style = {globalStyles.searchBar}
-			  />
-	  </View>
+	  <View style={globalStyles.belowpickerView}>
 
-	  <View style ={globalStyles.belowSearchbackgroundStyle}>
-			  <Icon name='calendar' size={30} color="grey" style = {globalStyles.searchIcon}/>
-			  <TextInput
-			  placeholder= 'Select Date'
-			  style = {globalStyles.searchBar}
-			  />
-	  </View>
+        <RNPickerSelect
+            style={{ inputAndroid: { color: 'black' } }}
+            placeholder={{ label: "Select Gender", value: '' }}
+            onValueChange={(gender, value) => {
+                setSelectedGender(value)
+            }
+            }
+
+            selectedValue={gender}
+            items={[
+                { label: "Male", value: "Male" },
+                { label: "Female", value: "Female" },
+            ]}
+        />
+    </View>
+
+    <View style={globalStyles.belowpickerView}>
+        <RNPickerSelect
+            style={{ inputAndroid: { color: 'black' } }}
+            placeholder={{ label: "Select Qualification", value: '' }}
+            onValueChange={(qualification, value) => {
+                setQualification(value)
+            } 
+        }
+
+            selectedValue={qualification}
+
+            items={[
+                { label: "MBBS", value: "MBBS" },
+                { label:"Pharm.D", value:"Pharm.D" },
+                { label:"B.Sc (Hons) MMG", value:"B.Sc (Hons) MMG" },
+                { label:"B.Sc (Hons) Biotechnology", value:"B.Sc (Hons) Biotechnology" },
+                { label:"DPT", value:"DPT" },
+                { label:"DVM", value:"DVM" },
+                { label:"B.Sc (Hons) Microbiology", value:"B.Sc (Hons) Microbiology" },
+                { label:"B.Sc (Hons) DMLS", value:"B.Sc (Hons) DMLS" },
+                { label:"Sc (Hons) Dental Technology", value:"Sc (Hons) Dental Technology" },
+                { label:"Sc (Hons) Doctor Optometry (OD)", value:"Sc (Hons) Doctor Optometry (OD)" },
+                { label:"Sc (Hons) Surgery Technology", value:"Sc (Hons) Surgery Technology" },
+            ]}
+        />
+    </View>
 
 	  <TouchableOpacity
-        style={globalStyles.Button}
+        style={globalStyles.searchButton}
        >
         <Text style={globalStyles.buttonTxt}>Search</Text>
     </TouchableOpacity>
+    </View>
 
     <View style = {styles.itemContainer}>
     <Text>All Specialities</Text>
     <TouchableOpacity>
-    <Icon name='sliders' size={30} color="grey"/>
+    <Icon name='sliders' size={30} color="darkblue"/>
     </TouchableOpacity>
     </View>
 
@@ -74,14 +108,14 @@ var objects = [
 	                source={{
 	                    uri: 'https://i.imgflip.com/3ko73y.png'
 	                }}
-	                style = {{width: 80, height: 80}}
+	                style = {{width: 80, height: 80, borderRadius: 15}}
 	            />
 	            <View style={{marginLeft:15, flexDirection:'column', flex: 1, marginRight: '4%'}}>
 	                <Text style={styles.title}>{item.name}</Text>
 	                <Text style={styles.caption}>{item.speciality}</Text>
 	                <Text style={styles.caption}>{item.location}</Text>
 	                <TouchableOpacity>
-	                <Icon name='more-vertical' size={30} color="grey" style = {{alignSelf: 'flex-end'}}/>
+	                <Icon name='more-vertical' size={25} color="grey" style = {{alignSelf: 'flex-end'}}/>
 	                </TouchableOpacity>
 	            </View>
 	        </View>
@@ -123,7 +157,7 @@ row: {
   marginVertical: 6,
   flexDirection: 'row',
   alignItems: 'center',
-  backgroundColor: 'black',
+  backgroundColor: 'lightgray',
   alignSelf:'stretch',
   marginRight: '4%',
   height: 1
@@ -131,13 +165,12 @@ row: {
 title: {
   fontSize: 16,
   marginTop: 3,
-  fontWeight: 'bold',
   color: '#2A2AC0'
 },
 caption: {
   fontSize: 14,
   lineHeight: 14,
-  color: '#181461',
+  color: 'gray',
   marginTop: 3
 }
 

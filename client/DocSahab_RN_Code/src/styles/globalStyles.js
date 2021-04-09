@@ -31,6 +31,18 @@ export const globalStyles = StyleSheet.create({
         marginBottom:10,
         alignSelf: 'center'
     },
+    searchButton: {
+        width:"90%",
+        color: 'white',
+        backgroundColor: '#2A2AC0',
+        borderRadius:25,
+        height:50,
+        alignItems:"center",
+        justifyContent:"center",
+        marginTop:'7%',
+        marginBottom:15,
+        alignSelf: 'center'
+    },
     modifiedBtn: {
         width:"90%",
         color: 'white',
@@ -122,6 +134,16 @@ export const globalStyles = StyleSheet.create({
         justifyContent:"center",
         padding:15,
     },
+    belowpickerView: {
+        top: '5%',
+        width:"90%",
+        backgroundColor:"white",
+        borderRadius:10,
+        height:50,
+        marginBottom:20,
+        justifyContent:"center",
+        padding:15,
+    },
     inputLabel: {
         width:"90%",
         backgroundColor:"#ECF1FA",
@@ -176,7 +198,7 @@ export const globalStyles = StyleSheet.create({
     flexDirection: 'row'
   },
   belowSearchbackgroundStyle: {
-    marginTop: '7%',
+    marginTop: '5%',
     height: 50,
     width: '90%',
     backgroundColor: 'white',

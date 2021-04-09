@@ -10,14 +10,17 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 const navigationBtn = (props) => {
     const navigation = useNavigation();
     return (
-        <View style={ props.styling }>
+        <View style={ globalStyles.headerNavigation }>
+        <View style = {{marginTop: '7%'}}>
             <View>
                 <Text>
                     <TouchableOpacity onPress={() => navigation.navigate(props.screenName)}>
                         <Icon name='angle-left' size={30} color="#2A2AC0"/>
                     </TouchableOpacity>
-                </Text>            
+                </Text>      
+                <Text style = {{fontSize: 26, color: '#2A2AC0', fontWeight: 'bold', marginTop: '5%'}}>{props.title}</Text>
             </View>
+        </View>
         </View>
     );
 };

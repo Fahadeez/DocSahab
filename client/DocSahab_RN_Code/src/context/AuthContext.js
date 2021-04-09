@@ -92,7 +92,7 @@ const signUpAsDoctor = (dispatch) => {
 
 const signIn = (dispatch) => {
 
-    return async ({ email, password }, navigate) => {
+    return async ({ email, password }) => {
         try {
             const response = await DocSahabApi.post('/auth/login', { email, password })
             // to get our token back
