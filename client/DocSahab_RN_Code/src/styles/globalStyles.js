@@ -38,6 +38,7 @@ export const globalStyles = StyleSheet.create({
         borderRadius:25,
         height:50,
         justifyContent:"center",
+        alignItems: 'center'
     },
     buttonTxt: {
         color: 'white',
