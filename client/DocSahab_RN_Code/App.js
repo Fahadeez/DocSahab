@@ -18,6 +18,7 @@ import Verifyemail from './src/screens/Auth/VerifyEmail';
 import BookAppoinment from './src/screens/Dashboard/bookAppointment';
 import FeedBack from './src/screens/Dashboard/FeedBack';
 import AppointmentConfirm from './src/screens/Dashboard/AppointmentConfirm';
+import MedicalRecord from './src/screens/Dashboard/MedicalRecord';
 
 
 
@@ -116,7 +117,13 @@ function Auth() {
           headerShown: null
         }}
           name="AppointmentConfirm" component={AppointmentConfirm}
-        /> 
+        />
+
+        <Stack.Screen options={{
+          headerShown: null
+        }}
+          name="MedicalRecord" component={MedicalRecord}
+        />
           
       </Stack.Navigator>
     </NavigationContainer>

@@ -169,6 +169,8 @@ class BookAppoinment extends Component {
                         </View>
                         {/* TimeSlots Container Ends */}
 
+                        {/* button */}
+
                         <View style={styles.BookAppointment}>
                             <TouchableOpacity style={styles.BookAppointmentBtn}>
                                 <Text style={globalStyles.buttonTxt}>

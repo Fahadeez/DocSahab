@@ -5,7 +5,6 @@ import { globalStyles } from '../styles/globalStyles';
 import Icon from 'react-native-vector-icons/Feather';
 import RNPickerSelect from "react-native-picker-select";
 
-
 const SeachDocScreen = () => {
 
 const [gender, setSelectedGender] = useState();
@@ -16,9 +15,6 @@ var objects = [
 {id: 2, name: 'Fahad Qadri', speciality: 'Therapist', location: 'Clifton, Karachi', image:'https://i.imgflip.com/3ko73y.png'},
 {id: 3, name: 'Nabeel Siddiqui', speciality: 'Psychologist', location: 'Johar, Karachi', image:'https://i.imgflip.com/3ko73y.png'}
 ];
-
-
-
 	return (
 	<View style = {globalStyles.containerColor}>
 

@@ -30,6 +30,7 @@ import { Context as AuthContext } from '../../context/AuthContext';
 import BookAppoinment from '../Dashboard/bookAppointment';
 import FeedBack from '../Dashboard/FeedBack';
 import AppoinmentConfirm from '../Dashboard/AppointmentConfirm';
+import MedicalRecord from '../Dashboard/MedicalRecord';
 
 const login = (props) => {
 
@@ -230,6 +231,15 @@ const login = (props) => {
                             }
                         >
                             <Text style={globalStyles.buttonTxt}>Appoinment Confirm</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                            style={globalStyles.Button}
+                            onPress={
+                                () => navigation.navigate(MedicalRecord)
+                            }
+                        >
+                            <Text style={globalStyles.buttonTxt}>Medical Record</Text>
                         </TouchableOpacity>
 
                         {/* for testing purposes ends */}

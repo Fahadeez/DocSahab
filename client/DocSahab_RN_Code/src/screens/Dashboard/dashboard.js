@@ -4,7 +4,7 @@ import HeaderView from '../../components/headerView';
 import NavigationHeaderWithBar from '../../components/navigationHeaderWithBar';
 import { globalStyles } from '../../styles/globalStyles';
 import Icon from 'react-native-vector-icons/Feather';
-import SearchDocScreen from '../SearchDoc'
+import SearchDocScreen from '../SearchDoc';
 
 const DashboardScreen = ({navigation}) => {
 	return (
@@ -18,7 +18,7 @@ const DashboardScreen = ({navigation}) => {
 			  placeholder= 'Search'
 			  style = {globalStyles.searchBar}
 			  />
-	  </View>
+	  	</View>
 
 	  <ScrollView style = {{marginTop: '6%'}}>
 
