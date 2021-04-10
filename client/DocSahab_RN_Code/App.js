@@ -43,12 +43,12 @@ function Root({route, navigation}) {
       <Drawer.Screen options={{
         headerShown: null
       }}
-        name="dashboard" component={SearchDocScreen}
+        name="dashboard" component={DashboardScreen}
       />
       <Drawer.Screen options={{
         headerShown: null
       }}
-        name="SearchDoc" component={DashboardScreen}
+        name="SearchDoc" component={SearchDocScreen}
       />
     </Drawer.Navigator>
   );
