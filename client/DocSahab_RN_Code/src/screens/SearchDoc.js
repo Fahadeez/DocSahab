@@ -5,7 +5,7 @@ import { globalStyles } from '../styles/globalStyles';
 import Icon from 'react-native-vector-icons/Feather';
 import RNPickerSelect from "react-native-picker-select";
 
-const SeachDocScreen = () => {
+const SeachDocScreen = ({navigation}) => {
 
 const [gender, setSelectedGender] = useState();
 const [qualification, setQualification] = useState();
@@ -13,12 +13,14 @@ const [qualification, setQualification] = useState();
 var objects = [
 {id: 1, name: 'Shahzaib Khan', speciality: 'Cardiologist', location: 'Johar, Karachi', image:'https://i.imgflip.com/3ko73y.png'},
 {id: 2, name: 'Fahad Qadri', speciality: 'Therapist', location: 'Clifton, Karachi', image:'https://i.imgflip.com/3ko73y.png'},
-{id: 3, name: 'Nabeel Siddiqui', speciality: 'Psychologist', location: 'Johar, Karachi', image:'https://i.imgflip.com/3ko73y.png'}
+{id: 3, name: 'Nabeel Siddiqui', speciality: 'Psychologist', location: 'Johar, Karachi', image:'https://i.imgflip.com/3ko73y.png'},
+// testing
+{id: 4, name: 'Dr. Clara Odding', speciality: 'Dentist', location: 'Karachi, Pakistan', image:'https://media.istockphoto.com/photos/doctor-holding-digital-tablet-at-meeting-room-picture-id1189304032?k=6&m=1189304032&s=612x612&w=0&h=SJPF2M715kIFAKoYHGbb1uAyptbz6Tn7-LxPsm5msPE='}
 ];
 	return (
 	<View style = {globalStyles.containerColor}>
 
-	<NavigationBtn screenName = "dashboard" title = "Book an appointment"/>
+	<NavigationBtn screenName = "DashboardScreen" title = "Book an appointment" styling = { globalStyles.headerNavigation } />
 
 
 	<View style = {{marginTop: '15%'}}>
@@ -107,7 +109,12 @@ var objects = [
 	                style = {{width: 80, height: 80, borderRadius: 15}}
 	            />
 	            <View style={{marginLeft:15, flexDirection:'column', flex: 1, marginRight: '4%'}}>
-	                <Text style={styles.title}>{item.name}</Text>
+	                {/* testing */}
+                    <TouchableOpacity 
+                        onPress = {() => navigation.navigate('BookAppoinment')}
+                    >
+                        <Text style={styles.title}>{item.name}</Text>
+                    </TouchableOpacity>
 	                <Text style={styles.caption}>{item.speciality}</Text>
 	                <Text style={styles.caption}>{item.location}</Text>
 	                <TouchableOpacity>

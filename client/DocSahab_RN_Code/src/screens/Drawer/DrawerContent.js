@@ -23,9 +23,10 @@ import { Context as AuthContext } from '../../context/AuthContext';
 export function DrawerContent(props) {
     const { state, signOut } = useContext(AuthContext);
 
-     function navigate(){
-      props.navigation.navigate('login')
-     }
+    function navigate(){
+        props.navigation.navigate('login')
+    }
+
     return(
         <View style={styles.drawerContent}>
             <DrawerContentScrollView {...props}>
@@ -69,7 +70,7 @@ export function DrawerContent(props) {
                                 />
                             )}
                             label="New Appointment"
-                            onPress={() => {props.navigation.navigate('Profile')}}
+                            onPress={() => {props.navigation.navigate('SearchDoc')}}
                         />
                         <DrawerItem 
                             icon={({color, size}) => (
@@ -80,7 +81,7 @@ export function DrawerContent(props) {
                                 />
                             )}
                             label="Medical Records"
-                            onPress={() => {props.navigation.navigate('BookmarkScreen')}}
+                            onPress={() => {props.navigation.navigate('MedicalRecord')}}
                         />
                         <DrawerItem 
                             icon={({color, size}) => (
@@ -113,7 +114,7 @@ export function DrawerContent(props) {
                                 />
                             )}
                             label="Help"
-                            onPress={() => {props.navigation.navigate('SupportScreen')}}
+                            onPress={() => {props.navigation.navigate('Help')}}
                         />
                     </Drawer.Section>
                 </View>

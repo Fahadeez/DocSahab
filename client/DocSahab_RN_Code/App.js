@@ -19,8 +19,7 @@ import BookAppoinment from './src/screens/Dashboard/bookAppointment';
 import FeedBack from './src/screens/Dashboard/FeedBack';
 import AppointmentConfirm from './src/screens/Dashboard/AppointmentConfirm';
 import MedicalRecord from './src/screens/Dashboard/MedicalRecord';
-
-
+import Help from './src/screens/Dashboard/Help';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -28,7 +27,6 @@ const Drawer = createDrawerNavigator();
 const config = {
   screens: {
     resetPassword: 'resetpassword',
-    // resetPassword: 'resetPassword',
   },
 };
 
@@ -43,14 +41,30 @@ function Root({route, navigation}) {
       <Drawer.Screen options={{
         headerShown: null
       }}
-        name="dashboard" component={DashboardScreen}
+        name="DashboardScreen" component={DashboardScreen}
       />
       <Drawer.Screen options={{
         headerShown: null
       }}
         name="SearchDoc" component={SearchDocScreen}
       />
+      <Drawer.Screen options={{
+        headerShown: null
+      }}
+        name="MedicalRecord" component={MedicalRecord}
+      />
+      <Drawer.Screen options={{
+        headerShown: null
+      }}
+        name="BookAppoinment" component={BookAppoinment}
+      />
+      <Drawer.Screen options={{
+        headerShown: null
+      }}
+        name="Help" component={Help}
+      />
     </Drawer.Navigator>
+    
   );
 }
 
@@ -124,6 +138,7 @@ function Auth() {
         }}
           name="MedicalRecord" component={MedicalRecord}
         />
+
           
       </Stack.Navigator>
     </NavigationContainer>

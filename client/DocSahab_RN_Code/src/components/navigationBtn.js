@@ -10,7 +10,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 const navigationBtn = (props) => {
     const navigation = useNavigation();
     return (
-        <View style={ globalStyles.headerNavigation }>
+        <View style={ globalStyles.headerNavigation, props.styling }>
         <View style = {{marginTop: '7%'}}>
             <View>
                 <Text>

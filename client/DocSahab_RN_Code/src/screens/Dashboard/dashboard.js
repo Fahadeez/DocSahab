@@ -4,9 +4,11 @@ import HeaderView from '../../components/headerView';
 import NavigationHeaderWithBar from '../../components/navigationHeaderWithBar';
 import { globalStyles } from '../../styles/globalStyles';
 import Icon from 'react-native-vector-icons/Feather';
-import SearchDocScreen from '../SearchDoc';
+// import SearchDocScreen from '../SearchDoc';
+// import MedicalRecord from './MedicalRecord';
 
 const DashboardScreen = ({navigation}) => {
+	// const navigation = useNavigation();
 	return (
 	<View style = {globalStyles.containerColor}>
 
@@ -30,8 +32,11 @@ const DashboardScreen = ({navigation}) => {
 				<Image source={require('../../../assets/appointment.png')} style = {styles.childBox} />
 				</TouchableOpacity>
 
-				<TouchableOpacity style = {styles.childBox}>
-				<Image source={require('../../../assets/records.png')} style = {styles.childBox} />
+				<TouchableOpacity 
+					style = {styles.childBox}
+					onPress = {() => navigation.navigate('MedicalRecord')}
+				>
+				<Image source={require('../../../assets/records.png')} style = {styles.childBox}/>
 				</TouchableOpacity>
 
 			</View>

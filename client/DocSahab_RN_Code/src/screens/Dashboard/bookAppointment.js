@@ -41,7 +41,7 @@ class BookAppoinment extends Component {
 
                     {/* // Sub root container */}
                     <View style={globalStyles.containerForBookAppointment}>
-                        <NavigationBtn screenName={Signin} styling={ styles.headerNavigation } />
+                        <NavigationBtn screenName={'SearchDoc'} styling={ styles.headerNavigation } />
 
                         {/* doctor profile and information */}
                         <View style={styles.containerProfile }>

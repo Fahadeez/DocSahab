@@ -33,11 +33,11 @@ import AppoinmentConfirm from '../Dashboard/AppointmentConfirm';
 import MedicalRecord from '../Dashboard/MedicalRecord';
 
 const login = (props) => {
-
     
     const { state, signIn } = useContext(AuthContext);
 
     const navigation = useNavigation();
+
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     // console.log(state);
@@ -64,13 +64,13 @@ const login = (props) => {
 
     useEffect(() => {
         //Just for testing logout,
-        async function logout() {
-            await DocSahabApi.get('auth/logout')
-            await AsyncStorage.removeItem('token')
-        }
-        function navigate(){
-            navigation.navigate('doctordetails')
-        }
+        // async function logout() {
+        //     await DocSahabApi.get('auth/logout')
+        //     await AsyncStorage.removeItem('token')
+        // }
+        // function navigate(){
+        //     navigation.navigate('doctordetails')
+        // }
        
         async function checkJwt() {
             const jwt = await AsyncStorage.getItem('token')
@@ -84,7 +84,7 @@ const login = (props) => {
         }
         checkJwt()
         // navigate() // For testing doctors details page
-        //  logout()
+        // logout()
     }, []);
 
     return (
@@ -209,15 +209,6 @@ const login = (props) => {
                         <TouchableOpacity
                             style={globalStyles.Button}
                             onPress={
-                                () => navigation.navigate(BookAppoinment)
-                            }
-                        >
-                            <Text style={globalStyles.buttonTxt}>Book Appoinment</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity
-                            style={globalStyles.Button}
-                            onPress={
                                 () => navigation.navigate(FeedBack)
                             }
                         >
@@ -233,18 +224,7 @@ const login = (props) => {
                             <Text style={globalStyles.buttonTxt}>Appoinment Confirm</Text>
                         </TouchableOpacity>
 
-                        <TouchableOpacity
-                            style={globalStyles.Button}
-                            onPress={
-                                () => navigation.navigate(MedicalRecord)
-                            }
-                        >
-                            <Text style={globalStyles.buttonTxt}>Medical Record</Text>
-                        </TouchableOpacity>
-
                         {/* for testing purposes ends */}
-
-
 
                         <View style={{ marginTop: '15%', marginBottom: '5%' }}>
                             <View style={{ flexDirection: 'row' }}>

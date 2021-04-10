@@ -5,6 +5,7 @@ import { globalStyles } from '../../styles/globalStyles';
 import Signin from '../Auth/login';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { SearchBar } from 'react-native-elements';
+import DashboardScreen from '../Dashboard/dashboard';
 
 class MedicalRecord extends React.Component {
     state = {
@@ -30,7 +31,7 @@ class MedicalRecord extends React.Component {
                 >
                     {/* sub root container */}
                     <View style={ styles.containerForMedicalRecord }>
-                        <NavigationBtn screenName={Signin} styling={ styles.headerNavigation }/>
+                        <NavigationBtn screenName={DashboardScreen} styling={ styles.headerNavigation }/>
 
                         <View style={{ 
                             // marginBottom: '5%'
