@@ -20,6 +20,8 @@ import FeedBack from './src/screens/Dashboard/FeedBack';
 import AppointmentConfirm from './src/screens/Dashboard/AppointmentConfirm';
 import MedicalRecord from './src/screens/Dashboard/MedicalRecord';
 import Help from './src/screens/Dashboard/Help';
+import Chat from './src/screens/Dashboard/Chat';
+import MyAppointment from './src/screens/Dashboard/MyAppointment';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -63,8 +65,13 @@ function Root({route, navigation}) {
       }}
         name="Help" component={Help}
       />
+
+      <Drawer.Screen options={{
+        headerShown: null
+      }}
+        name="MyAppointment" component={MyAppointment}
+      />
     </Drawer.Navigator>
-    
   );
 }
 
@@ -137,6 +144,12 @@ function Auth() {
           headerShown: null
         }}
           name="MedicalRecord" component={MedicalRecord}
+        />
+
+        <Stack.Screen options={{
+          headerShown: null
+        }}
+          name="Chat" component={Chat}
         />
 
           

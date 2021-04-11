@@ -1,13 +1,12 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
-import NavigationBtn from '../../components/navigationBtn';
-// import { globalStyles } from '../../styles/globalStyles';
-// import Signin from '../Auth/login';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { SearchBar } from 'react-native-elements';
-import DashboardScreen from '../Dashboard/dashboard';
+import NavigationBtn from '../../components/navigationBtn';
+import { globalStyles } from '../../styles/globalStyles';
 
-class MedicalRecord extends React.Component {
+class MyAppointment extends Component {
+    
     state = {
         search: '',
     };
@@ -24,24 +23,16 @@ class MedicalRecord extends React.Component {
             <View style={{
                 flex: 1,
                 backgroundColor: '#ECF1FA',
-            }}>
+                }}>
                 <ScrollView
                     showsVerticalScrollIndicator={false}
                     showsHorizontalScrollIndicator={false}
                 >
                     {/* sub root container */}
-                    <View style={ styles.containerForMedicalRecord }>
-                        <NavigationBtn screenName={DashboardScreen} styling={ styles.headerNavigation }/>
+                    <View style={ styles.containerForMyAppointment }>
+                        <NavigationBtn screenName={'DashboardScreen'} title="Your Appointments" />
 
-                        <View style={{ 
-                            // marginBottom: '5%'
-                        }}>
-                            <Text style={ styles.headerTxt }>
-                                Medical Records
-                            </Text>
-                        </View>
-
-                        <View style={{ marginBottom: '10%' }}>
+                        <View style={{ marginBottom: '10%', marginTop: '5%' }}>
                             <SearchBar
                                 inputContainerStyle={{ backgroundColor: 'white' }}
                                 containerStyle={{
@@ -59,27 +50,27 @@ class MedicalRecord extends React.Component {
                             />
                         </View>
 
-                        {/* records details tab navigation */}
-                        <View style={ styles.RecordsInfoTabNavigation }>
+                        {/* my appointments details tab navigation */}
+                        <View style={ styles.UpcomingInfoTabNavigation }>
                             <ScrollView
                                 horizontal={true}
                                 showsVerticalScrollIndicator={false}
                                 showsHorizontalScrollIndicator={false}>
                                 
-                                {/* View Screen */}
+                                {/* Upcoming Screen */}
 
                                 <View
-                                    style={ styles.ViewScreen }
+                                    style={ styles.UpcomingScreen }
                                 >
                                     <ScrollView
                                         showsVerticalScrollIndicator={false}
                                         showsHorizontalScrollIndicator={false}>
 
                                         <View style={styles.SwapableViews}>
-                                            <Text style={styles.SwapableViewsTitle}>View</Text>
+                                            <Text style={styles.SwapableViewsTitle}>Upcoming</Text>
                                         </View>
 
-                                        {/* View Sub Container for records */}
+                                        {/* Upcoming View Sub Container for my appointments */}
                                         <View style={{
                                             flexDirection: 'row',
                                             alignItems: 'center',
@@ -99,6 +90,17 @@ class MedicalRecord extends React.Component {
                                                         <Text style={{ fontSize: 15, textAlign: 'center' }}>Dentist</Text>
                                                         <Text style={{ fontSize: 15, textAlign: 'center' }}> - </Text>
                                                         <Text style={{ fontSize: 15, textAlign: 'center' }}>Nabeel Iqbal Siddiqui</Text>
+                                                        
+                                                        <View style={{ 
+                                                            marginStart: '3%',
+                                                            justifyContent: 'center'
+                                                        }}>
+                                                            <Icon
+                                                                name={"info-circle"}
+                                                                size={16} 
+                                                                color="#2A2AC0"
+                                                            />
+                                                        </View>
                                                     </View>
 
                                                 </View>
@@ -111,7 +113,7 @@ class MedicalRecord extends React.Component {
                                              }}>
                                                 <View style={{ marginEnd: '3%' }}>
                                                     <Icon
-                                                        name={"arrow-circle-down"}
+                                                        name={"pencil"}
                                                         size={20} 
                                                         color="#2A2AC0"
                                                     />
@@ -124,7 +126,7 @@ class MedicalRecord extends React.Component {
                                                                 fontSize: 16,
                                                                 fontWeight: '500'
                                                             }}>
-                                                                Download
+                                                                Modify
                                                             </Text>
                                                         </View>
                                                     </TouchableOpacity>
@@ -141,21 +143,30 @@ class MedicalRecord extends React.Component {
                                                     marginBottom: 15
                                                 }}
                                         />
-                                        
 
                                     </ScrollView>
+
+                                    {/* button */}
+                                    <TouchableOpacity
+                                        style={ styles.Button }
+                                        // onPress={
+                                        //     () => navigation.navigate()
+                                        // }
+                                    >
+                                        <Text style={globalStyles.buttonTxt}>Book A New Appointment</Text>
+                                    </TouchableOpacity>
                                 </View>
 
-                                {/* Upload Screen */}
+                                {/* Past Screen */}
                                 <View
-                                    style={ styles.UploadScreen }
+                                    style={ styles.PastScreen }
                                 >
                                     <ScrollView
                                         showsVerticalScrollIndicator={false}
                                         showsHorizontalScrollIndicator={false}>
                                         
                                         <View style={styles.SwapableViews}>
-                                            <Text style={styles.SwapableViewsTitle}>Upload</Text>
+                                            <Text style={styles.SwapableViewsTitle}>Past</Text>
                                         </View>
 
                                     </ScrollView>
@@ -165,6 +176,7 @@ class MedicalRecord extends React.Component {
                         </View>
 
                     </View>
+
                 </ScrollView>
             </View>
         );
@@ -172,31 +184,16 @@ class MedicalRecord extends React.Component {
 }
 
 const styles = StyleSheet.create({
-    containerForMedicalRecord: {
+    containerForMyAppointment: {
         flex: 1,
         backgroundColor: '#ECF1FA',
         padding: 23,
     },
-    headerTxt: {
-        fontSize: 20,
-        fontWeight: '100',
-        color: 'black',
-        marginBottom: '5%',
-    },
-    headerNavigation: {
-        marginTop: '5%',
-        marginBottom: '5%',
-        width: '100%',
-        height: '5%',
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'flex-start',
-    },
-    RecordsInfoTabNavigation: {
+    UpcomingInfoTabNavigation: {
         flexDirection: 'row',
         height: 550
     },
-    ViewScreen: {
+    UpcomingScreen: {
         flexDirection: "column", 
         backgroundColor: "white",
         borderRadius: 15,
@@ -212,7 +209,7 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: 'bold',
     },
-    UploadScreen: {
+    PastScreen: {
         flex: 1,
         flexDirection: "column", 
         backgroundColor: "white",
@@ -222,6 +219,19 @@ const styles = StyleSheet.create({
         width: 430,
         marginLeft: 20,
     },
+    Button: {
+        width:"100%",
+        color: 'white',
+        backgroundColor: '#2A2AC0',
+        borderRadius:25,
+        height:50,
+        alignItems:"center",
+        justifyContent:"center",
+        marginTop:40,
+        marginBottom:10,
+        alignSelf: 'center'
+    }
+
 });
 
-export default MedicalRecord;
+export default MyAppointment;
