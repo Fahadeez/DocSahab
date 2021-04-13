@@ -22,6 +22,7 @@ import MedicalRecord from './src/screens/Dashboard/MedicalRecord';
 import Help from './src/screens/Dashboard/Help';
 import Chat from './src/screens/Dashboard/Chat';
 import MyAppointment from './src/screens/Dashboard/MyAppointment';
+import PaymentScreen from './src/screens/payment';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -185,6 +186,14 @@ function Auth() {
           }}
           name="Chat"
           component={Chat}
+        />
+
+        <Stack.Screen
+          options={{
+            headerShown: null,
+          }}
+          name="payment"
+          component={PaymentScreen}
         />
 
         
