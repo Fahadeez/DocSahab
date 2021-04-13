@@ -5,6 +5,7 @@ import signup from './src/screens/Auth/signup';
 import doctordetails from './src/screens/Auth/DoctorDetails';
 import forgetpassword from './src/screens/Auth/ForgetPassword';
 import SearchDocScreen from './src/screens/SearchDoc';
+import PaymentScreen from './src/screens/payment';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { NavigationContainer } from '@react-navigation/native';
@@ -20,6 +21,7 @@ import FeedBack from './src/screens/Dashboard/FeedBack';
 import AppointmentConfirm from './src/screens/Dashboard/AppointmentConfirm';
 import MedicalRecord from './src/screens/Dashboard/MedicalRecord';
 import Help from './src/screens/Dashboard/Help';
+
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -139,6 +141,11 @@ function Auth() {
           name="MedicalRecord" component={MedicalRecord}
         />
 
+        <Stack.Screen options={{
+          headerShown: null
+        }}
+          name="payment" component={PaymentScreen}
+        />
           
       </Stack.Navigator>
     </NavigationContainer>

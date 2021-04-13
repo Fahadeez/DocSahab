@@ -14,7 +14,7 @@ const navigationBtn = (props) => {
         <View style = {{marginTop: '7%'}}>
             <View>
                 <Text>
-                    <TouchableOpacity onPress={() => navigation.navigate(props.screenName)}>
+                    <TouchableOpacity onPress={() => navigation.goBack()}>
                         <Icon name='angle-left' size={30} color="#2A2AC0"/>
                     </TouchableOpacity>
                 </Text>      

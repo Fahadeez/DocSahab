@@ -6,10 +6,12 @@ import Signin from '../Auth/login';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import 'react-native-gesture-handler';
 import Flag from 'react-native-flags';
+import { useNavigation } from '@react-navigation/native';
 
 const numStars = 5
 
 class BookAppoinment extends Component {
+
     state = {
         rating: 2
     }
@@ -172,7 +174,7 @@ class BookAppoinment extends Component {
                         {/* button */}
 
                         <View style={styles.BookAppointment}>
-                            <TouchableOpacity style={styles.BookAppointmentBtn}>
+                            <TouchableOpacity style={styles.BookAppointmentBtn} onPress = {() => {this.props.navigation.navigate('payment')}}>
                                 <Text style={globalStyles.buttonTxt}>
                                     Book Appointment
                                 </Text>

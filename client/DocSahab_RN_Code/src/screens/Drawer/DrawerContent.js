@@ -15,7 +15,6 @@ import {
     DrawerContentScrollView,
     DrawerItem
 } from '@react-navigation/drawer';
-
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {globalStyles} from '../../styles/globalStyles';
 import { Context as AuthContext } from '../../context/AuthContext';
