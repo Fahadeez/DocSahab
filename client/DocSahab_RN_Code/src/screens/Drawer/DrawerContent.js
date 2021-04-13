@@ -58,7 +58,7 @@ export function DrawerContent(props) {
                                 />
                             )}
                             label="My Appointments"
-                            onPress={() => {props.navigation.navigate('Home')}}
+                            onPress={() => {props.navigation.navigate('MyAppointment')}}
                         />
                         <DrawerItem 
                             icon={({color, size}) => (

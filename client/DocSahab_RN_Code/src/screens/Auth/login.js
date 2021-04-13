@@ -27,10 +27,9 @@ import {
 } from 'react-hook-form';
 import { Context as AuthContext } from '../../context/AuthContext';
 // testing only
-import BookAppoinment from '../Dashboard/bookAppointment';
 import FeedBack from '../Dashboard/FeedBack';
 import AppoinmentConfirm from '../Dashboard/AppointmentConfirm';
-import MedicalRecord from '../Dashboard/MedicalRecord';
+import Chat from '../Dashboard/Chat';
 
 const login = (props) => {
     
@@ -205,17 +204,46 @@ const login = (props) => {
                             <Text style={globalStyles.buttonTxt}>Sign In</Text>
                         </TouchableOpacity>
 
+                        {/* for testing purposes starts */}
+                        <TouchableOpacity
+                            style={globalStyles.Button}
+                            onPress={
+                                () => navigation.navigate(FeedBack)
+                            }
+                        >
+                            <Text style={globalStyles.buttonTxt}>FeedBack</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                            style={globalStyles.Button}
+                            onPress={
+                                () => navigation.navigate(AppoinmentConfirm)
+                            }
+                        >
+                            <Text style={globalStyles.buttonTxt}>Appoinment Confirm</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                            style={globalStyles.Button}
+                            onPress={
+                                () => navigation.navigate(Chat)
+                            }
+                        >
+                            <Text style={globalStyles.buttonTxt}>Chat</Text>
+                        </TouchableOpacity>
+                        {/* for testing purposes ends */}
+
                         <View style={{ marginTop: '15%', marginBottom: '5%' }}>
                             <View style={{ flexDirection: 'row' }}>
                                 <Text>
                                     Doesn't have account?
-                            </Text>
+                                </Text>
                                 <TouchableOpacity onPress={() => navigation.navigate(Signup)}>
                                     <Text style={{ color: "#2A2AC0" }}> Sign up </Text>
                                 </TouchableOpacity>
                                 <Text>
                                     here
-                            </Text>
+                                </Text>
                             </View>
                         </View>
 
