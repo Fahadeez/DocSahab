@@ -1,26 +1,28 @@
-import React, { Component } from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
-import HeaderWithPic from '../../components/headerWithPic';
+import React from 'react';
+import { View, StyleSheet } from 'react-native';
+import HeaderWithPicForChat from '../../components/headerWithPicForChat';
+import Chat_Module from '../Dashboard/CHAT_SCREEN/Chat_Module';
 
-class Chat extends Component {
+class Chat extends React.Component {
   render() {
     return (
-      // root container
       <View
         style={{
           flex: 1,
+          padding: 5,
           backgroundColor: '#ECF1FA',
         }}
       >
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          showsHorizontalScrollIndicator={false}
-        >
-          {/* sub root container */}
-          <View style={styles.containerForChat}>
-            <HeaderWithPic title="Dr. Clara Odding" />
-          </View>
-        </ScrollView>
+        <View style={styles.containerForChat}>
+          <HeaderWithPicForChat title="Dr. Clara Odding" />
+        </View>
+
+        <View style={{
+          flex: 0.9,
+          padding: 5
+        }}>
+          <Chat_Module />
+        </View>
       </View>
     );
   }
@@ -28,9 +30,10 @@ class Chat extends Component {
 
 const styles = StyleSheet.create({
   containerForChat: {
-    flex: 1,
+    flex: 0.1,
+    marginLeft: '1%',
+    marginTop: '5%',
     backgroundColor: '#ECF1FA',
-    padding: 23,
   },
 });
 
