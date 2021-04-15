@@ -14,17 +14,49 @@ const numStars = 5
 class BookAppoinment extends Component {
 
     state = {
-        rating: 2
+        rating: 2,
+        Doc_data: []
     }
-    render() {
-        const id = this.props.route.params.id;
-        var doctor = [];
-        const getData = async (id) => {
-        const response = await DocSahabApi.get(`/api/doctor/${id}`);
-        doctor = response.data;
-        };
-        
 
+    async componentDidMount() {
+        try {
+            const id = this.props.route.params.id;
+            const response = await DocSahabApi.get(`/api/doctor/${id}`);
+            this.setState({ Doc_data: response.data })
+            // doctor = response.data;
+            console.log('doc data: ', response.data)
+        } catch(err) {
+            console.log("Error: ", err);
+        }
+    }
+
+    // for flat list
+    renderData(props) {
+        return (
+            <View>
+                <Text>
+                    { props.firstName }
+                </Text>
+            </View>
+        );
+    }
+
+
+    render() {
+        const { Doc_data } = this.state;
+        
+        // const id = this.props.route.params.id;
+
+        // const name = this.props.route.params.firstName;
+
+        // var doctor = [];
+        // const getData = async (id) => {
+        // const response = await DocSahabApi.get(`/api/doctor/${id}`);
+        // console.log('id: ', id)
+        // doctor = response.data;
+        // console.log('data', doctor.firstName);
+        // // console.log('name: ', name);
+        // };
 
         let stars = [];
         for(let x = 1; x <= numStars; x++) {
@@ -68,7 +100,7 @@ class BookAppoinment extends Component {
                                         fontSize: 15,
                                         fontWeight: 'bold'
                                     }}>
-                                        {doctor.firstName}
+                                        { Doc_data.firstName }
                                     </Text>
                                 </View>
                                 <View style={ styles.DocProfileInfo }>
@@ -76,7 +108,8 @@ class BookAppoinment extends Component {
                                         fontSize: 14,
                                         color: 'grey'
                                     }}>
-                                        Dentist
+                                        {/* Dentist */}
+                                        { Doc_data.qualification }
                                     </Text>
                                 </View>
                                 <View style={ styles.DocProfileInfo }>
@@ -132,7 +165,9 @@ class BookAppoinment extends Component {
                                             justifyContent: 'center',
                                             alignItems: 'flex-end'
                                         }}>
-                                            <TouchableOpacity style={ styles.SeeAllBtn } onPress = {getData(id), console.log(doctor)}>
+                                            <TouchableOpacity style={ styles.SeeAllBtn } 
+                                                // onPress = {getData(id), console.log(doctor)}
+                                            >
                                                 <Text style={{ color: 'white', fontSize: 14, }}>
                                                     See All
                                                 </Text>
