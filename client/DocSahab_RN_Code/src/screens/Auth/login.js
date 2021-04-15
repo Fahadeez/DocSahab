@@ -214,23 +214,23 @@ const login = (props) => {
                             <Text style={globalStyles.buttonTxt}>FeedBack</Text>
                         </TouchableOpacity>
 
-                        <TouchableOpacity
+                        {/* <TouchableOpacity
                             style={globalStyles.Button}
                             onPress={
                                 () => navigation.navigate(AppoinmentConfirm)
                             }
                         >
                             <Text style={globalStyles.buttonTxt}>Appoinment Confirm</Text>
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
 
-                        <TouchableOpacity
+                        {/* <TouchableOpacity
                             style={globalStyles.Button}
                             onPress={
                                 () => navigation.navigate(Chat)
                             }
                         >
                             <Text style={globalStyles.buttonTxt}>Chat</Text>
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
                         {/* for testing purposes ends */}
 
                         <View style={{ marginTop: '15%', marginBottom: '5%' }}>

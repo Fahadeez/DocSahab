@@ -1,22 +1,33 @@
-import React,{useState} from 'react';
+import React,{useState, useContext, useEffect} from 'react';
 import {View, StyleSheet, Text, TextInput, TouchableOpacity, FlatList, Image, ScrollView, SafeAreaView} from 'react-native';
 import NavigationBtn from '../components/navigationBtn';
 import { globalStyles } from '../styles/globalStyles';
 import Icon from 'react-native-vector-icons/Feather';
 import RNPickerSelect from "react-native-picker-select";
+import DocSahabApi from '../api/DocSahabApi';
 
 const SeachDocScreen = ({navigation}) => {
 
 const [gender, setSelectedGender] = useState();
 const [qualification, setQualification] = useState();
+const [doctors, setDoctors] = useState([]);
 
-var objects = [
-{id: 1, name: 'Shahzaib Khan', speciality: 'Cardiologist', location: 'Johar, Karachi', image:'https://i.imgflip.com/3ko73y.png'},
-{id: 2, name: 'Fahad Qadri', speciality: 'Therapist', location: 'Clifton, Karachi', image:'https://i.imgflip.com/3ko73y.png'},
-{id: 3, name: 'Nabeel Siddiqui', speciality: 'Psychologist', location: 'Johar, Karachi', image:'https://i.imgflip.com/3ko73y.png'},
-// testing
-{id: 4, name: 'Dr. Clara Odding', speciality: 'Dentist', location: 'Karachi, Pakistan', image:'https://media.istockphoto.com/photos/doctor-holding-digital-tablet-at-meeting-room-picture-id1189304032?k=6&m=1189304032&s=612x612&w=0&h=SJPF2M715kIFAKoYHGbb1uAyptbz6Tn7-LxPsm5msPE='}
-];
+const searchAPI = async () => {
+    try{
+      const response = await DocSahabApi.get('/api/doctors');
+      setDoctors(response.data)
+    }
+    catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    searchAPI();
+  }, []);
+
+
+
 	return (
 	<View style = {globalStyles.containerColor}>
 
@@ -82,6 +93,7 @@ var objects = [
 
 	  <TouchableOpacity
         style={globalStyles.searchButton}
+        onPress = {searchAPI()}
        >
         <Text style={globalStyles.buttonTxt}>Search</Text>
     </TouchableOpacity>
@@ -96,7 +108,7 @@ var objects = [
 
    	<View>
 	  <FlatList
-	  data = {objects}
+	  data = {doctors}
 	  renderItem = {({item}) => {
 	    return(
 
@@ -111,12 +123,29 @@ var objects = [
 	            <View style={{marginLeft:15, flexDirection:'column', flex: 1, marginRight: '4%'}}>
 	                {/* testing */}
                     <TouchableOpacity 
-                        onPress = {() => navigation.navigate('BookAppoinment')}
+                        onPress = {() => navigation.navigate('BookAppoinment', {
+                          id: item._id
+                        })
+                      }
                     >
-                        <Text style={styles.title}>{item.name}</Text>
+                        <Text style={styles.title}>{item.firstName}</Text>
                     </TouchableOpacity>
-	                <Text style={styles.caption}>{item.speciality}</Text>
-	                <Text style={styles.caption}>{item.location}</Text>
+	                <Text style={styles.caption}>{item.specialization}</Text>
+	                <Text style={styles.caption}>{item.city}</Text>
+                  <FlatList
+                  data = {item.timeSlots}
+                  renderItem = {({item}) => {
+                    return (
+                      <Text style={styles.caption}>{item.value}</Text>
+                      )
+                  }}
+
+                  keyExtractor = {item2 => item2.value}
+
+                  />
+
+
+
 	                <TouchableOpacity>
 	                <Icon name='more-vertical' size={25} color="grey" style = {{alignSelf: 'flex-end'}}/>
 	                </TouchableOpacity>
@@ -131,7 +160,7 @@ var objects = [
 
 	    )
 	  }}
-	  keyExtractor = {item => item.id.toString()}
+	  keyExtractor = {item => item._id.toString()}
 	  />
   </View>
 

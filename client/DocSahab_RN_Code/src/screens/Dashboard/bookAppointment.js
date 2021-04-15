@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Image, TouchableWithoutFeedback, Animated, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableWithoutFeedback, Animated, TouchableOpacity, ScrollView, FlatList } from 'react-native';
 import NavigationBtn from '../../components/navigationBtn';
 import { globalStyles } from '../../styles/globalStyles';
 import Signin from '../Auth/login';
@@ -7,6 +7,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import 'react-native-gesture-handler';
 import Flag from 'react-native-flags';
 import { useNavigation } from '@react-navigation/native';
+import DocSahabApi from '../../api/DocSahabApi';
 
 const numStars = 5
 
@@ -16,6 +17,15 @@ class BookAppoinment extends Component {
         rating: 2
     }
     render() {
+        const id = this.props.route.params.id;
+        var doctor = [];
+        const getData = async (id) => {
+        const response = await DocSahabApi.get(`/api/doctor/${id}`);
+        doctor = response.data;
+        };
+        
+
+
         let stars = [];
         for(let x = 1; x <= numStars; x++) {
             stars.push(
@@ -58,7 +68,7 @@ class BookAppoinment extends Component {
                                         fontSize: 15,
                                         fontWeight: 'bold'
                                     }}>
-                                        Dr. Clara Odding
+                                        {doctor.firstName}
                                     </Text>
                                 </View>
                                 <View style={ styles.DocProfileInfo }>
@@ -122,7 +132,7 @@ class BookAppoinment extends Component {
                                             justifyContent: 'center',
                                             alignItems: 'flex-end'
                                         }}>
-                                            <TouchableOpacity style={ styles.SeeAllBtn }>
+                                            <TouchableOpacity style={ styles.SeeAllBtn } onPress = {getData(id), console.log(doctor)}>
                                                 <Text style={{ color: 'white', fontSize: 14, }}>
                                                     See All
                                                 </Text>
