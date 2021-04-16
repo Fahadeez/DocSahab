@@ -25,6 +25,7 @@ class BookAppoinment extends Component {
             this.setState({ Doc_data: response.data })
             // doctor = response.data;
             console.log('doc data: ', response.data)
+            console.log(id);
         } catch(err) {
             console.log("Error: ", err);
         }

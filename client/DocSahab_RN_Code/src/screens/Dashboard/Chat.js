@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import HeaderWithPicForChat from '../../components/headerWithPicForChat';
-import Chat_Module from '../Dashboard/CHAT_SCREEN/Chat_Module';
+import Chat_Module from './CHAT_SCREEN/Chat_Module';
 
 class Chat extends React.Component {
   render() {

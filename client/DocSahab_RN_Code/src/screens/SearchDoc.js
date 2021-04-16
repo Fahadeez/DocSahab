@@ -93,7 +93,6 @@ const searchAPI = async () => {
 
 	  <TouchableOpacity
         style={globalStyles.searchButton}
-        onPress = {searchAPI()}
        >
         <Text style={globalStyles.buttonTxt}>Search</Text>
     </TouchableOpacity>
@@ -161,6 +160,7 @@ const searchAPI = async () => {
 	    )
 	  }}
 	  keyExtractor = {item => item._id.toString()}
+    onEndReached={null}
 	  />
   </View>
 
