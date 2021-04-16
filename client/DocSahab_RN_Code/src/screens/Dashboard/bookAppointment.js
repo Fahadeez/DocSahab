@@ -18,46 +18,29 @@ class BookAppoinment extends Component {
         Doc_data: []
     }
 
-    async componentDidMount() {
+    async fetchDocData() {
         try {
             const id = this.props.route.params.id;
             const response = await DocSahabApi.get(`/api/doctor/${id}`);
             this.setState({ Doc_data: response.data })
             // doctor = response.data;
-            console.log('doc data: ', response.data)
+            // console.log('doc data: ', response.data)
             console.log(id);
         } catch(err) {
             console.log("Error: ", err);
         }
     }
 
-    // for flat list
-    renderData(props) {
-        return (
-            <View>
-                <Text>
-                    { props.firstName }
-                </Text>
-            </View>
-        );
+    componentDidMount() {
+        this.fetchDocData();
     }
 
+    componentDidUpdate() {
+        this.fetchDocData();
+    }
 
     render() {
         const { Doc_data } = this.state;
-        
-        // const id = this.props.route.params.id;
-
-        // const name = this.props.route.params.firstName;
-
-        // var doctor = [];
-        // const getData = async (id) => {
-        // const response = await DocSahabApi.get(`/api/doctor/${id}`);
-        // console.log('id: ', id)
-        // doctor = response.data;
-        // console.log('data', doctor.firstName);
-        // // console.log('name: ', name);
-        // };
 
         let stars = [];
         for(let x = 1; x <= numStars; x++) {

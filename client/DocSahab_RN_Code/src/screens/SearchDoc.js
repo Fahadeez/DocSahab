@@ -24,6 +24,7 @@ const searchAPI = async () => {
 
   useEffect(() => {
     searchAPI();
+    
   }, []);
 
 
