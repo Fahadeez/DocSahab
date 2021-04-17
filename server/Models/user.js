@@ -18,6 +18,7 @@ const userSchema = new Schema({
     qualification: String,
     gender: String,
     profilePic: String,
+    reports: Array,
     resetPasswordToken: String,
     resetPasswordExpires: Date,
   

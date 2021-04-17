@@ -124,7 +124,7 @@ const searchAPI = async () => {
 	                {/* testing */}
                     <TouchableOpacity 
                         onPress = {() => navigation.navigate('BookAppoinment', {
-                          id: item._id
+                          doctor: item
                         })
                       }
                     >
@@ -143,7 +143,6 @@ const searchAPI = async () => {
                   keyExtractor = {item2 => item2.value}
 
                   />
-
 
 
 	                <TouchableOpacity>
