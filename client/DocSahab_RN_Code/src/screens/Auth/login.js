@@ -67,9 +67,9 @@ const login = (props) => {
         //     await DocSahabApi.get('auth/logout')
         //     await AsyncStorage.removeItem('token')
         // }
-        // function navigate(){
-        //     navigation.navigate('doctordetails')
-        // }
+        function navigate(){
+            navigation.navigate('doctordetails')
+        }
        
         async function checkJwt() {
             const jwt = await AsyncStorage.getItem('token')
