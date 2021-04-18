@@ -8,26 +8,30 @@ import DocSahabApi from '../api/DocSahabApi';
 
 const SeachDocScreen = ({navigation}) => {
 
-const [gender, setSelectedGender] = useState();
-const [qualification, setQualification] = useState();
+const [name, setName] = useState('');
+const [gender, setSelectedGender] = useState('');
+const [qualification, setQualification] = useState('');
+const [specialization, setSpecialization] = useState('');
+const [city, setCity] = useState('');
 const [doctors, setDoctors] = useState([]);
 
-const searchAPI = async () => {
+const filters = {
+  specialization,
+  qualification,
+  city,
+  gender,
+};
+
+const searchbyName = async ({name, filters}) => {
     try{
-      const response = await DocSahabApi.get('/api/doctors');
+      const response = await DocSahabApi.post('/api/select-doctor-with-name',{name, filters});
       setDoctors(response.data)
+      console.log(response.data)
     }
     catch (err) {
       console.log(err);
     }
   };
-
-  useEffect(() => {
-    searchAPI();
-    
-  }, []);
-
-
 
 	return (
 	<View style = {globalStyles.containerColor}>
@@ -43,6 +47,8 @@ const searchAPI = async () => {
 			  <Icon name='search' size={30} color="#2A2AC0" style = {globalStyles.searchIcon}/>
 			  <TextInput
 			  placeholder= 'Doctor, Specialities...'
+        onChangeText = {text => setName(text)}
+        value = {name}
 			  style = {globalStyles.searchBar}
 			  />
 	  </View>
@@ -52,7 +58,7 @@ const searchAPI = async () => {
         <RNPickerSelect
             style={{ inputAndroid: { color: 'black' } }}
             placeholder={{ label: "Select Gender", value: '' }}
-            onValueChange={(gender, value) => {
+            onValueChange={(value) => {
                 setSelectedGender(value)
             }
             }
@@ -69,7 +75,7 @@ const searchAPI = async () => {
         <RNPickerSelect
             style={{ inputAndroid: { color: 'black' } }}
             placeholder={{ label: "Select Qualification", value: '' }}
-            onValueChange={(qualification, value) => {
+            onValueChange={(value) => {
                 setQualification(value)
             } 
         }
@@ -93,7 +99,7 @@ const searchAPI = async () => {
     </View>
 
 	  <TouchableOpacity
-        style={globalStyles.searchButton}
+        style={globalStyles.searchButton} onPress = {() => searchbyName({name, filters})}
        >
         <Text style={globalStyles.buttonTxt}>Search</Text>
     </TouchableOpacity>
