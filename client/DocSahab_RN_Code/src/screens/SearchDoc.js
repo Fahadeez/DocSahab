@@ -32,6 +32,10 @@ const searchbyName = async ({name, filters}) => {
       console.log(err);
     }
   };
+useEffect(() => {
+    searchbyName({name, filters});
+  }, []);
+
 
 	return (
 	<View style = {globalStyles.containerColor}>
