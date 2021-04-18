@@ -12,7 +12,7 @@ require('./Models/doctorModel');
 
 const keys = require('./Config/keys');
 
-// require('./Services/firebase');
+require('./Services/firebase');
 require('./Services/passport');
 
 const app = express();
@@ -82,6 +82,7 @@ app.use((req, res, next) => {
 //authRoute return a function with app (express app) argument
 require('./Routes/authRoutes')(app);
 require('./Routes/dashboardRoutes')(app);
+require('./Routes/recordRoutes')(app);
 // require('./Routes/forgotPassRoutes')(app);
 
 const PORT = process.env.PORT || 5000;
