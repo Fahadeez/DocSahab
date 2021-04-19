@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 var bcrypt = require('bcrypt');
 const likedProfileSchema = require('./likedProfiles');
 const ratedBySchema = require('./ratedBy')
+const appointmentSchema = require('./appointmentModel')
 const { Schema } = mongoose;
 
 const doctorSchema = new Schema({
@@ -19,6 +20,7 @@ const doctorSchema = new Schema({
     specialization: String,
     days: Array,
     timeSlots: Array,
+    appointments:[appointmentSchema],
     contact: String,
     imgUrl: String,
     qualification: String,

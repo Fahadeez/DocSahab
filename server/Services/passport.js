@@ -8,12 +8,21 @@ const User = mongoose.model('users');
 const Doctor = mongoose.model('doctors');
 
 passport.serializeUser((user, done) => {
-  done(null, user.id);
+  done(null, user);
 });
-passport.deserializeUser((id, done) => {
-  User.findById(id).then(user => {
-    done(null, user);
-  });
+passport.deserializeUser((user, done) => {
+  console.log("deserilize user",user)
+  if (user.doctor) {
+    Doctor.findById(user._id).then(user => {
+      done(null, user);
+    })
+  }
+  else {
+    User.findById(user._id).then(user => {
+      done(null, user);
+    });
+  }
+
 });
 // passport.use(
 // 	new GoogleStrategy(

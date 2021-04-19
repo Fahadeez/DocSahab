@@ -33,9 +33,9 @@ const signUp = (dispatch) => {
             const jsonData = await AsyncStorage.getItem('SignUpData')
             if (jsonData) {
                 const data = JSON.parse(jsonData);
-                let { email, firstName, lastName, contact, city, gender, role, password } = data;
+                let { email, firstName, lastName, contact, city, gender, doctor, password } = data;
 
-                const response = await DocSahabApi.post('/auth/signup', { email, firstName, lastName, contact, city, gender, role, password })
+                const response = await DocSahabApi.post('/auth/signup', { email, firstName, lastName, contact, city, gender, doctor, password })
                 console.log(response.data);
                 if (response.data == "User's data added") {
                     await AsyncStorage.setItem('userEmail', email)

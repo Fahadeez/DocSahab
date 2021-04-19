@@ -83,7 +83,7 @@ app.use((req, res, next) => {
 require('./Routes/authRoutes')(app);
 require('./Routes/dashboardRoutes')(app);
 require('./Routes/recordRoutes')(app);
-// require('./Routes/forgotPassRoutes')(app);
+require('./Routes/appointmentRoutes')(app);
 
 const PORT = process.env.PORT || 5000;
 
