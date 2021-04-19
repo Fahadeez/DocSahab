@@ -30,6 +30,7 @@ import { Context as AuthContext } from '../../context/AuthContext';
 import FeedBack from '../Dashboard/FeedBack';
 import AppoinmentConfirm from '../Dashboard/AppointmentConfirm';
 import Chat from '../Dashboard/Chat';
+import SignUpAsDoctor from '../Auth/DoctorDetails';
 
 const login = (props) => {
     
@@ -214,14 +215,14 @@ const login = (props) => {
                             <Text style={globalStyles.buttonTxt}>FeedBack</Text>
                         </TouchableOpacity>
 
-                        {/* <TouchableOpacity
+                        <TouchableOpacity
                             style={globalStyles.Button}
                             onPress={
-                                () => navigation.navigate(AppoinmentConfirm)
+                                () => navigation.navigate(SignUpAsDoctor)
                             }
                         >
-                            <Text style={globalStyles.buttonTxt}>Appoinment Confirm</Text>
-                        </TouchableOpacity> */}
+                            <Text style={globalStyles.buttonTxt}>sign up as doctor</Text>
+                        </TouchableOpacity>
 
                         <TouchableOpacity
                             style={globalStyles.Button}

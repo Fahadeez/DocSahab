@@ -20,9 +20,9 @@ class BookAppoinment extends Component {
 
     // async fetchDocData() {
     //     try {
-    //         const doctor = this.props.route.params.doctor;
-    //         // const response = await DocSahabApi.get(`/api/doctor/${id}`);
-    //         this.setState({ Doc_data: doctor })
+    //         const id = this.props.route.params.id;
+    //         const response = await DocSahabApi.get(`/api/doctor/${id}`);
+    //         this.setState({ Doc_data: response.data })
     //         // doctor = response.data;
     //         // console.log('doc data: ', response.data)
     //         console.log(id);
@@ -31,14 +31,18 @@ class BookAppoinment extends Component {
     //     }
     // }
 
-    componentDidMount() {
-        // this.fetchDocData();
-    }
+    // componentDidMount() {
+    //     this.fetchDocData();
+    // }
 
-
+    // componentDidUpdate() {
+    //     this.fetchDocData();
+    // }
 
     render() {
+        // const { Doc_data } = this.state;
         const Doc_data = this.props.route.params.doctor;
+        console.log('Doctor Data: ', Doc_data)
 
         let stars = [];
         for(let x = 1; x <= numStars; x++) {
@@ -99,7 +103,8 @@ class BookAppoinment extends Component {
                                         fontSize: 14,
                                         color: 'grey'
                                     }}>
-                                        Karachi, Pakistan
+                                        {/* Karachi, Pakistan */}
+                                        { Doc_data.city }, Pakistan
                                     </Text>
                                 </View>
                                 <View style={ styles.DocProfileInfo }>

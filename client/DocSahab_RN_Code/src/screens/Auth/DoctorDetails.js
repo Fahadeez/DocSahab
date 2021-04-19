@@ -1,6 +1,6 @@
 import React, {useState, useContext} from 'react';
 import { Text, View, TextInput, TouchableOpacity, ScrollView, 
-    TouchableWithoutFeedback, Keyboard } from 'react-native';
+    TouchableWithoutFeedback, Keyboard, StyleSheet } from 'react-native';
 import SignUp from '../Auth/signup';
 import { globalStyles } from '../../styles/globalStyles';
 import NavigationHeaderWithBtn from '../../components/navigationHeaderWithBtn';
@@ -10,7 +10,7 @@ import * as yup from 'yup';
 import RNPickerSelect from "react-native-picker-select";
 import RNMultiSelect from "@freakycoder/react-native-multiple-select";
 import { Context as AuthContext } from '../../context/AuthContext';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 
 // Sign Up validation schema
 const DocDetValSchema = yup.object({
@@ -24,100 +24,22 @@ const DocDetValSchema = yup.object({
         .required('Qualification is required'),
     specialization: yup.string()
         .required('Specialization is required'),
-    timeSlots: yup.array()
-        .required('Available Time is required'),
     days: yup.array()
         .required('Day is required'),
+    startTime: yup.string()
+        .required('Start time is required'),
+    endTime: yup.string()
+        .required('End time is required'),
 })
 
-// Data for the MutiSelect Time Slot
-var Time = [
-    {
-        id: 0,
-        value: "8:00 am - 9:00 am",
-        isChecked: false, },
-    {
-        id: 1,
-        value: "9:00 am - 10:00 am",
-        isChecked: false, },
-    {
-        id: 2,
-        value: "10:00 am - 11:00 am",
-        isChecked: false, },
-    {
-        id: 3,
-        value: "12:00 am - 1:00 pm",
-        isChecked: false, },
-    {
-        id: 4,
-        value: "1:00 pm - 2:00 pm",
-        isChecked: false, },
-    {
-        id: 5,
-        value: "2:00 pm - 3:00 pm",
-        isChecked: false, },
-    {
-        id: 6,
-        value: "3:00 pm - 4:00 pm",
-        isChecked: false, },
-    {
-        id: 7,
-        value: "4:00 pm - 5:00 pm",
-        isChecked: false, },
-    {
-        id: 8,
-        value: "5:00 pm - 6:00 pm",
-        isChecked: false, },
-    {
-        id: 9,
-        value: "6:00 pm - 7:00 pm",
-        isChecked: false, },
-    {
-        id: 10,
-        value: "8:00 pm - 9:00 pm",
-        isChecked: false, },
-    {
-        id: 11,
-        value: "9:00 pm - 10:00 pm",
-        isChecked: false, },
-  ];
-
 var Day = [
-    {   
-        id: 0,
-        value: "Monday",
-        isChecked: false
-    },
-    {   
-        id: 0,
-        value: "Tuesday",
-        isChecked: false
-    },
-    {   
-        id: 0,
-        value: "Wednesday",
-        isChecked: false
-    },
-    {   
-        id: 0,
-        value: "Thursday",
-        isChecked: false
-    },
-    {   
-        id: 0,
-        value: "Friday",
-        isChecked: false
-    },
-    {   
-        id: 0,
-        value: "Saturday",
-        isChecked: false
-    },
-    {   
-        id: 0,
-        value: "Sunday",
-        isChecked: false
-    }
+    { id: 0, value: "Monday", isChecked: false },
+    { id: 0, value: "Tuesday", isChecked: false },
+    { id: 0, value: "Wednesday", isChecked: false },
+    { id: 0, value: "Thursday", isChecked: false },
+    { id: 0, value: "Friday", isChecked: false },
+    { id: 0, value: "Saturday", isChecked: false },
+    { id: 0, value: "Sunday", isChecked: false }
 ];
 
 const doctordetails = () => {
@@ -126,8 +48,30 @@ const doctordetails = () => {
 
     const [qualification, setQualification] = useState();
     const [specialization, setSpecialization] = useState();
-    const [timeSlots, setTimeSlot] = useState([]);
     const [days, setDay] = useState([]);
+
+    var date = new Date();
+    var newDate = date.toLocaleString();
+    const [startTime, setStartTime] = useState(newDate);
+    const [endTime, setEndTime] = useState(newDate);
+    const [visibilityStart, setVisibilityStart] = useState(false);
+    const [visibilityEnd, setVisibilityEnd] = useState(false);
+    
+    const onPressStart = () => {
+        setVisibilityStart({ visibilityStart: true });
+    };
+
+    const onPressStartCancel = () => {
+        setVisibilityStart({ visibilityStart: false });
+    };
+
+    const onPressEnd = () => {
+        setVisibilityEnd({ visibilityEnd: true });
+    };
+
+    const onPressEndCancel = () => {
+        setVisibilityEnd({ visibilityEnd: false });
+    };
 
     return (
         <View style={globalStyles.containerColor}>
@@ -144,8 +88,9 @@ const doctordetails = () => {
                                     reg_no: '', 
                                     yearsOfExp: '', 
                                     qualification:'', 
-                                    specialization: '', 
-                                    timeSlots: [],
+                                    specialization: '',
+                                    startTime: '',
+                                    endTime: '',
                                     days: []
                                 }}
                     validationSchema={DocDetValSchema}
@@ -168,19 +113,6 @@ const doctordetails = () => {
 
                                 <View style={{marginTop: 50}}>
                                     <View style={globalStyles.container}>
-
-                                    {/* <View style={globalStyles.modifiedinputView} >
-                                        <TextInput
-                                        style={globalStyles.inputText}
-                                        placeholder="Email"
-                                        placeholderTextColor="#003f5c"
-                                        onChangeText={props.handleChange('email')}
-                                        value={props.values.email}
-                                        onBlur={props.handleBlur('email')}
-                                        />
-                                    </View>
-                                    <Text style={globalStyles.errorText}>{props.touched.email && props.errors.email}</Text>
-                                         */}
 
                                     <View style={globalStyles.inputView} >
                                         <TextInput  
@@ -286,30 +218,65 @@ const doctordetails = () => {
                                     </View>
                                     <Text style={globalStyles.errorText}>{props.touched.specialization && props.errors.specialization}</Text>
 
-                                    {/* Time Slot multiple selects start */}
+                                    {/* time range picker */}
                                     <View style={globalStyles.inputLabel}>
                                         <Text style={globalStyles.inputLabelText}>
-                                            Select Your Available Time Slots
+                                            Select Your Start and End Time Range
                                         </Text>
                                     </View>
 
-                                    <View style={globalStyles.MultiSelect}>
-                                        
-                                        <RNMultiSelect
-                                            // disableAbsolute
-                                            width= {'100%'}
-                                            data={Time}
-                                            placeholder={"10:00 am - 11:00 am"}
-                                            menuBarContainerHeight = {600}
-                                            onSelect={(timeSlots) => {
-                                                setTimeSlot(timeSlots)
-                                                props.values.timeSlots = timeSlots
-                                            }} 
-                                            // onDoneButtonPress={}
-                                            />                                       
+                                    <TouchableOpacity
+                                        style={ styles.Button }
+                                        onPress={ onPressStart }
+                                    >
+                                        <Text style={globalStyles.buttonTxt}> Select Start Time </Text>
+                                    </TouchableOpacity>
+
+                                    <DateTimePickerModal
+                                        isVisible = { startTime, visibilityStart }
+                                        onConfirm = {
+                                            (startTime) => { setStartTime(startTime), console.log('start time: ', startTime.toLocaleString()), props.values.startTime = startTime.toLocaleString() }
+                                        }
+                                        onCancel = { onPressStartCancel }
+                                        mode = "time"
+                                        is24Hour = { false } //for am and pm
+                                        display = "spinner"
+                                        timeZoneOffsetInSeconds = { 3600 }
+                                    />
+
+                                    <View style={ styles.inputLabel }>
+                                        <Text style={globalStyles.inputLabelText}>
+                                            Your Start Time: { startTime.toLocaleString().slice(13, 24) }
+                                        </Text>
                                     </View>
-                                    <Text style={globalStyles.errorText}>{props.touched.timeSlots && props.errors.timeSlots}</Text>
-                                    {/* Time Slot multiple selects ends */}
+                                    <Text style={globalStyles.errorText}>{props.touched.startTime && props.errors.startTime}</Text>
+
+                                    <TouchableOpacity
+                                        style={ styles.Button }
+                                        onPress={ onPressEnd }
+                                    >
+                                        <Text style={globalStyles.buttonTxt}> Select End Time </Text>
+                                    </TouchableOpacity>
+
+                                    <DateTimePickerModal
+                                        isVisible = { endTime, visibilityEnd }
+                                        onConfirm = {
+                                            (endTime) => { setEndTime(endTime), console.log('end time: ', endTime.toLocaleString()), props.values.endTime = endTime.toLocaleString() }
+                                        }
+                                        onCancel = { onPressEndCancel }
+                                        mode = "time"
+                                        is24Hour = { false } //for am and pm
+                                        display = "spinner"
+                                        timeZoneOffsetInSeconds = { 3600 }
+                                    />
+
+                                    <View style={ styles.inputLabel }>
+                                        <Text style={globalStyles.inputLabelText}>
+                                            Your End Time: { endTime.toLocaleString().slice(13, 24) }
+                                        </Text>
+                                    </View>
+                                    <Text style={globalStyles.errorText}>{props.touched.endTime && props.errors.endTime}</Text>
+
 
                                     {/* Day multiple selects start */}
                                     <View style={globalStyles.inputLabel}>
@@ -321,7 +288,6 @@ const doctordetails = () => {
                                     <View style={globalStyles.MultiSelect}>
                                         
                                         <RNMultiSelect
-                                            // disableAbsolute
                                             width= {'100%'}
                                             data={Day}
                                             placeholder={"Monday"}
@@ -329,8 +295,7 @@ const doctordetails = () => {
                                             onSelect={(days) => {
                                                 setDay(days)
                                                 props.values.days = days
-                                            }} 
-                                            // onDoneButtonPress={}
+                                            }}
                                             />                                       
                                     </View>
                                     <Text style={globalStyles.errorText}>{props.touched.days && props.errors.days}</Text>
@@ -359,5 +324,29 @@ const doctordetails = () => {
         </View>
     );
 }
+
+const styles = StyleSheet.create({ 
+
+Button: {
+    width:"50%",
+    color: 'white',
+    backgroundColor: '#2A2AC0',
+    borderRadius:25,
+    height:50,
+    alignItems:"center",
+    justifyContent:"center",
+    marginTop:5,
+    marginBottom: '2%',
+    alignSelf: 'center'
+},
+inputLabel: {
+    width:"90%",
+    backgroundColor:"#ECF1FA",
+    height:40,
+    marginBottom: '5%',
+    padding:15,
+},
+
+});
 
 export default doctordetails;
