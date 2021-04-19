@@ -273,7 +273,6 @@ module.exports = app => {
 					const fileNames = data[0].map(file => {
 						return file.metadata
 					})
-					console.log("fileNames", fileNames)
 					return res.send(fileNames).status(200)
 				}).catch((err) => {
 					console.log(err)

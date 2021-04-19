@@ -32,7 +32,7 @@ return(
 		</View>
 
 		<View style={styles.row}></View>
-
+{/* 
 
 		<View style={globalStyles.inputView} >
                            
@@ -43,7 +43,7 @@ return(
                 autoCapitalize="none"
                 autoCorrect={false}
             />
-		</View>
+		</View> */}
                         
 
         <View style={globalStyles.inputView} >

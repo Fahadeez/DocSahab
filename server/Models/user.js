@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 var bcrypt = require('bcrypt');
+const appointmentSchema = require('./appointmentModel')
+
 const { Schema } = mongoose;
 
 const userSchema = new Schema({
@@ -13,6 +15,7 @@ const userSchema = new Schema({
     country: String,
     city: String,
     bio: String,
+    appointments:[appointmentSchema],
     contact: String,
     imgUrl: String,
     qualification: String,

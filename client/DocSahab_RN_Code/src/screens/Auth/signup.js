@@ -45,7 +45,7 @@ const SignUpValSchema = yup.object({
 
 const signup = () => {
     const { state, verifyEmail } = useContext(AuthContext)
-    const [role, setRole] = useState(false)
+    const [doctor, setDoctor] = useState(false)
     const [city, setSelectedCity] = useState(false);
     const [gender, setGender] = useState(false);
 
@@ -81,7 +81,7 @@ const signup = () => {
                         contact: '',
                         city: '',
                         gender: '',
-                        role: false
+                        doctor: false
                     }}
                     validationSchema={SignUpValSchema}
                     onSubmit={async (values, actions) => {
@@ -268,12 +268,12 @@ const signup = () => {
                                         /> */}
                                             <Switch
                                                 trackColor={{ false: "#767577", true: "#C4C9FC" }}
-                                                thumbColor={role ? "#2A2AC0" : "#f4f3f4"}
+                                                thumbColor={doctor ? "#2A2AC0" : "#f4f3f4"}
                                                 onValueChange={(value) => {
-                                                    setRole(value)
-                                                    props.values.role = role
+                                                    setDoctor(value)
+                                                    props.values.doctor = doctor
                                                 }}
-                                                value={props.values.role = role}
+                                                value={props.values.doctor = doctor}
                                             />
                                         </View>
 
@@ -294,7 +294,7 @@ const signup = () => {
                                     } */}
 
                                         {
-                                            role ? <TouchableOpacity
+                                            doctor ? <TouchableOpacity
                                                 style={globalStyles.Button}
                                                 onPress={
                                                     props.handleSubmit
