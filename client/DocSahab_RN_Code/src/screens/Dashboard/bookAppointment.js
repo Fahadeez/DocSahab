@@ -2,12 +2,11 @@ import React, { Component } from 'react';
 import { View, Text, StyleSheet, Image, TouchableWithoutFeedback, Animated, TouchableOpacity, ScrollView, FlatList } from 'react-native';
 import NavigationBtn from '../../components/navigationBtn';
 import { globalStyles } from '../../styles/globalStyles';
-import Signin from '../Auth/login';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import 'react-native-gesture-handler';
 import Flag from 'react-native-flags';
-import { useNavigation } from '@react-navigation/native';
-import DocSahabApi from '../../api/DocSahabApi';
+import CalendarStrip from 'react-native-calendar-strip';
+import RNPickerSelect from "react-native-picker-select";
 
 const numStars = 5
 
@@ -15,34 +14,26 @@ class BookAppoinment extends Component {
 
     state = {
         rating: 2,
-        Doc_data: []
+        Doc_data: [],
+        timing: ''
     }
 
-    // async fetchDocData() {
-    //     try {
-    //         const id = this.props.route.params.id;
-    //         const response = await DocSahabApi.get(`/api/doctor/${id}`);
-    //         this.setState({ Doc_data: response.data })
-    //         // doctor = response.data;
-    //         // console.log('doc data: ', response.data)
-    //         console.log(id);
-    //     } catch(err) {
-    //         console.log("Error: ", err);
-    //     }
-    // }
-
-    // componentDidMount() {
-    //     this.fetchDocData();
-    // }
-
-    // componentDidUpdate() {
-    //     this.fetchDocData();
-    // }
-
     render() {
-        // const { Doc_data } = this.state;
         const Doc_data = this.props.route.params.doctor;
         console.log('Doctor Data: ', Doc_data)
+
+        const time = Doc_data.timeSlots.map( timeValue => timeValue.value );
+        console.log('Time: ', time);
+
+
+        // code for Start and End Time
+        // const StartTime = Doc_data.startTime.map( timeValue => timeValue.StartTime );
+        // const StartTimeSlice = StartTime.slice(16, 21);
+        // console.log('Start Time: ', StartTimeSlice)
+
+        // const EndTime = Doc_data.EndTime.map( timeValue => timeValue.EndTime );
+        // const EndTimeSlice = EndTime.slice(16, 21);
+        // console.log('End Time: ', EndTimeSlice)
 
         let stars = [];
         for(let x = 1; x <= numStars; x++) {
@@ -58,6 +49,11 @@ class BookAppoinment extends Component {
                 </TouchableWithoutFeedback>
             )
         }
+
+        const datesBlacklistFunc = date => {
+            return date.isoWeekday() === 5 || date.isoWeekday() === 6; // disable Fri and Sat
+        }
+
         return (
             // root container
             <View style={{
@@ -124,12 +120,13 @@ class BookAppoinment extends Component {
                         <View style={styles.TimeSlots}>
                             <View style={ styles.TimeSlotsSubContainer }>
                                     <View style={{
-                                        flex: 1,
+                                        // flex: 1,
                                         flexDirection: 'row'
                                     }}>
                                         <View style={{
                                             flex: 1,
                                             flexDirection: 'column',
+                                            marginBottom: '5%'
                                         }}>
                                             <Text style={{
                                                 marginBottom: '5%',
@@ -146,59 +143,69 @@ class BookAppoinment extends Component {
                                             </Text>
 
                                         </View>
-                                        <View style={{
+                                    </View>
+                                    
+                                    {/* calender strip  */}
+                                    <View style={{ 
                                             flex: 1,
-                                            flexDirection: 'column',
-                                            justifyContent: 'center',
-                                            alignItems: 'flex-end'
+                                            marginBottom: '5%',
+                                            width: '100%', 
                                         }}>
-                                            <TouchableOpacity style={ styles.SeeAllBtn } 
-                                                // onPress = {getData(id), console.log(doctor)}
-                                            >
-                                                <Text style={{ color: 'white', fontSize: 14, }}>
-                                                    See All
-                                                </Text>
-                                            </TouchableOpacity>
-                                        </View>
+                                        <Text style={{
+                                            fontSize: 18,
+                                            marginBottom: '2%',
+                                            fontWeight: '900'
+                                        }}> 
+                                            Select Your Date 
+                                        </Text>
+                                        <CalendarStrip
+                                            calendarAnimation={{type: 'sequence', duration: 50}}
+                                            style = {{ height: 100, width: '100%', marginBottom: '10%' }}
+                                            datesBlacklist={datesBlacklistFunc}
+                                            daySelectionAnimation={{
+                                                type: 'background',
+                                                duration: 200,
+                                                highlightColor: '#9370db',
+                                            }}
+                                            daySelectionAnimation={{
+                                                type: 'background',
+                                                duration: 200,
+                                                highlightColor: '#9370db',
+                                            }}
+                                            onDateSelected={(date) => console.log(date)}
+                                        />
+
+                                        {/* timing header */}
+                                        <Text style={{
+                                            fontSize: 18,
+                                            // marginBottom: '5%',
+                                            fontWeight: '900'
+                                        }}> 
+                                            Select Your Timing
+                                        </Text>
+                                    </View>
+                                    
+                                    {/* timing dropdown */}
+                                    <View style={
+                                        styles.pickerView
+                                    }>
+                                        <RNPickerSelect
+                                            style={{ inputAndroid: { color: 'black' } }}
+                                            placeholder={{ label: "Select Your Timing", value: '' }}
+                                            onValueChange={(value) => {
+                                                console.log(value)
+                                            }}
+                                            items = { Doc_data.timeSlots.map( timeValue => (
+                                                {
+                                                    key: timeValue.value,
+                                                    label: timeValue.value,
+                                                    value: timeValue.value
+                                                }
+                                            )) }
+                                        />
                                     </View>
 
-                                    <View style={{
-                                        flex: 1,
-                                        flexDirection: 'row',
-                                        marginBottom: '5%'
-                                    }}>
 
-                                        <View style={ styles.TimeSlotsLabelView }>
-                                            <Text style={{ fontSize: 13, fontWeight: 'normal', textAlign: 'center' }}>
-                                                8 - 9 am
-                                            </Text>
-                                        </View>
-                                        <View style={ styles.TimeSlotsLabelView }>
-                                            <Text style={{ fontSize: 13, fontWeight: 'normal', textAlign: 'center' }}>
-                                                12 - 1 pm
-                                            </Text>
-                                        </View>
-                                        <View style={ styles.TimeSlotsLabelView }>
-                                            <Text style={{ fontSize: 13, fontWeight: 'normal', textAlign: 'center' }}>
-                                                5 - 6 pm
-                                            </Text>
-                                        </View>
-                                        <View style={{
-                                            height: '80%',
-                                            marginTop: '5%',
-                                            width: '23%',
-                                            borderWidth: 1,
-                                            borderRadius: 10,
-                                            borderColor: 'lightgrey',
-                                            alignItems: 'center',
-                                            justifyContent: 'center'
-                                        }}>
-                                            <Text style={{ fontSize: 13, fontWeight: 'normal', textAlign: 'center' }}>
-                                                8 - 9 pm
-                                            </Text>
-                                        </View>
-
-                                    </View>
                             </View>
                         </View>
                         {/* TimeSlots Container Ends */}
@@ -493,11 +500,14 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     TimeSlots: {
-        flex: 0.5,
+        // flex: 0.5,
+        // flex: 1,
+        // height: '30%',
         flexDirection: "row",
         paddingStart: 24,
         paddingEnd: 24,
-        marginTop: '5%'
+        marginTop: '5%',
+        marginBottom: '5%'
     },
     BookAppointment: {
         flex: 0,
@@ -559,8 +569,7 @@ const styles = StyleSheet.create({
     },
     TimeSlotsLabelView: {
         marginRight: '3%',
-        marginTop: '5%',
-        height: '80%',
+        height: 50,
         width: '23%',
         borderWidth: 1,
         borderRadius: 10,
@@ -641,7 +650,15 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
         marginLeft: '5%',
         marginBottom: '5%'
-    }
+    },
+    pickerView: {
+        width:"100%",
+        backgroundColor: '#f8f8ff',
+        borderRadius:10,
+        height:50,
+        justifyContent:"center",
+        padding:15,
+    },
 });
 
 export default BookAppoinment;

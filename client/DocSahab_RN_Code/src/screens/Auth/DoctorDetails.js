@@ -98,7 +98,6 @@ const doctordetails = () => {
                         signUpAsDoctor(values);
                         console.log(values);
                         actions.resetForm();
-
                     }}
                 >
                     {(props) => (
@@ -218,7 +217,7 @@ const doctordetails = () => {
                                     </View>
                                     <Text style={globalStyles.errorText}>{props.touched.specialization && props.errors.specialization}</Text>
 
-                                    time range picker
+                                    {/* time range picker */}
                                     <View style={globalStyles.inputLabel}>
                                         <Text style={globalStyles.inputLabelText}>
                                             Select your consultation timings
@@ -235,11 +234,11 @@ const doctordetails = () => {
                                     <DateTimePickerModal
                                         isVisible = { startTime, visibilityStart }
                                         onConfirm = {
-                                            (startTime) => { setStartTime(startTime), console.log('start time: ', startTime.toLocaleString()), props.values.startTime = startTime.toLocaleString() }
+                                            (startTime) => { setStartTime(startTime), console.log('start time: ', startTime.toLocaleString()), props.values.startTime = startTime.toString() }
                                         }
                                         onCancel = { onPressStartCancel }
                                         mode = "time"
-                                        is24Hour = { false } //for am and pm
+                                        is24Hour = { true } //for am and pm
                                         display = "spinner"
                                         timeZoneOffsetInSeconds = { 3600 }
                                     />
@@ -261,11 +260,11 @@ const doctordetails = () => {
                                     <DateTimePickerModal
                                         isVisible = { endTime, visibilityEnd }
                                         onConfirm = {
-                                            (endTime) => { setEndTime(endTime), console.log('end time: ', endTime.toLocaleString()), props.values.endTime = endTime.toLocaleString() }
+                                            (endTime) => { setEndTime(endTime), console.log('end time: ', endTime.toLocaleString()), props.values.endTime = endTime.toString() }
                                         }
                                         onCancel = { onPressEndCancel }
                                         mode = "time"
-                                        is24Hour = { false } //for am and pm
+                                        is24Hour = { true } //for am and pm
                                         display = "spinner"
                                         timeZoneOffsetInSeconds = { 3600 }
                                     />
