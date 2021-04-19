@@ -22,7 +22,7 @@ module.exports = app => {
 	// for doc pms code verification api
 	async function PMCRegCodeScrapping(reg_no, res) {
 		try {
-			let site = 'https://www.pmc.gov.pk/Doctors/Details?regNo='+reg_no;
+			let site = 'https://www.pmc.gov.pk/Doctors/Details?regNo=' + reg_no;
 
 			let browser = await puppeteer.launch();
 			let page = await browser.newPage();
@@ -31,7 +31,7 @@ module.exports = app => {
 
 			await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4427.0 Safari/537.36');
 			// await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/90.0.4427.0 Safari/537.36');
-			
+
 			await page.goto(site, { waitUntil: 'networkidle2' });
 			// await page.waitForSelector('#reg_no');
 			let data = await page.evaluate(() => {
@@ -193,7 +193,7 @@ module.exports = app => {
 
 	app.post('/auth/signup-as-doctor', async (req, res) => {
 		console.log("req.body /auth/signup-as-doctor", req.body)
-		let { specialization, qualification, days, timeSlots, yearsOfExp, email, reg_no } = req.body;
+		let { specialization, qualification, days, startTime, endTime, yearsOfExp, email, reg_no } = req.body;
 		if (req.body) {
 			const resp = await PMCRegCodeScrapping(reg_no, res)
 			if (resp) {
@@ -209,7 +209,10 @@ module.exports = app => {
 								const doctor = await Doctor.findByIdAndUpdate(
 									{
 										_id: user._id,
-									}, { specialization, qualification, days, timeSlots, yearsOfExp }
+									}, {
+										specialization, qualification, days,
+									startCheckupTime: startTime, endCheckupTime: endTime, yearsOfExp
+								}
 								)
 								doctor.save()
 								return res.send("Doctor's details saved").status(200)
@@ -225,7 +228,7 @@ module.exports = app => {
 			}
 		}
 	});
-	
+
 	app.post('/auth/verify-email', function (req, res, next) {
 		const { email, role } = req.body;
 		var num = Math.floor(Math.random() * 90000) + 10000;
@@ -371,14 +374,14 @@ module.exports = app => {
 			resetPasswordExpires: {
 				$gt: Date.now(), //Find time greater than date.Now() or > date.now
 			},
-		}).then( user => {
+		}).then(user => {
 			if (!user) {
 				Doctor.findOne({
 					resetPasswordToken: token,
 					resetPasswordExpires: {
 						$gt: Date.now(), //Find time greater than date.Now() or > date.now
 					},
-				}).then( doctor => {
+				}).then(doctor => {
 					if (!doctor) {
 						return res.send('password reset link is invalid or has expired').status(403);
 					}
@@ -394,7 +397,7 @@ module.exports = app => {
 	});
 
 	app.post('/auth/updatePassword', (req, res) => {
-		console.log("auth/updatePassword",req.body)
+		console.log("auth/updatePassword", req.body)
 		const { email, password } = req.body;
 		User.findOne({
 			email: email,

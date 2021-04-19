@@ -70,7 +70,6 @@ const signup = () => {
                 showsVerticalScrollIndicator={false}
                 showsHorizontalScrollIndicator={false}
             >
-
                 <Formik
                     initialValues={{
                         email: '',

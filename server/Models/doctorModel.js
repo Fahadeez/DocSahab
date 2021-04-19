@@ -20,6 +20,8 @@ const doctorSchema = new Schema({
     specialization: String,
     days: Array,
     timeSlots: Array,
+    startCheckupTime: String,
+    endCheckupTime: String,
     appointments:[appointmentSchema],
     contact: String,
     imgUrl: String,

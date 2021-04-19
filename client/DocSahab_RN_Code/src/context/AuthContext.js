@@ -65,13 +65,13 @@ const signUp = (dispatch) => {
 };
 
 const signUpAsDoctor = (dispatch) => {
-    return async ({ specialization, qualification, days, timeSlots, yearsOfExp, reg_no }) => {
+    return async ({ specialization, qualification, days, startTime,endTime, yearsOfExp, reg_no }) => {
         console.log("authContext: ", { specialization, qualification, days, timeSlots, yearsOfExp, reg_no })
         try {
             const email = await AsyncStorage.getItem('doctorSignUpEmail')
 
             const response = await DocSahabApi.post('/auth/signup-as-doctor',
-                { specialization, qualification, days, timeSlots, yearsOfExp, email, reg_no })
+                { specialization, qualification, days, startTime,endTime, yearsOfExp, email, reg_no })
             console.log(response.data);
             if (response.data == "Doctor's details saved") {
                 dispatch({ type: 'add_error_for_signUp', payload: 'Registration Successfull!' })

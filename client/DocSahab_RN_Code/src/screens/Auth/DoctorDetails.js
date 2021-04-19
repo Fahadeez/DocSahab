@@ -218,10 +218,10 @@ const doctordetails = () => {
                                     </View>
                                     <Text style={globalStyles.errorText}>{props.touched.specialization && props.errors.specialization}</Text>
 
-                                    {/* time range picker */}
+                                    time range picker
                                     <View style={globalStyles.inputLabel}>
                                         <Text style={globalStyles.inputLabelText}>
-                                            Select Your Start and End Time Range
+                                            Select your consultation timings
                                         </Text>
                                     </View>
 
@@ -229,7 +229,7 @@ const doctordetails = () => {
                                         style={ styles.Button }
                                         onPress={ onPressStart }
                                     >
-                                        <Text style={globalStyles.buttonTxt}> Select Start Time </Text>
+                                        <Text style={globalStyles.buttonTxt}> Start time  </Text>
                                     </TouchableOpacity>
 
                                     <DateTimePickerModal
@@ -243,19 +243,19 @@ const doctordetails = () => {
                                         display = "spinner"
                                         timeZoneOffsetInSeconds = { 3600 }
                                     />
-
+{/* 
                                     <View style={ styles.inputLabel }>
                                         <Text style={globalStyles.inputLabelText}>
                                             Your Start Time: { startTime.toLocaleString().slice(13, 24) }
                                         </Text>
-                                    </View>
+                                    </View> */}
                                     <Text style={globalStyles.errorText}>{props.touched.startTime && props.errors.startTime}</Text>
 
                                     <TouchableOpacity
                                         style={ styles.Button }
                                         onPress={ onPressEnd }
                                     >
-                                        <Text style={globalStyles.buttonTxt}> Select End Time </Text>
+                                        <Text style={globalStyles.buttonTxt}> End Time </Text>
                                     </TouchableOpacity>
 
                                     <DateTimePickerModal
@@ -269,12 +269,13 @@ const doctordetails = () => {
                                         display = "spinner"
                                         timeZoneOffsetInSeconds = { 3600 }
                                     />
+                                    
 
-                                    <View style={ styles.inputLabel }>
+                                    {/* <View style={ styles.inputLabel }>
                                         <Text style={globalStyles.inputLabelText}>
                                             Your End Time: { endTime.toLocaleString().slice(13, 24) }
                                         </Text>
-                                    </View>
+                                    </View> */}
                                     <Text style={globalStyles.errorText}>{props.touched.endTime && props.errors.endTime}</Text>
 
 
