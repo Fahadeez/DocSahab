@@ -33,6 +33,7 @@
     "react-native-actionsheet": "^2.4.2",
     "react-native-bouncy-checkbox": "^1.0.8",
     "react-native-calendar-strip": "^2.2.1",
+    "react-native-document-picker": "^5.0.3",
     "react-native-elements": "^3.3.2",
     "react-native-flags": "^1.0.0",
     "react-native-gesture-handler": "^1.10.3",
