@@ -23,6 +23,7 @@ import Help from './src/screens/Dashboard/Help';
 import Chat from './src/screens/Dashboard/Chat';
 import MyAppointment from './src/screens/Dashboard/MyAppointment';
 import PaymentScreen from './src/screens/payment';
+import Video from './src/screens/Dashboard/VIDEO_SCREEN/Meeting';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -196,6 +197,13 @@ function Auth() {
           component={PaymentScreen}
         />
 
+        <Stack.Screen
+          options={{
+            headerShown: null,
+          }}
+          name="Video"
+          component={Video}
+        />
         
       </Stack.Navigator>
     </NavigationContainer>

@@ -6,16 +6,18 @@ import {
     Actions
 } from 'react-native-gifted-chat';
 
-import { View } from 'react-native';
+import { View, StyleSheet, TouchableOpacity } from 'react-native';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 import ImagePicker from 'react-native-image-picker';
+import DocumentPicker  from "react-native-document-picker";
+
 
 class Chat_Module extends React.Component {
     constructor( props ) {
         super(props);
-        this.state = { messages: [] };
+        this.state = { messages: [], is_picking_file: false, data: ''};
         this.onSend = this.onSend.bind(this);
     }
 
@@ -71,33 +73,53 @@ class Chat_Module extends React.Component {
     )}
 
     renderActions (props) {
+      const selectOneFile = async () => {
+  
+  try {
+    const res = await DocumentPicker.pick({
+      type: [DocumentPicker.types.allFiles],
+      //There can me more options as well
+      // DocumentPicker.types.allFiles
+      // DocumentPicker.types.images
+      // DocumentPicker.types.plainText
+      // DocumentPicker.types.audio
+      // DocumentPicker.types.pdf
+    });
+
+    console.log('res : ' + JSON.stringify(res));
+    console.log('URI : ' + res.uri);
+    console.log('Type : ' + res.type);
+    console.log('File Name : ' + res.name);
+    console.log('File Size : ' + res.size);
+
+    console.log(res)
+    this.onSend('res')
+
+  } catch (err) {
+
+    if (DocumentPicker.isCancel(err)) {
+  
+      alert('Failed to attach a file');
+    } else {
+
+      alert('Unknown Error: ' + JSON.stringify(err));
+      throw err;
+    }
+  }
+};
         return (
-            <Actions
-                {...props}
-                options = {{
-                    ['Select Image']: ImagePicker,
-                }}
-                icon = {() => (
-                    <View style={{
-                        margin: '1%',
-                        padding: 3,
-                        borderRadius: 30,
-                    }}>
-                        <Icon
-                            name={ "paperclip" }
-                            size={20}
-                            color="grey"
-                        />
-                    </View>
-                )}
-                onSend={args => console.log(args)}
-            />
-    )}
+        <View style={styles.customActionsContainer}>
+          <TouchableOpacity onPress={selectOneFile}>
+            <View style={styles.buttonContainer}>
+              <Icon name="paperclip" size={23} color={'black'} />
+            </View>
+          </TouchableOpacity>
+        </View>
+      );}
 
     render( props ) {
 
         return (
-            
             <GiftedChat
                 // alwaysShowSend
                 // showUserAvatar
@@ -115,5 +137,16 @@ class Chat_Module extends React.Component {
         );
     }
 }
+
+
+const styles = StyleSheet.create({
+  customActionsContainer: {
+  flexDirection: "row",
+  justifyContent: "space-between"
+},
+buttonContainer: {
+  padding: 10
+}
+})
 
 export default Chat_Module;

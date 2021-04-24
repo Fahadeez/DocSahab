@@ -31,6 +31,7 @@ import FeedBack from '../Dashboard/FeedBack';
 import AppoinmentConfirm from '../Dashboard/AppointmentConfirm';
 import Chat from '../Dashboard/Chat';
 import SignUpAsDoctor from '../Auth/DoctorDetails';
+import Video from '../Dashboard/VIDEO_SCREEN/Meeting';
 
 const login = (props) => {
     
@@ -234,6 +235,15 @@ const login = (props) => {
                             }
                         >
                             <Text style={globalStyles.buttonTxt}>Chat</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                            style={globalStyles.Button}
+                            onPress={
+                                () => navigation.navigate(Video)
+                            }
+                        >
+                            <Text style={globalStyles.buttonTxt}>Meeting</Text>
                         </TouchableOpacity>
                         {/* for testing purposes ends */}
 
