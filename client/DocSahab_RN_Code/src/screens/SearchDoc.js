@@ -5,6 +5,7 @@ import { globalStyles } from '../styles/globalStyles';
 import Icon from 'react-native-vector-icons/Feather';
 import RNPickerSelect from "react-native-picker-select";
 import DocSahabApi from '../api/DocSahabApi';
+import { Context as AuthContext } from '../context/AuthContext';
 
 const SeachDocScreen = ({navigation}) => {
 
@@ -14,6 +15,8 @@ const [qualification, setQualification] = useState('');
 const [specialization, setSpecialization] = useState('');
 const [city, setCity] = useState('');
 const [doctors, setDoctors] = useState([]);
+
+const { state, fetchUser } = useContext(AuthContext);
 
 const filters = {
   specialization,
@@ -26,14 +29,15 @@ const searchbyName = async ({name, filters}) => {
     try{
       const response = await DocSahabApi.post('/api/select-doctor-with-name',{name, filters});
       setDoctors(response.data)
-      console.log(response.data)
     }
     catch (err) {
       console.log(err);
     }
   };
+
 useEffect(() => {
     searchbyName({name, filters});
+    fetchUser();
   }, []);
 
 

@@ -26,7 +26,7 @@ const Verifyemail = () => {
     const navigate = async () => {
         const jsonData = await AsyncStorage.getItem('SignUpData');
         const data = JSON.parse(jsonData);
-        if (data.role === true) {
+        if (data.doctor === true) {
             navigation.navigate('doctordetails')
         }
         else {

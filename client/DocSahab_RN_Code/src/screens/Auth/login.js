@@ -34,7 +34,8 @@ import SignUpAsDoctor from '../Auth/DoctorDetails';
 
 const login = (props) => {
     
-    const { state, signIn } = useContext(AuthContext);
+    const { state, signIn,fetchUser } = useContext(AuthContext);
+
 
     const navigation = useNavigation();
 
@@ -52,6 +53,7 @@ const login = (props) => {
     }, navigate)
 
     const navigate = () => {
+       fetchUser()
         navigation.navigate('root');
     }
 
@@ -79,6 +81,7 @@ const login = (props) => {
             console.log("jwt",jwt)
 
             if (jwt) {
+                fetchUser()
                 navigation.navigate('root')
             }
         }

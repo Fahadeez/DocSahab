@@ -11,6 +11,7 @@ import RNPickerSelect from "react-native-picker-select";
 import RNMultiSelect from "@freakycoder/react-native-multiple-select";
 import { Context as AuthContext } from '../../context/AuthContext';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
+import { useNavigation } from '@react-navigation/native';
 
 // Sign Up validation schema
 const DocDetValSchema = yup.object({
@@ -45,6 +46,7 @@ var Day = [
 const doctordetails = () => {
 
     const { state, signUpAsDoctor } = useContext(AuthContext);
+    const navigation = useNavigation();
 
     const [qualification, setQualification] = useState();
     const [specialization, setSpecialization] = useState();
@@ -72,6 +74,9 @@ const doctordetails = () => {
     const onPressEndCancel = () => {
         setVisibilityEnd({ visibilityEnd: false });
     };
+    const navigate = () => {
+     navigation.navigate('login')
+    }
 
     return (
         <View style={globalStyles.containerColor}>
@@ -95,7 +100,7 @@ const doctordetails = () => {
                                 }}
                     validationSchema={DocDetValSchema}
                     onSubmit={(values, actions) => {
-                        signUpAsDoctor(values);
+                        signUpAsDoctor(values,navigate);
                         console.log(values);
                         actions.resetForm();
                     }}
@@ -240,7 +245,6 @@ const doctordetails = () => {
                                         mode = "time"
                                         is24Hour = { true } //for am and pm
                                         display = "spinner"
-                                        timeZoneOffsetInSeconds = { 3600 }
                                     />
 {/* 
                                     <View style={ styles.inputLabel }>
@@ -290,7 +294,7 @@ const doctordetails = () => {
                                         <RNMultiSelect
                                             width= {'100%'}
                                             data={Day}
-                                            placeholder={"Monday"}
+                                            placeholder={"Select days"}
                                             menuBarContainerHeight = {370}
                                             onSelect={(days) => {
                                                 setDay(days)

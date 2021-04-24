@@ -8,6 +8,8 @@ const jwt = require('jsonwebtoken');
 const keys = require('../Config/keys');
 const puppeteer = require('puppeteer');
 const bcrypt = require('bcrypt');
+const moment = require('moment');
+
 const BCRYPT_SALT_ROUNDS = 10;
 
 // const { Storage } = require('@google-cloud/storage');
@@ -100,8 +102,8 @@ module.exports = app => {
 			contact = body.contact,
 			city = body.city,
 			gender = body.gender,
-			role = body.role;
-		if (role) {
+			doctor = body.doctor;
+		if (doctor) {
 			Doctor.findOne(
 				{
 					email: email,
@@ -120,7 +122,7 @@ module.exports = app => {
 							record.lastName = lastName.trim();
 							record.contact = contact.trim();
 							record.city = city.trim();
-							record.doctor = role;
+							record.doctor = doctor;
 							record.gender = gender;
 							record.password = record.hashPassword(password.trim());
 							record.save().then((user) => {
@@ -136,7 +138,7 @@ module.exports = app => {
 				}
 			);
 		}
-		if (!role) {
+		if (!doctor) {
 			User.findOne(
 				{
 					email: email,
@@ -155,7 +157,7 @@ module.exports = app => {
 							record.lastName = lastName.trim();
 							record.contact = contact.trim();
 							record.city = city.trim();
-							record.doctor = role;
+							record.doctor = doctor;
 							record.gender = gender;
 							record.password = record.hashPassword(password.trim());
 							record.save().then((user) => {
@@ -210,8 +212,9 @@ module.exports = app => {
 									{
 										_id: user._id,
 									}, {
-										specialization, qualification, days,
-									startCheckupTime: startTime, endCheckupTime: endTime, yearsOfExp
+									specialization, qualification, days,
+									startCheckupTime: moment(startTime).format("hh:mm a")
+									, endCheckupTime: moment(endTime).format("hh:mm a"), yearsOfExp
 								}
 								)
 								doctor.save()
@@ -230,9 +233,9 @@ module.exports = app => {
 	});
 
 	app.post('/auth/verify-email', function (req, res, next) {
-		const { email, role } = req.body;
+		const { email, doctor } = req.body;
 		var num = Math.floor(Math.random() * 90000) + 10000;
-		if (role === 'doctor') {
+		if (doctor === true) {
 			Doctor.findOne(
 				{
 					email: email,
@@ -278,7 +281,7 @@ module.exports = app => {
 					return res.send('Server error, Please try again').status(500);
 				})
 		}
-		if (role === 'user') {
+		if (doctor === false) {
 			User.findOne(
 				{
 					email: email,
