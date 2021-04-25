@@ -41,9 +41,8 @@ class BookAppoinment extends Component {
     componentDidMount() {
         const { state, fetchUser } = this.context;
         fetchUser();
-        this.timePickerItems()
     }
-    timePickerItems = () => {
+    timePickerItems = (date) => {
         const { startCheckupTime, endCheckupTime , appointments } = this.props.route.params.doctor;
         const startDate = moment(startCheckupTime).format('HH:mm')
         const endDate = moment(endCheckupTime).format('HH:mm')
@@ -53,7 +52,9 @@ class BookAppoinment extends Component {
         let diff = duration.hours();
         let array = [];
         const appt_time = appointments.map(appt => {
-            return appt.time
+            if(moment(appt.date).format("DD/MM/YYYY") === moment(date).format("DD/MM/YYYY") ){
+                return appt.time
+            }
         })
         for (i = 0; diff > i; i++) {
             let result = moment(startTime).add(i, 'hours').format('HH:mm')
@@ -65,10 +66,12 @@ class BookAppoinment extends Component {
                 value: result
             })
         }
-     
-
         this.setState({ timeSlots: array })
 
+    }
+    dateSelected = (date) => {
+        this.setState({ date })
+        this.timePickerItems(date)
     }
 
     dayNumber = (day) => {
@@ -96,7 +99,6 @@ class BookAppoinment extends Component {
     }
 
     datesBlacklistFunc = date => {
-
         const { days, appointments } = this.props.route.params.doctor;
         const appt_dates = appointments.map(appt => {
 
@@ -108,9 +110,9 @@ class BookAppoinment extends Component {
             return this.dayNumber(day.value)
         })
         const currentDate = moment(date).format('DD/MM/YYYY')
-        if (appt_dates.includes(currentDate)) {
-            return true
-        }
+        // if (appt_dates.includes(currentDate)) {
+        //     return true
+        // }
         if (whiteListDays.includes(date.isoWeekday())) {
             return false
         }
@@ -256,7 +258,7 @@ class BookAppoinment extends Component {
                                             duration: 200,
                                             highlightColor: '#9370db',
                                         }}
-                                        onDateSelected={(date) => this.setState({ date })}
+                                        onDateSelected={this.dateSelected}
                                     />
 
                                     {/* timing header */}
