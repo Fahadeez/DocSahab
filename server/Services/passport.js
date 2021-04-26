@@ -11,7 +11,6 @@ passport.serializeUser((user, done) => {
   done(null, user);
 });
 passport.deserializeUser((user, done) => {
-  console.log("deserilize user",user)
   if (user.doctor) {
     Doctor.findById(user._id).then(user => {
       done(null, user);

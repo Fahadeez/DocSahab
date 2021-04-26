@@ -1,10 +1,25 @@
-import React,{useState, useContext, useEffect} from 'react';
-import {View, StyleSheet, Text, TextInput, TouchableOpacity, FlatList, Image, ScrollView, SafeAreaView} from 'react-native';
+import React, { 
+  useState, 
+  useContext, 
+  useEffect
+} from 'react';
+import {
+  View, 
+  StyleSheet, 
+  Text, 
+  TextInput, 
+  TouchableOpacity, 
+  FlatList, 
+  Image,
+  ScrollView,
+  LogBox
+} from 'react-native';
 import NavigationBtn from '../components/navigationBtn';
 import { globalStyles } from '../styles/globalStyles';
 import Icon from 'react-native-vector-icons/Feather';
 import RNPickerSelect from "react-native-picker-select";
 import DocSahabApi from '../api/DocSahabApi';
+import { Context as AuthContext } from '../context/AuthContext';
 
 const SeachDocScreen = ({navigation}) => {
 
@@ -14,6 +29,8 @@ const [qualification, setQualification] = useState('');
 const [specialization, setSpecialization] = useState('');
 const [city, setCity] = useState('');
 const [doctors, setDoctors] = useState([]);
+
+const { state, fetchUser } = useContext(AuthContext);
 
 const filters = {
   specialization,
@@ -26,16 +43,17 @@ const searchbyName = async ({name, filters}) => {
     try{
       const response = await DocSahabApi.post('/api/select-doctor-with-name',{name, filters});
       setDoctors(response.data)
-      console.log(response.data)
     }
     catch (err) {
       console.log(err);
     }
   };
+
 useEffect(() => {
     searchbyName({name, filters});
+    fetchUser();
+    LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
   }, []);
-
 
 	return (
 	<View style = {globalStyles.containerColor}>
@@ -47,7 +65,7 @@ useEffect(() => {
 	<ScrollView>
 
 	<View style = {globalStyles.container}>
-	<View style ={globalStyles.SearchbackgroundStyle}>
+	<View style ={ styles.SearchbackgroundStyle }>
 			  <Icon name='search' size={30} color="#2A2AC0" style = {globalStyles.searchIcon}/>
 			  <TextInput
 			  placeholder= 'Doctor, Specialities...'
@@ -110,10 +128,12 @@ useEffect(() => {
     </View>
 
     <View style = {styles.itemContainer}>
-    <Text>All Specialities</Text>
-    <TouchableOpacity>
+    <Text style={{
+      fontSize: 15
+    }}>All Specialities</Text>
+    {/* <TouchableOpacity>
     <Icon name='sliders' size={30} color="darkblue"/>
-    </TouchableOpacity>
+    </TouchableOpacity> */}
     </View>
 
    	<View>
@@ -155,9 +175,9 @@ useEffect(() => {
                   />
 
 
-	                <TouchableOpacity>
+	                {/* <TouchableOpacity>
 	                <Icon name='more-vertical' size={25} color="grey" style = {{alignSelf: 'flex-end'}}/>
-	                </TouchableOpacity>
+	                </TouchableOpacity> */}
 	            </View>
 	        </View>
 
@@ -187,9 +207,10 @@ useEffect(() => {
 const styles = StyleSheet.create({
 itemContainer: {
 	flexDirection: 'row',
-	justifyContent: 'space-between',
-	marginHorizontal: '6%',
-	marginTop: 20
+	// justifyContent: 'space-between',
+	// marginHorizontal: '6%',
+	marginTop: 20,
+  paddingLeft: 20
 },
 userInfoSection: {
   paddingLeft: 20,
@@ -214,7 +235,15 @@ caption: {
   lineHeight: 14,
   color: 'gray',
   marginTop: 3
-}
+},
+SearchbackgroundStyle: {
+  height: 50,
+  width: '90%',
+  backgroundColor: 'white',
+  borderRadius: 20,
+  marginHorizontal: 22,
+  flexDirection: 'row'
+},
 
 });
 

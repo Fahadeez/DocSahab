@@ -4,10 +4,15 @@ import NavigationBtn from '../components/navigationBtn';
 import { globalStyles } from '../styles/globalStyles';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import RNPickerSelect from "react-native-picker-select";
+import moment from 'moment';
 
 
-const PaymentScreen = ({navigation}) => {
+
+const PaymentScreen = ({navigation,route}) => {
 const {card, setSelectedCard} = useState('');
+const docData = route.params.docData;
+const date = route.params.date;
+const time = route.params.time;
 
 return(
 <View styles = {globalStyles.containerColor} >
@@ -17,11 +22,11 @@ return(
 	<View style= {{marginTop: '15%', marginLeft: '5%'}}>
 
 		<View style = {{flexDirection: 'row'}}>
-		<Text style = {{fontWeight: 'bold'}}>Dr. Calara Odding</Text><Text> Confirmation</Text>
+		<Text style = {{fontWeight: 'bold'}}>{docData.firstName} {docData.lastName}</Text><Text> Confirmation</Text>
 		</View>
 
 		<View style = {styles.scheduleContainer}>
-		<Text style = {styles.scheduleText}>Thu, 09 Apr 08:00</Text>
+		<Text style = {styles.scheduleText}>{moment(date).format('dddd')},{time}</Text>
 		</View>
 
 		<View style = {{flexDirection: 'row', alignItems: 'center', marginTop: '6%'}}>

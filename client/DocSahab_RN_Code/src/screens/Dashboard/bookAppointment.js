@@ -1,5 +1,7 @@
-import React, { Component } from 'react';
-import { View, Text, StyleSheet, Image, TouchableWithoutFeedback, Animated, TouchableOpacity, ScrollView, FlatList } from 'react-native';
+import React, {
+    Component
+} from 'react';
+import { View, Text, StyleSheet, Image, TouchableWithoutFeedback, Animated, TouchableOpacity, ScrollView } from 'react-native';
 import NavigationBtn from '../../components/navigationBtn';
 import { globalStyles } from '../../styles/globalStyles';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -7,51 +9,131 @@ import 'react-native-gesture-handler';
 import Flag from 'react-native-flags';
 import CalendarStrip from 'react-native-calendar-strip';
 import RNPickerSelect from "react-native-picker-select";
+import { Context as AuthContext } from '../../context/AuthContext';
+import moment from 'moment';
 
 const numStars = 5
 
 class BookAppoinment extends Component {
+    static contextType = AuthContext
 
-    state = {
-        rating: 2,
-        Doc_data: [],
-        timing: ''
+    constructor(props) {
+        super(props);
+        this.state = {
+            rating: 2,
+            timeSlots: [],
+            date: "",
+            time: "",
+        }
+    }
+    bookAppointment = async () => {
+        const docData = this.props.route.params.doctor;
+        this.props.navigation.navigate('payment', {
+            time: this.state.time,
+            date: this.state.date, docData
+        })
+    }
+
+    componentDidMount() {
+        const { state, fetchUser } = this.context;
+        fetchUser();
+    }
+    timePickerItems = (date) => {
+        const { startCheckupTime, endCheckupTime , appointments } = this.props.route.params.doctor;
+        const startDate = moment(startCheckupTime).format('HH:mm')
+        const endDate = moment(endCheckupTime).format('HH:mm')
+        const startTime = moment(startDate, "HH:mm")
+        const endTime = moment(endDate, "HH:mm")
+        let duration = moment.duration(endTime.diff(startTime));
+        let diff = duration.hours();
+        let array = [];
+        const appt_time = appointments.map(appt => {
+            if(moment(appt.date).format("DD/MM/YYYY") === moment(date).format("DD/MM/YYYY") ){
+                return appt.time
+            }
+        })
+        for (i = 0; diff > i; i++) {
+            let result = moment(startTime).add(i, 'hours').format('HH:mm')
+            if(appt_time.includes(result)){
+                continue;
+            }
+            array.push({
+                label: result,
+                value: result
+            })
+        }
+        this.setState({ timeSlots: array })
+
+    }
+    dateSelected = (date) => {
+        this.setState({ date })
+        this.timePickerItems(date)
+    }
+
+    dayNumber = (day) => {
+        if (day === "Monday") {
+            return 1
+        }
+        if (day === "Tuesday") {
+            return 2
+        }
+        if (day === "Wednesday") {
+            return 3
+        }
+        if (day === "Thursday") {
+            return 4
+        }
+        if (day === "Friday") {
+            return 5
+        }
+        if (day === "Saturday") {
+            return 6
+        }
+        if (day === "Sunday") {
+            return 7
+        }
+    }
+
+    datesBlacklistFunc = date => {
+        const { days, appointments } = this.props.route.params.doctor;
+        const appt_dates = appointments.map(appt => {
+
+            return moment(appt.date).format('DD/MM/YYYY')
+        })
+        // console.log("appt_dates", appt_dates)
+
+        const whiteListDays = days.map(day => {
+            return this.dayNumber(day.value)
+        })
+        const currentDate = moment(date).format('DD/MM/YYYY')
+        // if (appt_dates.includes(currentDate)) {
+        //     return true
+        // }
+        if (whiteListDays.includes(date.isoWeekday())) {
+            return false
+        }
+        else {
+            return true
+        }
     }
 
     render() {
         const Doc_data = this.props.route.params.doctor;
-        console.log('Doctor Data: ', Doc_data)
-
-        const time = Doc_data.timeSlots.map( timeValue => timeValue.value );
-        console.log('Time: ', time);
-
-
-        // code for Start and End Time
-        // const StartTime = Doc_data.startTime.map( timeValue => timeValue.StartTime );
-        // const StartTimeSlice = StartTime.slice(16, 21);
-        // console.log('Start Time: ', StartTimeSlice)
-
-        // const EndTime = Doc_data.EndTime.map( timeValue => timeValue.EndTime );
-        // const EndTimeSlice = EndTime.slice(16, 21);
-        // console.log('End Time: ', EndTimeSlice)
+        console.log("doc data", Doc_data)
 
         let stars = [];
-        for(let x = 1; x <= numStars; x++) {
+        for (let x = 1; x <= numStars; x++) {
             stars.push(
                 <TouchableWithoutFeedback key={x} >
                     <View style={{
                         marginHorizontal: 2,
                     }}>
                         <Animated.View>
-                            <Star filled={ x <= this.state.rating ? true : false }/>
+                            <Star filled={x <= this.state.rating ? true : false} />
                         </Animated.View>
                     </View>
                 </TouchableWithoutFeedback>
             )
-        }
-
-        const datesBlacklistFunc = date => {
-            return date.isoWeekday() === 5 || date.isoWeekday() === 6; // disable Fri and Sat
         }
 
         return (
@@ -59,7 +141,7 @@ class BookAppoinment extends Component {
             <View style={{
                 flex: 1,
                 backgroundColor: '#ECF1FA',
-                }}>
+            }}>
                 <ScrollView
                     showsVerticalScrollIndicator={false}
                     showsHorizontalScrollIndicator={false}
@@ -67,143 +149,137 @@ class BookAppoinment extends Component {
 
                     {/* // Sub root container */}
                     <View style={globalStyles.containerForBookAppointment}>
-                        <NavigationBtn screenName={'SearchDoc'} styling={ styles.headerNavigation } />
+                        <NavigationBtn screenName={'SearchDoc'} styling={styles.headerNavigation} />
 
                         {/* doctor profile and information */}
-                        <View style={styles.containerProfile }>
+                        <View style={styles.containerProfile}>
                             <View>
                                 <Image
-                                    style={styles.DocImage} 
-                                    source={require('../../../assets/BookAppointment/doctor.jpg')}/>
+                                    style={styles.DocImage}
+                                    source={require('../../../assets/BookAppointment/doctor.jpg')} />
                             </View>
                             <View style={{ flex: 2, height: 130 }}>
-                                <View style={ styles.DocProfileInfo }>
+                                <View style={styles.DocProfileInfo}>
                                     <Text style={{
                                         fontSize: 15,
                                         fontWeight: 'bold'
                                     }}>
-                                        { Doc_data.firstName }
+                                        {Doc_data.firstName}
                                     </Text>
                                 </View>
-                                <View style={ styles.DocProfileInfo }>
+                                <View style={styles.DocProfileInfo}>
                                     <Text style={{
                                         fontSize: 14,
                                         color: 'grey'
                                     }}>
                                         {/* Dentist */}
-                                        { Doc_data.qualification }
+                                        {Doc_data.qualification}
                                     </Text>
                                 </View>
-                                <View style={ styles.DocProfileInfo }>
+                                <View style={styles.DocProfileInfo}>
                                     <Text style={{
                                         fontSize: 14,
                                         color: 'grey'
                                     }}>
                                         {/* Karachi, Pakistan */}
-                                        { Doc_data.city }, Pakistan
+                                        {Doc_data.city}, Pakistan
                                     </Text>
                                 </View>
-                                <View style={ styles.DocProfileInfo }>
-                                    { stars }
-                                    <Text style={{ 
-                                            fontSize: 15,
-                                            color: 'grey',
-                                            marginLeft: '4%'
-                                        }}>
-                                            (25)
+                                <View style={styles.DocProfileInfo}>
+                                    {stars}
+                                    <Text style={{
+                                        fontSize: 15,
+                                        color: 'grey',
+                                        marginLeft: '4%'
+                                    }}>
+                                        (25)
                                     </Text>
                                 </View>
                             </View>
                         </View>
-                        
+
                         {/* TimeSlots Container Start */}
                         <View style={styles.TimeSlots}>
-                            <View style={ styles.TimeSlotsSubContainer }>
+                            <View style={styles.TimeSlotsSubContainer}>
+                                <View style={{
+                                    // flex: 1,
+                                    flexDirection: 'row'
+                                }}>
                                     <View style={{
-                                        // flex: 1,
-                                        flexDirection: 'row'
+                                        flex: 1,
+                                        flexDirection: 'column',
+                                        marginBottom: '5%'
                                     }}>
-                                        <View style={{
-                                            flex: 1,
-                                            flexDirection: 'column',
-                                            marginBottom: '5%'
-                                        }}>
-                                            <Text style={{
-                                                marginBottom: '5%',
-                                                fontSize: 20,
-                                                fontWeight: '900'
-                                            }}>
-                                                Thu, 09 Apr
-                                            </Text>
-
-                                            <Text style={{
-                                                color: 'grey'
-                                            }}>
-                                                3 Slots Available
-                                            </Text>
-
-                                        </View>
-                                    </View>
-                                    
-                                    {/* calender strip  */}
-                                    <View style={{ 
-                                            flex: 1,
+                                        <Text style={{
                                             marginBottom: '5%',
-                                            width: '100%', 
+                                            fontSize: 20,
+                                            fontWeight: '900'
                                         }}>
-                                        <Text style={{
-                                            fontSize: 18,
-                                            marginBottom: '2%',
-                                            fontWeight: '900'
-                                        }}> 
-                                            Select Your Date 
-                                        </Text>
-                                        <CalendarStrip
-                                            calendarAnimation={{type: 'sequence', duration: 50}}
-                                            style = {{ height: 100, width: '100%', marginBottom: '10%' }}
-                                            datesBlacklist={datesBlacklistFunc}
-                                            daySelectionAnimation={{
-                                                type: 'background',
-                                                duration: 200,
-                                                highlightColor: '#9370db',
-                                            }}
-                                            daySelectionAnimation={{
-                                                type: 'background',
-                                                duration: 200,
-                                                highlightColor: '#9370db',
-                                            }}
-                                            onDateSelected={(date) => console.log(date)}
-                                        />
+                                            Thu, 09 Apr
+                                            </Text>
 
-                                        {/* timing header */}
                                         <Text style={{
-                                            fontSize: 18,
-                                            // marginBottom: '5%',
-                                            fontWeight: '900'
-                                        }}> 
-                                            Select Your Timing
+                                            color: 'grey'
+                                        }}>
+                                            3 Slots Available
+                                            </Text>
+
+                                    </View>
+                                </View>
+
+                                {/* calender strip  */}
+                                <View style={{
+                                    flex: 1,
+                                    marginBottom: '5%',
+                                    width: '100%',
+                                }}>
+                                    <Text style={{
+                                        fontSize: 18,
+                                        marginBottom: '2%',
+                                        fontWeight: '900'
+                                    }}>
+                                        Select Your Date
                                         </Text>
-                                    </View>
-                                    
-                                    {/* timing dropdown */}
-                                    <View style={
-                                        styles.pickerView
-                                    }>
-                                        <RNPickerSelect
-                                            style={{ inputAndroid: { color: 'black' } }}
-                                            placeholder={{ label: "Select Your Timing", value: '' }}
-                                            onValueChange={(value) => {
-                                                console.log(value)
-                                            }}
-                                            items = { Doc_data.timeSlots.map( timeValue => (
-                                                {
-                                                    key: timeValue.value,
-                                                    label: timeValue.value,
-                                                    value: timeValue.value
-                                                }
-                                            )) }
-                                        />
-                                    </View>
+                                    <CalendarStrip
+                                        calendarAnimation={{ type: 'sequence', duration: 50 }}
+                                        style={{ height: 100, width: '100%', marginBottom: '10%' }}
+                                        datesBlacklist={(date) => this.datesBlacklistFunc(date)}
+                                        daySelectionAnimation={{
+                                            type: 'background',
+                                            duration: 200,
+                                            highlightColor: '#9370db',
+                                        }}
+                                        daySelectionAnimation={{
+                                            type: 'background',
+                                            duration: 200,
+                                            highlightColor: '#9370db',
+                                        }}
+                                        onDateSelected={this.dateSelected}
+                                    />
+
+                                    {/* timing header */}
+                                    <Text style={{
+                                        fontSize: 18,
+                                        // marginBottom: '5%',
+                                        fontWeight: '900'
+                                    }}>
+                                        Select Your Timing
+                                        </Text>
+                                </View>
+
+                                {/* timing dropdown */}
+                                <View style={
+                                    styles.pickerView
+                                }>
+                                    <RNPickerSelect
+                                        style={{ inputAndroid: { color: 'black' } }}
+                                        placeholder={{ label: "Select a time", value: '' }}
+                                        onValueChange={(value) => {
+                                            this.setState({ time: value })
+                                        }}
+                                        items={this.state.timeSlots}
+                                    />
+                                </View>
 
 
                             </View>
@@ -213,7 +289,7 @@ class BookAppoinment extends Component {
                         {/* button */}
 
                         <View style={styles.BookAppointment}>
-                            <TouchableOpacity style={styles.BookAppointmentBtn} onPress = {() => {this.props.navigation.navigate('payment')}}>
+                            <TouchableOpacity style={styles.BookAppointmentBtn} onPress={this.bookAppointment}>
                                 <Text style={globalStyles.buttonTxt}>
                                     Book Appointment
                                 </Text>
@@ -221,18 +297,18 @@ class BookAppoinment extends Component {
                         </View>
 
                         {/* book appointment doc details tab navigation */}
-                        <View style={ styles.DocInfoTabNavigation }>
+                        <View style={styles.DocInfoTabNavigation}>
                             <ScrollView
                                 horizontal={true}
                                 showsVerticalScrollIndicator={false}
                                 showsHorizontalScrollIndicator={false}>
 
                                 {/* <BookAppointmentTabsHome /> */}
-                                
+
                                 {/* Doctor Screen */}
 
                                 <View
-                                    style={ styles.DoctorScreenView }
+                                    style={styles.DoctorScreenView}
                                 >
                                     <ScrollView
                                         showsVerticalScrollIndicator={false}
@@ -264,7 +340,7 @@ class BookAppoinment extends Component {
                                                         code="PK"
                                                         size={24}
                                                     />
-                                                    <Text style={ styles.LanguageLabel }>
+                                                    <Text style={styles.LanguageLabel}>
                                                         Urdu
                                                     </Text>
 
@@ -273,7 +349,7 @@ class BookAppoinment extends Component {
                                                         size={24}
                                                         style={{ marginLeft: 30 }}
                                                     />
-                                                    <Text style={ styles.LanguageLabel }>
+                                                    <Text style={styles.LanguageLabel}>
                                                         English
                                                     </Text>
                                                 </View>
@@ -303,12 +379,12 @@ class BookAppoinment extends Component {
                                                 <View style={{
                                                     flexDirection: "column",
                                                 }}>
-                                                    
+
                                                     <View style={{
                                                         flexDirection: 'row',
                                                         alignItems: 'center'
                                                     }}>
-                                                        <View style={ styles.QualificationLabelView } />
+                                                        <View style={styles.QualificationLabelView} />
                                                         <Text style={{
                                                             color: 'grey',
                                                             fontSize: 13,
@@ -320,7 +396,7 @@ class BookAppoinment extends Component {
                                                         flexDirection: 'row',
                                                         alignItems: 'center'
                                                     }}>
-                                                        <View style={ styles.QualificationLabelView } />
+                                                        <View style={styles.QualificationLabelView} />
                                                         <Text style={{
                                                             color: 'grey',
                                                             fontSize: 13,
@@ -332,7 +408,7 @@ class BookAppoinment extends Component {
                                                         flexDirection: 'row',
                                                         alignItems: 'center'
                                                     }}>
-                                                        <View style={ styles.QualificationLabelView } />
+                                                        <View style={styles.QualificationLabelView} />
                                                         <Text style={{
                                                             color: 'grey',
                                                             fontSize: 13,
@@ -369,8 +445,8 @@ class BookAppoinment extends Component {
                                                 <View style={{
                                                     flexDirection: "row",
                                                 }}>
-                                                    
-                                                    <View style={ styles.PublicationLabelView } />
+
+                                                    <View style={styles.PublicationLabelView} />
                                                     <Text style={{
                                                         color: 'grey',
                                                         fontSize: 13,
@@ -403,12 +479,13 @@ class BookAppoinment extends Component {
                                                     Discription
                                                 </Text>
                                                 <View style={{
+                                                    flex: 0.8,
                                                     flexDirection: "column",
                                                 }}>
                                                     <View style={{
                                                         flexDirection: 'row',
                                                     }}>
-                                                        <View style={ styles.DiscriptionLabelView } />
+                                                        <View style={styles.DiscriptionLabelView} />
                                                         <Text style={{
                                                             color: 'grey',
                                                             fontSize: 13,
@@ -420,7 +497,7 @@ class BookAppoinment extends Component {
                                                         flexDirection: 'row',
                                                         marginBottom: '5%'
                                                     }}>
-                                                        <View style={ styles.DiscriptionLabelView } />
+                                                        <View style={styles.DiscriptionLabelView} />
                                                         <Text style={{
                                                             color: 'grey',
                                                             fontSize: 13,
@@ -430,22 +507,48 @@ class BookAppoinment extends Component {
                                                     </View>
                                                 </View>
 
+                                                <View style={{
+                                                    flex: 0.2,
+                                                    flexDirection: 'row',
+                                                    justifyContent: 'flex-end',
+                                                }}>
+                                                    <View style={{
+                                                        justifyContent: 'center'
+                                                    }}>
+                                                        <Text style={{
+                                                            fontSize: 16,
+                                                            color: 'lightgrey',
+                                                            fontWeight: 'bold',
+                                                            marginRight: '3%',
+                                                        }}>
+                                                            Swipe right to view clinic and feedback
+                                                        </Text>
+                                                    </View>
+                                                    <View>
+                                                        <Icon
+                                                            name={"long-arrow-right"}
+                                                            size={26}
+                                                            color="lightgrey"
+                                                        />
+                                                    </View>
+                                                </View>
+
                                             </View>
 
                                             {/* Discription Tab Ends */}
-                                        
+
                                         </View>
                                     </ScrollView>
                                 </View>
 
                                 {/* Clinics Screen */}
                                 <View
-                                    style={ styles.ClinicsScreenView }
+                                    style={styles.ClinicsScreenView}
                                 >
                                     <ScrollView
                                         showsVerticalScrollIndicator={false}
                                         showsHorizontalScrollIndicator={false}>
-                                        
+
                                         <View style={styles.SwapableViews}>
                                             <Text style={styles.SwapableViewsTitle}>Clinics</Text>
                                         </View>
@@ -453,10 +556,9 @@ class BookAppoinment extends Component {
                                     </ScrollView>
                                 </View>
 
-
                                 {/* FeedBack Screen */}
 
-                                <View style={ styles.FeedBackScreenView }
+                                <View style={styles.FeedBackScreenView}
                                 >
                                     <ScrollView
                                         showsVerticalScrollIndicator={false}
@@ -474,18 +576,18 @@ class BookAppoinment extends Component {
 
                     </View>
 
-            </ScrollView>
-        </View>
+                </ScrollView>
+            </View>
         );
     }
 }
 // Star Class
-class Star extends React.Component {
+class Star extends Component {
     render() {
         return (
             <Icon
-                name={ this.props.filled === true ? "star" : "star-o"}
-                size={16} 
+                name={this.props.filled === true ? "star" : "star-o"}
+                size={16}
                 color="orange"
             />
         );
@@ -519,13 +621,13 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     BookAppointmentBtn: {
-        width:"100%",
+        width: "100%",
         color: 'white',
         backgroundColor: '#2A2AC0',
-        borderRadius:25,
-        height:50,
-        alignItems:"center",
-        justifyContent:"center",
+        borderRadius: 25,
+        height: 50,
+        alignItems: "center",
+        justifyContent: "center",
     },
     DocInfoTabNavigation: {
         flex: 1,
@@ -540,32 +642,32 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     DocImage: {
-        height: 130, 
-        width: 120, 
+        height: 130,
+        width: 120,
         borderRadius: 15,
         margin: '3%',
     },
     DocProfileInfo: {
-        flex: 1, 
+        flex: 1,
         flexDirection: "row",
         alignItems: 'center'
     },
     TimeSlotsSubContainer: {
         flex: 1,
-        flexDirection: "column", 
+        flexDirection: "column",
         backgroundColor: "white",
         borderRadius: 15,
         alignItems: 'center',
         padding: 20
     },
     SeeAllBtn: {
-        width:"55%",
+        width: "55%",
         color: 'white',
         backgroundColor: '#2A2AC0',
-        borderRadius:25,
-        height:40,
-        alignItems:"center",
-        justifyContent:"center",
+        borderRadius: 25,
+        height: 40,
+        alignItems: "center",
+        justifyContent: "center",
     },
     TimeSlotsLabelView: {
         marginRight: '3%',
@@ -583,36 +685,36 @@ const styles = StyleSheet.create({
         color: 'grey'
     },
     QualificationLabelView: {
-        borderWidth: 2, 
-        height: 2, 
-        width: 2, 
-        borderRadius: 50, 
-        borderColor: 'grey', 
-        padding: 2, 
+        borderWidth: 2,
+        height: 2,
+        width: 2,
+        borderRadius: 50,
+        borderColor: 'grey',
+        padding: 2,
         marginRight: 5
     },
     PublicationLabelView: {
-        borderWidth: 2, 
-        height: 2, 
-        width: 2, 
-        borderRadius: 50, 
-        borderColor: 'grey', 
-        padding: 2, 
-        marginRight: 5, 
+        borderWidth: 2,
+        height: 2,
+        width: 2,
+        borderRadius: 50,
+        borderColor: 'grey',
+        padding: 2,
+        marginRight: 5,
         marginTop: 6.5
     },
     DiscriptionLabelView: {
-        borderWidth: 2, 
-        height: 2, 
-        width: 2, 
-        borderRadius: 50, 
-        borderColor: 'grey', 
-        padding: 2, 
-        marginRight: 5, 
+        borderWidth: 2,
+        height: 2,
+        width: 2,
+        borderRadius: 50,
+        borderColor: 'grey',
+        padding: 2,
+        marginRight: 5,
         marginTop: 6.5
     },
     DoctorScreenView: {
-        flexDirection: "column", 
+        flexDirection: "column",
         backgroundColor: "white",
         borderRadius: 15,
         padding: 20,
@@ -622,7 +724,7 @@ const styles = StyleSheet.create({
     },
     ClinicsScreenView: {
         flex: 1,
-        flexDirection: "column", 
+        flexDirection: "column",
         backgroundColor: "white",
         borderRadius: 15,
         alignItems: 'center',
@@ -632,7 +734,7 @@ const styles = StyleSheet.create({
     },
     FeedBackScreenView: {
         flex: 1,
-        flexDirection: "column", 
+        flexDirection: "column",
         backgroundColor: "white",
         borderRadius: 15,
         alignItems: 'center',
@@ -642,22 +744,21 @@ const styles = StyleSheet.create({
         marginRight: 20
     },
     headerNavigation: {
-        marginTop: '9%',
+        marginTop: '5%',
         width: '100%',
         height: '5%',
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'flex-start',
         marginLeft: '5%',
-        marginBottom: '5%'
     },
     pickerView: {
-        width:"100%",
+        width: "100%",
         backgroundColor: '#f8f8ff',
-        borderRadius:10,
-        height:50,
-        justifyContent:"center",
-        padding:15,
+        borderRadius: 10,
+        height: 50,
+        justifyContent: "center",
+        padding: 15,
     },
 });
 

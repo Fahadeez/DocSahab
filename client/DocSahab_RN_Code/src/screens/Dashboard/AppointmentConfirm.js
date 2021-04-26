@@ -13,7 +13,9 @@ import { globalStyles } from '../../styles/globalStyles';
 import 'react-native-gesture-handler';
 
 class AppointmentConfirm extends Component {
+
   render() {
+
     return (
       // root container
       <View

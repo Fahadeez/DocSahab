@@ -1,13 +1,10 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import createDataContext from './CreateContextData';
+import createDataContext from './index';
 import DocSahabApi from '../api/DocSahabApi';
 import { useNavigation } from '@react-navigation/native';
 import { ToastAndroid } from 'react-native';
 import * as RootNavigation from '../RootNavigation.js';
 
-const initialState = {
-    signUpData: {}
-};
 
 const authReducer = (state, action) => {
     switch (action.type) {
@@ -21,10 +18,24 @@ const authReducer = (state, action) => {
             return { ...state, errorMessageUpdatePassword: action.payload };
         case 'add_error_for_updatepassword':
             return { ...state, errorMessageUpdatePassword: action.payload };
+        case 'fetch_user':
+            return { ...state, user: action.payload };
         default:
             return state;
     }
 };
+
+const fetchUser = (dispatch) => {
+    return async () => {
+        try {
+            const response = await DocSahabApi.get('/auth/current_user')
+            dispatch({type: 'fetch_user',payload: response.data })
+        } catch (err) {
+
+        }
+    };
+};
+
 
 const signUp = (dispatch) => {
     return async (navigate) => {
@@ -65,7 +76,7 @@ const signUp = (dispatch) => {
 };
 
 const signUpAsDoctor = (dispatch) => {
-    return async ({ specialization, qualification, days, startTime, endTime, yearsOfExp, reg_no }) => {
+    return async ({ specialization, qualification, days, startTime, endTime, yearsOfExp, reg_no }, navigate) => {
         console.log("authContext: ", { specialization, qualification, days, startTime, endTime, yearsOfExp, reg_no })
         try {
             const email = await AsyncStorage.getItem('doctorSignUpEmail')
@@ -75,6 +86,7 @@ const signUpAsDoctor = (dispatch) => {
             console.log(response.data);
             if (response.data == "Doctor's details saved") {
                 dispatch({ type: 'add_error_for_signUp', payload: 'Registration Successfull!' })
+                navigate()
             }
             else if (response.data == "Unable to store doctor's details") {
                 dispatch({ type: 'add_error_for_signUp', payload: 'Email Already Exists!' })
@@ -145,8 +157,6 @@ const updatePassword = (dispatch) => {
     return async ({ password }, navigate) => {
         try {
             const email = await AsyncStorage.getItem('userEmail');
-            console.log("userEmail", email)
-            console.log("password updatePassword", password)
 
             const response = await DocSahabApi.post('/auth/updatePassword', { email, password })
 
@@ -164,13 +174,11 @@ const updatePassword = (dispatch) => {
 };
 
 export const verifyEmail = (dispatch) => {
-    return async ({ email, role }, navigate) => {
-        let r = role === true ? 'doctor' : 'user';
-        console.log("R", r)
+    return async ({ email, doctor }, navigate) => {
         try {
-            const response = await DocSahabApi.post('/auth/verify-email', { email, role: r })
+            const response = await DocSahabApi.post('/auth/verify-email', { email, doctor })
             if (response.data.code) {
-                console.log("code",response.data.code)
+                console.log("code", response.data.code)
                 await AsyncStorage.setItem('verifyEmailCode', JSON.stringify(response.data.code))
                 ToastAndroid.show("We have sent you a verification code via email, Please enter that code here",
                     ToastAndroid.LONG);
@@ -186,7 +194,8 @@ export const verifyEmail = (dispatch) => {
 // action functions
 export const { Provider, Context } = createDataContext(
     authReducer,
-    { signUp, signUpAsDoctor, signIn, signOut, forgetPassword, updatePassword, verifyEmail },
+    { signUp, signUpAsDoctor, signIn, signOut, forgetPassword, updatePassword, verifyEmail,fetchUser },
     // { isSignedIn: false, errorMessage: ''}
-    { token: null, errorMessageForSignIn: '', errorMessageForSignUp: '', errorMessageUpdatePassword: '' }
+    { token: null, errorMessageForSignIn: '', errorMessageForSignUp: '',
+     errorMessageUpdatePassword: '',user: {} }
 );
