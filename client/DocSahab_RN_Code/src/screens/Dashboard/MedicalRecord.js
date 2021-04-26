@@ -1,24 +1,40 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, ToastAndroid } from 'react-native';
+import { View, 
+    Text, 
+    StyleSheet, 
+    TouchableOpacity, 
+    ScrollView, 
+    ToastAndroid,
+    FlatList
+} from 'react-native';
 import NavigationBtn from '../../components/navigationBtn';
-// import { globalStyles } from '../../styles/globalStyles';
-// import Signin from '../Auth/login';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { SearchBar } from 'react-native-elements';
 import DashboardScreen from '../Dashboard/dashboard';
-import { globalStyles } from '../../styles/globalStyles';
 import DocumentPicker from 'react-native-document-picker';
 import axios from 'axios';
+
 const config = {
     headers: {
         'content-type': 'multipart/form-data'
     }
 }
+
+const record = [];
+
 class MedicalRecord extends React.Component {
-    state = {
-        search: '',
-        file: null,
-    };
+    constructor(props) {
+        super(props);
+        this.state = {
+            search: '',
+            file: null,
+            record: record,
+            refreshing: false,
+        }
+    }
+
+    componentDidMount() {
+        this.getAllRecords();
+    }
 
     updateSearch = (search) => {
         this.setState({ search });
@@ -51,7 +67,7 @@ class MedicalRecord extends React.Component {
             data.append('file', recordToUpload);
 
             let res = await axios.post(
-                'http://192.168.10.8:5000/api/upload-report',data,{
+                'http://192.168.0.105:5000/api/upload-report',data,{
                     headers: {
                     'Content-Type': 'multipart/form-data',
                 },
@@ -66,15 +82,99 @@ class MedicalRecord extends React.Component {
         }
     };
 
+    getAllRecords = () => {
+        fetch("http://192.168.0.105:5000/api/get-all-reports")
+        .then(record => record.json() )
+        .then((recordJson) => {
+            this.setState({
+                record: recordJson,
+                refreshing: false,
+            })
+        })
+        .catch(err => console.log(err) )
+    };
+
+    renderItem = ( record ) => {
+        return (
+            <View style={{ padding: 10 }}>
+            <View style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                borderBottomColor: 'lightgrey',
+                borderBottomWidth: 1,
+                paddingBottom: 15,
+                paddingTop: 10
+            }}>
+                <View style={{
+                    flexDirection: 'row',
+                    width: '70%',
+                }}>
+                    <View style={{
+                        flexDirection: 'column',
+                    }}>
+                        <View style={{ marginBottom: '0.3%' }}>
+                            <Text style={{ fontSize: 11, color: 'grey' }}>{ record.item.timeCreated.slice(0, 10) }</Text>
+                        </View>
+
+                        <View style={{ 
+                            flexDirection: 'row', 
+                            marginBottom: '3%',
+                        }}>
+                            <Text style={{ fontSize: 16, }}>{ record.item.name.slice(31) }</Text>
+                        </View>
+
+                    </View>
+                </View>
+
+                <View style={{
+                    flexDirection: 'row',
+                    justifyContent: 'flex-end',
+                    width: '30%'
+                }}>
+                    <View style={{ marginEnd: '5%' }}>
+                        <TouchableOpacity
+                            onPress={ () => { console.log('download') } }
+                        >
+                            <Icon
+                                name={"arrow-circle-down"}
+                                size={22}
+                                color="#2A2AC0"
+                            />
+                        </TouchableOpacity>
+                    </View>
+
+
+                    <View>
+                        <TouchableOpacity>
+                            <Icon
+                                name={"trash"}
+                                size={22}
+                                color="#2A2AC0"
+                            />
+                        </TouchableOpacity>
+                    </View>
+                </View>
+
+            </View>
+            </View>
+        );
+    };
+
+    handleRefresh = () => {
+        this.setState({ refreshing: false }, () => {
+            this.getAllRecords();
+        });
+    }
+
     render() {
         const { search, file } = this.state;
-
         return (
             // root container
             <View style={{
                 flex: 1,
                 backgroundColor: '#ECF1FA',
             }}>
+
                 <ScrollView
                     showsVerticalScrollIndicator={false}
                     showsHorizontalScrollIndicator={false}
@@ -83,31 +183,11 @@ class MedicalRecord extends React.Component {
                     <View style={styles.containerForMedicalRecord}>
                         <NavigationBtn screenName={DashboardScreen} styling={styles.headerNavigation} />
 
-                        <View style={{
-                            // marginBottom: '5%'
-                        }}>
+                        <View>
                             <Text style={styles.headerTxt}>
                                 Medical Records
                             </Text>
                         </View>
-
-                        {/* <View style={{ marginBottom: '10%' }}>
-                            <SearchBar
-                                inputContainerStyle={{ backgroundColor: 'white' }}
-                                containerStyle={{
-                                    backgroundColor: '#ECF1FA',
-                                    borderTopWidth: 0,
-                                    borderBottomWidth: 0,
-                                    margin: 0,
-                                    padding: 0
-                                }}
-                                round
-                                searchIcon={{ size: 30 }}
-                                placeholder="Search"
-                                onChangeText={this.updateSearch}
-                                value={search}
-                            />
-                        </View> */}
 
                         {/* records details tab navigation */}
                         <View style={styles.RecordsInfoTabNavigation}>
@@ -121,79 +201,48 @@ class MedicalRecord extends React.Component {
                                 <View
                                     style={styles.ViewScreen}
                                 >
-                                    <ScrollView
-                                        showsVerticalScrollIndicator={false}
-                                        showsHorizontalScrollIndicator={false}>
 
-                                        <View style={styles.SwapableViews}>
-                                            <Text style={styles.SwapableViewsTitle}>View</Text>
-                                        </View>
+                                    <View style={styles.SwapableViews}>
+                                        <Text style={styles.SwapableViewsTitle}>Records</Text>
+                                    </View>
 
-                                        {/* View Sub Container for records */}
-                                        <View style={{
-                                            flexDirection: 'row',
-                                            alignItems: 'center',
-                                        }}>
-                                            <View style={{
-                                                flexDirection: 'row',
-                                                width: '70%',
-                                            }}>
-                                                <View style={{
-                                                    flexDirection: 'column',
-                                                }}>
-                                                    <View style={{ marginBottom: '0.3%' }}>
-                                                        <Text style={{ fontSize: 12, color: 'grey' }}>18/02/2021</Text>
-                                                    </View>
-
-                                                    <View style={{ flexDirection: 'row', marginBottom: '3%' }}>
-                                                        <Text style={{ fontSize: 15, textAlign: 'center' }}>Dentist</Text>
-                                                        <Text style={{ fontSize: 15, textAlign: 'center' }}> - </Text>
-                                                        <Text style={{ fontSize: 15, textAlign: 'center' }}>Nabeel Iqbal Siddiqui</Text>
-                                                    </View>
-
-                                                </View>
-                                            </View>
-
-                                            <View style={{
-                                                flexDirection: 'row',
-                                                justifyContent: 'flex-end',
-                                                width: '30%'
-                                            }}>
-                                                <View style={{ marginEnd: '3%' }}>
-                                                    <Icon
-                                                        name={"arrow-circle-down"}
-                                                        size={20}
-                                                        color="#2A2AC0"
-                                                    />
-                                                </View>
-                                                <View>
-                                                    <TouchableOpacity>
-                                                        <View>
-                                                            <Text style={{
-                                                                color: '#2A2AC0',
-                                                                fontSize: 16,
-                                                                fontWeight: '500'
-                                                            }}>
-                                                                Download
-                                                            </Text>
-                                                        </View>
-                                                    </TouchableOpacity>
-                                                </View>
-                                            </View>
-
-                                        </View>
-
-                                        <View
-                                            style={{
-                                                borderBottomColor: 'lightgrey',
-                                                borderBottomWidth: 1,
-                                                marginTop: 15,
-                                                marginBottom: 15
-                                            }}
+                                    {/* View Sub Container for records */}
+                                    <View style={{
+                                        flex: 1,
+                                    }}>
+                                        <FlatList
+                                            data = { this.state.record }
+                                            renderItem = { record => this.renderItem(record) }
+                                            showsVerticalScrollIndicator={false}
+                                            refreshing = { this.state.refreshing }
+                                            onRefresh = { this.handleRefresh }
                                         />
+                                    </View>
 
-
-                                    </ScrollView>
+                                    <View style={{
+                                        flexDirection: 'row',
+                                        justifyContent: 'flex-end',
+                                    }}>
+                                        <View style={{
+                                            justifyContent: 'center'
+                                        }}>
+                                            <Text style={{
+                                                fontSize: 16,
+                                                color: 'lightgrey',
+                                                fontWeight: 'bold',
+                                                marginRight: '3%',
+                                            }}>
+                                                Swipe right to upload new records
+                                            </Text>
+                                        </View>
+                                        <View>
+                                            <Icon
+                                                name={"long-arrow-right"}
+                                                size={26}
+                                                color="lightgrey"
+                                            />
+                                        </View>
+                                    </View>
                                 </View>
 
                                 {/* Upload Screen */}
@@ -214,21 +263,18 @@ class MedicalRecord extends React.Component {
                                         }}>
                                             {/* to show the selected file */}
                                             <View style={{
-                                                height: 250,
+                                                height: 150,
                                                 width: 350,
                                                 marginTop: '5%',
                                                 marginBottom: '10%',
-                                                // justifyContent: 'center',
+                                                justifyContent: 'center'
                                             }}>
-                                                <Text style={{ textAlign: 'center' }}>To show the files</Text>
                                                 {/* to show the select record */}
                                                 {file != null ? (
                                                     <Text style={{
-                                                        // textAlign: 'center',
-                                                        // fontSize: '24'
+                                                        fontSize: 16,
                                                     }}>
                                                         Record Name: { file ? file.name : ''}
-                                                        { console.log('hello hello: ', file)}
                                                     </Text>
                                                 ) : null}
 
