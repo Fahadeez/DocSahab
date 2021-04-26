@@ -23,6 +23,8 @@ import Help from './src/screens/Dashboard/Help';
 import Chat from './src/screens/Dashboard/Chat';
 import MyAppointment from './src/screens/Dashboard/MyAppointment';
 import PaymentScreen from './src/screens/payment';
+import MartScreen from './src/screens/Mart/Mart';
+
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -83,6 +85,15 @@ function Root({ route, navigation }) {
         name="MyAppointment"
         component={MyAppointment}
       />
+
+      <Drawer.Screen
+        options={{
+          headerShown: null,
+        }}
+        name="Mart"
+        component={MartScreen}
+      />
+
     </Drawer.Navigator>
   );
 }
@@ -92,6 +103,8 @@ function Auth() {
     <NavigationContainer linking={linking} ref={navigationRef}>
       {/* drawerContent = {props => <DrawerContent{...props}/> */}
       <Stack.Navigator>
+
+
         <Stack.Screen
           options={{
             headerShown: null,

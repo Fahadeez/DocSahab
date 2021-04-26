@@ -222,5 +222,12 @@ export const globalStyles = StyleSheet.create({
     backgroundColor: '#ECF1FA',
   },
 
+  row: {
+    borderBottomColor: 'black',
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    marginTop: 30,
+    width: '80%'
+    }
+
 // User DashBoard styles ends here
 });

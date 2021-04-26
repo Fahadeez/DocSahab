@@ -232,6 +232,15 @@ const login = (props) => {
                         >
                             <Text style={globalStyles.buttonTxt}>Chat</Text>
                         </TouchableOpacity>
+
+                        <TouchableOpacity
+                            style={globalStyles.Button}
+                            onPress={
+                                () => navigation.navigate('Mart')
+                            }
+                        >
+                            <Text style={globalStyles.buttonTxt}>Mart</Text>
+                        </TouchableOpacity>
                         {/* for testing purposes ends */}
 
                         <View style={{ marginTop: '15%', marginBottom: '5%' }}>
