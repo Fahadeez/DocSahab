@@ -189,7 +189,7 @@ export const globalStyles = StyleSheet.create({
 
     // User DashBoard styles start here
     // Search Bar
-    SearchbackgroundStyle: {
+SearchbackgroundStyle: {
     marginTop: '17%',
     height: 50,
     width: '90%',

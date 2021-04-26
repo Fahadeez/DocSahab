@@ -1,11 +1,7 @@
 import React, {
-    Component, useState,
-    useContext,
-    useEffect
+    Component
 } from 'react';
-import { View, Text, StyleSheet, Image, TouchableWithoutFeedback, Animated, TouchableOpacity, ScrollView, FlatList } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import { View, Text, StyleSheet, Image, TouchableWithoutFeedback, Animated, TouchableOpacity, ScrollView } from 'react-native';
 import NavigationBtn from '../../components/navigationBtn';
 import { globalStyles } from '../../styles/globalStyles';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -483,6 +479,7 @@ class BookAppoinment extends Component {
                                                     Discription
                                                 </Text>
                                                 <View style={{
+                                                    flex: 0.8,
                                                     flexDirection: "column",
                                                 }}>
                                                     <View style={{
@@ -507,6 +504,32 @@ class BookAppoinment extends Component {
                                                         }}>
                                                             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
                                                         </Text>
+                                                    </View>
+                                                </View>
+
+                                                <View style={{
+                                                    flex: 0.2,
+                                                    flexDirection: 'row',
+                                                    justifyContent: 'flex-end',
+                                                }}>
+                                                    <View style={{
+                                                        justifyContent: 'center'
+                                                    }}>
+                                                        <Text style={{
+                                                            fontSize: 16,
+                                                            color: 'lightgrey',
+                                                            fontWeight: 'bold',
+                                                            marginRight: '3%',
+                                                        }}>
+                                                            Swipe right to view clinic and feedback
+                                                        </Text>
+                                                    </View>
+                                                    <View>
+                                                        <Icon
+                                                            name={"long-arrow-right"}
+                                                            size={26}
+                                                            color="lightgrey"
+                                                        />
                                                     </View>
                                                 </View>
 
@@ -721,14 +744,13 @@ const styles = StyleSheet.create({
         marginRight: 20
     },
     headerNavigation: {
-        marginTop: '9%',
+        marginTop: '5%',
         width: '100%',
         height: '5%',
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'flex-start',
         marginLeft: '5%',
-        marginBottom: '5%'
     },
     pickerView: {
         width: "100%",

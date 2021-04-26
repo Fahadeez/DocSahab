@@ -5,7 +5,7 @@ import { View,
     TouchableOpacity, 
     ScrollView, 
     ToastAndroid,
-    FlatList
+    FlatList,
 } from 'react-native';
 import NavigationBtn from '../../components/navigationBtn';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -13,11 +13,11 @@ import DashboardScreen from '../Dashboard/dashboard';
 import DocumentPicker from 'react-native-document-picker';
 import axios from 'axios';
 
-const config = {
-    headers: {
-        'content-type': 'multipart/form-data'
-    }
-}
+// const config = {
+//     headers: {
+//         'content-type': 'multipart/form-data'
+//     }
+// }
 
 const record = [];
 
@@ -133,7 +133,10 @@ class MedicalRecord extends React.Component {
                 }}>
                     <View style={{ marginEnd: '5%' }}>
                         <TouchableOpacity
-                            onPress={ () => { console.log('download') } }
+                            onPress={ 
+                                () => { 
+                                    console.log('download')
+                            }}
                         >
                             <Icon
                                 name={"arrow-circle-down"}
@@ -145,7 +148,9 @@ class MedicalRecord extends React.Component {
 
 
                     <View>
-                        <TouchableOpacity>
+                        <TouchableOpacity onPress={
+                            (record) => this.deleteRecord( record.id )
+                        }>
                             <Icon
                                 name={"trash"}
                                 size={22}
@@ -165,6 +170,21 @@ class MedicalRecord extends React.Component {
             this.getAllRecords();
         });
     }
+
+    deleteRecord = async (record) => {
+        try {
+            record = await axios.post("http://192.168.0.105:5000/api/delete-report")
+            if (record.status === 200) {
+                ToastAndroid.show("Record deleted successfully",ToastAndroid.LONG)
+            }
+            else {
+                ToastAndroid.show("Error, Try Again",ToastAndroid.LONG)
+            }
+        }
+        catch(error) {
+            console.log(error);
+        }
+    };
 
     render() {
         const { search, file } = this.state;
