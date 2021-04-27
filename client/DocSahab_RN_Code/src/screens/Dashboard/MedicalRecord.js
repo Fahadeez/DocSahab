@@ -21,6 +21,8 @@ import axios from 'axios';
 
 const record = [];
 
+const baseURL = 'http://192.168.0.105:5000';
+
 class MedicalRecord extends React.Component {
     constructor(props) {
         super(props);
@@ -67,7 +69,8 @@ class MedicalRecord extends React.Component {
             data.append('file', recordToUpload);
 
             let res = await axios.post(
-                'http://192.168.0.105:5000/api/upload-report',data,{
+                // 'http://192.168.0.105:5000/api/upload-report',data,{
+                baseURL+'/api/upload-report',data,{
                     headers: {
                     'Content-Type': 'multipart/form-data',
                 },
@@ -83,13 +86,14 @@ class MedicalRecord extends React.Component {
     };
 
     getAllRecords = () => {
-        fetch("http://192.168.0.105:5000/api/get-all-reports")
+        fetch(baseURL+"/api/get-all-reports")
         .then(record => record.json() )
         .then((recordJson) => {
             this.setState({
                 record: recordJson,
                 refreshing: false,
             })
+            // console.log('data: ', recordJson);
         })
         .catch(err => console.log(err) )
     };
@@ -131,7 +135,7 @@ class MedicalRecord extends React.Component {
                     justifyContent: 'flex-end',
                     width: '30%'
                 }}>
-                    <View style={{ marginEnd: '5%' }}>
+                    {/* <View style={{ marginEnd: '5%' }}>
                         <TouchableOpacity
                             onPress={ 
                                 () => { 
@@ -144,7 +148,7 @@ class MedicalRecord extends React.Component {
                                 color="#2A2AC0"
                             />
                         </TouchableOpacity>
-                    </View>
+                    </View> */}
 
 
                     <View>
@@ -173,7 +177,7 @@ class MedicalRecord extends React.Component {
 
     deleteRecord = async (record) => {
         try {
-            record = await axios.post("http://192.168.0.105:5000/api/delete-report")
+            record = await axios.post(baseURL+"/api/delete-report")
             if (record.status === 200) {
                 ToastAndroid.show("Record deleted successfully",ToastAndroid.LONG)
             }
