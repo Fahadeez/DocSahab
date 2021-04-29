@@ -12,12 +12,13 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 import ImagePicker from 'react-native-image-picker';
 import DocumentPicker  from "react-native-document-picker";
+import axios from 'axios';
 
 
 class Chat_Module extends React.Component {
     constructor( props ) {
         super(props);
-        this.state = { messages: [], is_picking_file: false, data: ''};
+        this.state = { messages: [], is_picking_file: false, imageurl: ''};
         this.onSend = this.onSend.bind(this);
     }
 
@@ -72,12 +73,17 @@ class Chat_Module extends React.Component {
             />
     )}
 
+
     renderActions (props) {
       const selectOneFile = async () => {
+
+      const params = {
+        'key': '43b345ff84a4e43307ebd0d8e5f44cf3'
+      };
   
   try {
     const res = await DocumentPicker.pick({
-      type: [DocumentPicker.types.allFiles],
+      type: [DocumentPicker.types.images],
       //There can me more options as well
       // DocumentPicker.types.allFiles
       // DocumentPicker.types.images
@@ -86,14 +92,29 @@ class Chat_Module extends React.Component {
       // DocumentPicker.types.pdf
     });
 
-    console.log('res : ' + JSON.stringify(res));
-    console.log('URI : ' + res.uri);
-    console.log('Type : ' + res.type);
-    console.log('File Name : ' + res.name);
-    console.log('File Size : ' + res.size);
+    if (res != null) {
+            const data = new FormData();
+            data.append('image', res);
 
-    console.log(res)
-    this.onSend('res')
+            let response = await axios.post(
+                // 'http://192.168.0.105:5000/api/upload-report',data,{
+                'https://api.imgbb.com/1/upload',data,{params: {'key': '43b345ff84a4e43307ebd0d8e5f44cf3'}},{
+
+                  headers: {
+                    'Content-Type': 'multipart/form-data',
+                },          
+            }
+            );
+
+            this.onSend({image: response.data.data.url })
+
+            if (response.data.status === 200) {
+                ToastAndroid.show("Upload successfull",ToastAndroid.LONG)
+            }
+        } else {
+            ToastAndroid.show("Select a file first",ToastAndroid.LONG)
+
+        }
 
   } catch (err) {
 
