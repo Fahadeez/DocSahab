@@ -23,6 +23,6 @@
         <data android:scheme="docsahab" android:host="resetpassword" />
       </intent-filter>
     </activity>
-    <activity android:name="com.facebook.react.devsupport.DevSettingsActivity"/>z
+    <activity android:name="com.facebook.react.devsupport.DevSettingsActivity"/>
   </application>
 </manifest>

@@ -58,7 +58,7 @@ const signUp = (dispatch) => {
 // action functions
 export const { Provider, Context } = createDataContext(
     dashboardReducer,
-    { signUp,fetchUser },
+    { signUp },
     // { isSignedIn: false, errorMessage: ''}
     { token: null, errorMessageForSignIn: '', errorMessageForSignUp: '',
      errorMessageUpdatePassword: '',user: {} }

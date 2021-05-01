@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import 'react-native-gesture-handler';
 import login from './src/screens/Auth/login';
 import signup from './src/screens/Auth/signup';
@@ -9,7 +9,11 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { NavigationContainer } from '@react-navigation/native';
 import DashboardScreen from './src/screens/Dashboard/dashboard';
+
 import { Provider as AuthProvider } from './src/context/AuthContext';
+import { Provider as DashboardProvider } from './src/context/dashboardContext';
+import { Provider as MeetingProvider } from './src/context/MeetingContext';
+
 import { DrawerContent } from './src/screens/Drawer/DrawerContent';
 import resetPassword from './src/screens/Auth/ResetPassword';
 import { Linking } from 'react-native';
@@ -24,6 +28,7 @@ import Chat from './src/screens/Dashboard/Chat';
 import MyAppointment from './src/screens/Dashboard/MyAppointment';
 import PaymentScreen from './src/screens/payment';
 import MartScreen from './src/screens/Mart/Mart';
+import Meeting from './src/screens/Dashboard/VIDEO_SCREEN/Meeting';
 
 
 const Stack = createStackNavigator();
@@ -103,8 +108,6 @@ function Auth() {
     <NavigationContainer linking={linking} ref={navigationRef}>
       {/* drawerContent = {props => <DrawerContent{...props}/> */}
       <Stack.Navigator>
-
-
         <Stack.Screen
           options={{
             headerShown: null,
@@ -205,11 +208,18 @@ function Auth() {
           options={{
             headerShown: null,
           }}
+          name="Meeting"
+          component={Meeting}
+        />
+
+        <Stack.Screen
+          options={{
+            headerShown: null,
+          }}
           name="payment"
           component={PaymentScreen}
         />
 
-        
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -232,7 +242,11 @@ export default class App extends Component {
   render() {
     return (
       <AuthProvider>
-        <CustomApp />
+        <DashboardProvider>
+          <MeetingProvider>
+            <CustomApp />
+          </MeetingProvider>
+        </DashboardProvider>
       </AuthProvider>
     );
   }
