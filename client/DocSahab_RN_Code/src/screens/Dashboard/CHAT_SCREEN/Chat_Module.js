@@ -97,7 +97,7 @@ class Chat_Module extends React.Component {
             data.append('image', res);
 
             let response = await axios.post(
-                // 'http://192.168.0.105:5000/api/upload-report',data,{
+              
                 'https://api.imgbb.com/1/upload',data,{params: {'key': '43b345ff84a4e43307ebd0d8e5f44cf3'}},{
 
                   headers: {

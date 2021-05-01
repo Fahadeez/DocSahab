@@ -109,11 +109,13 @@ const signIn = (dispatch) => {
             const response = await DocSahabApi.post('/auth/login', { email, password })
             // to get our token back
             // console.log(response.data.token);
-
             await AsyncStorage.setItem('token', response.data.token);
+            await AsyncStorage.setItem('userData', JSON.stringify(response.data.user));
+
+
             // let token_value = await AsyncStorage.getItem('token');
 
-            dispatch({ type: 'signIn', payload: response.data.token });
+            dispatch({ type: 'signIn', payload: response.data.token});
             // if user login
             RootNavigation.navigate('root');
 
@@ -130,6 +132,7 @@ const signOut = (dispatch) => {
         try {
             const response = await DocSahabApi.get('/auth/logout')
             await AsyncStorage.removeItem('token')
+            await AsyncStorage.removeItem('userData')
             navigate()
         } catch (err) {
 
