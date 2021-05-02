@@ -155,19 +155,29 @@ const signUpAsDoctor = (dispatch) => {
 
 const signIn = (dispatch) => {
   return async ({email, password}) => {
-    try {
-      const response = await DocSahabApi.post('/auth/login', {email, password});
-      // to get our token back
-      // console.log(response.data.token);
+    return async ({ email, password }) => {
+        try {
+            const response = await DocSahabApi.post('/auth/login', { email, password })
+            // to get our token back
+            // console.log(response.data.token);
+            await AsyncStorage.setItem('token', response.data.token);
+            await AsyncStorage.setItem('userData', JSON.stringify(response.data.user));
 
-      await AsyncStorage.setItem('token', response.data.token);
-      // save the email on signIn
+
+            // save the email on signIn
       await AsyncStorage.setItem('signInData', email);
       // let token_value = await AsyncStorage.getItem('token');
 
       // set the random id for the chat purpose
       const id = uuid.v4();
       await AsyncStorage.setItem('user_Id', id);
+
+
+            // let token_value = await AsyncStorage.getItem('token');
+
+            dispatch({ type: 'signIn', payload: response.data.token});
+            // if user login
+            RootNavigation.navigate('root');
 
       dispatch({type: 'signIn', payload: response.data.token});
       // if user login
@@ -183,16 +193,19 @@ const signIn = (dispatch) => {
 };
 
 const signOut = (dispatch) => {
-  return async (navigate) => {
-    try {
-      const response = await DocSahabApi.get('/auth/logout');
-      await AsyncStorage.removeItem('token');
-      // commented to test the chat from login screen
+    return async (navigate) => {
+        try {
+            const response = await DocSahabApi.get('/auth/logout')
+            await AsyncStorage.removeItem('token')
+            await AsyncStorage.removeItem('userData')
+            // commented to test the chat from login screen
       // await AsyncStorage.removeItem('signInData');
       // await AsyncStorage.removeItem('user_Id');
-      navigate();
-    } catch (err) {}
-  };
+            navigate()
+        } catch (err) {
+
+        }
+    };
 };
 
 const forgetPassword = (dispatch) => {

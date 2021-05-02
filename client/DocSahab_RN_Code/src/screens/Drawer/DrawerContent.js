@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext,useState, useEffect } from 'react';
 import { View, StyleSheet } from 'react-native';
 import {
     useTheme,
@@ -18,13 +18,28 @@ import {
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {globalStyles} from '../../styles/globalStyles';
 import { Context as AuthContext } from '../../context/AuthContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export function DrawerContent(props) {
     const { state, signOut } = useContext(AuthContext);
+    const [data, setData] = useState([]);
+
 
     function navigate(){
         props.navigation.navigate('login')
     }
+
+
+    useEffect(() => {
+       async function setUserData() {
+            const userData = await AsyncStorage.getItem('userData');
+            console.log(userData)
+            setData(JSON.parse(userData));
+    }
+
+    setUserData();
+
+    }, []);
 
     return(
         <View style={styles.drawerContent}>
@@ -39,8 +54,8 @@ export function DrawerContent(props) {
                                 size={60}
                             />
                             <View style={{marginLeft:15, flexDirection:'column'}}>
-                                <Title style={styles.title}>Shahzaib Khan</Title>
-                                <Caption style={styles.caption}>User/Doctor</Caption>
+                                <Title style={styles.title}>{data.firstName + " " + data.lastName}</Title>
+                                <Caption style={styles.caption}>{data.doctor == false ? 'User' : 'Doctor'}</Caption>
                             </View>
                         </View>
 
