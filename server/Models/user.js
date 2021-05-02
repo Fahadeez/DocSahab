@@ -23,7 +23,7 @@ const userSchema = new Schema({
     profilePic: String,
     reports: Array,
     resetPasswordToken: String,
-    resetPasswordExpires: Date,
+    resetPasswordExpires: Date,  
   
 
 }, { timestamps: { createdAt: 'dateOfJoin' } })
