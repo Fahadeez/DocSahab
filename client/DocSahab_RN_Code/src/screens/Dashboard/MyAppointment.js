@@ -1,237 +1,244 @@
-import React, { Component } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import React, {Component} from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { SearchBar } from 'react-native-elements';
+import {SearchBar} from 'react-native-elements';
 import NavigationBtn from '../../components/navigationBtn';
-import { globalStyles } from '../../styles/globalStyles';
+import {globalStyles} from '../../styles/globalStyles';
 
 class MyAppointment extends Component {
-    
-    state = {
-        search: '',
-    };
+  state = {
+    search: '',
+  };
 
-    updateSearch = (search) => {
-        this.setState({ search });
-    };
+  updateSearch = (search) => {
+    this.setState({search});
+  };
 
-    render() {
-        const { search } = this.state;
+  render() {
+    const {search} = this.state;
 
-        return (
-            // root container
-            <View style={{
-                flex: 1,
-                backgroundColor: '#ECF1FA',
-                }}>
-                <ScrollView
+    return (
+      // root container
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: '#ECF1FA',
+        }}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          showsHorizontalScrollIndicator={false}>
+          {/* sub root container */}
+          <View style={styles.containerForMyAppointment}>
+            <NavigationBtn
+              screenName={'DashboardScreen'}
+              title="Your Appointments"
+            />
+
+            <View style={{marginBottom: '10%', marginTop: '5%'}}>
+              <SearchBar
+                inputContainerStyle={{backgroundColor: 'white'}}
+                containerStyle={{
+                  backgroundColor: '#ECF1FA',
+                  borderTopWidth: 0,
+                  borderBottomWidth: 0,
+                  margin: 0,
+                  padding: 0,
+                }}
+                round
+                searchIcon={{size: 30}}
+                placeholder="Search"
+                onChangeText={this.updateSearch}
+                value={search}
+              />
+            </View>
+
+            {/* my appointments details tab navigation */}
+            <View style={styles.UpcomingInfoTabNavigation}>
+              <ScrollView
+                horizontal={true}
+                showsVerticalScrollIndicator={false}
+                showsHorizontalScrollIndicator={false}>
+                {/* Upcoming Screen */}
+
+                <View style={styles.UpcomingScreen}>
+                  <ScrollView
                     showsVerticalScrollIndicator={false}
-                    showsHorizontalScrollIndicator={false}
-                >
-                    {/* sub root container */}
-                    <View style={ styles.containerForMyAppointment }>
-                        <NavigationBtn screenName={'DashboardScreen'} title="Your Appointments" />
-
-                        <View style={{ marginBottom: '10%', marginTop: '5%' }}>
-                            <SearchBar
-                                inputContainerStyle={{ backgroundColor: 'white' }}
-                                containerStyle={{
-                                    backgroundColor: '#ECF1FA',
-                                    borderTopWidth: 0,
-                                    borderBottomWidth: 0,
-                                    margin: 0,
-                                    padding: 0
-                                }}
-                                round
-                                searchIcon={{ size: 30 }}
-                                placeholder="Search"
-                                onChangeText={this.updateSearch}
-                                value={search}
-                            />
-                        </View>
-
-                        {/* my appointments details tab navigation */}
-                        <View style={ styles.UpcomingInfoTabNavigation }>
-                            <ScrollView
-                                horizontal={true}
-                                showsVerticalScrollIndicator={false}
-                                showsHorizontalScrollIndicator={false}>
-                                
-                                {/* Upcoming Screen */}
-
-                                <View
-                                    style={ styles.UpcomingScreen }
-                                >
-                                    <ScrollView
-                                        showsVerticalScrollIndicator={false}
-                                        showsHorizontalScrollIndicator={false}>
-
-                                        <View style={styles.SwapableViews}>
-                                            <Text style={styles.SwapableViewsTitle}>Upcoming</Text>
-                                        </View>
-
-                                        {/* Upcoming View Sub Container for my appointments */}
-                                        <View style={{
-                                            flexDirection: 'row',
-                                            alignItems: 'center',
-                                        }}>
-                                            <View style={{ 
-                                                flexDirection: 'row',
-                                                width: '70%',
-                                            }}>
-                                                <View style={{ 
-                                                    flexDirection: 'column',
-                                                }}>
-                                                    <View style={{ marginBottom: '0.3%' }}>
-                                                        <Text style={{ fontSize: 12, color: 'grey' }}>18/02/2021</Text>
-                                                    </View>
-
-                                                    <View style={{ flexDirection: 'row', marginBottom: '3%' }}>
-                                                        <Text style={{ fontSize: 15, textAlign: 'center' }}>Dentist</Text>
-                                                        <Text style={{ fontSize: 15, textAlign: 'center' }}> - </Text>
-                                                        <Text style={{ fontSize: 15, textAlign: 'center' }}>Nabeel Iqbal Siddiqui</Text>
-                                                        
-                                                        <View style={{ 
-                                                            marginStart: '3%',
-                                                            justifyContent: 'center'
-                                                        }}>
-                                                            <Icon
-                                                                name={"info-circle"}
-                                                                size={16} 
-                                                                color="#2A2AC0"
-                                                            />
-                                                        </View>
-                                                    </View>
-
-                                                </View>
-                                            </View>
-
-                                            <View style={{ 
-                                                flexDirection: 'row',
-                                                justifyContent: 'flex-end',
-                                                width: '30%'
-                                             }}>
-                                                <View style={{ marginEnd: '3%' }}>
-                                                    <Icon
-                                                        name={"pencil"}
-                                                        size={20} 
-                                                        color="#2A2AC0"
-                                                    />
-                                                </View>
-                                                <View>
-                                                    <TouchableOpacity>
-                                                        <View>
-                                                            <Text style={{ 
-                                                                color: '#2A2AC0',
-                                                                fontSize: 16,
-                                                                fontWeight: '500'
-                                                            }}>
-                                                                Modify
-                                                            </Text>
-                                                        </View>
-                                                    </TouchableOpacity>
-                                                </View>
-                                            </View>
-                                        
-                                        </View>
-
-                                        <View
-                                                style={{
-                                                    borderBottomColor: 'lightgrey',
-                                                    borderBottomWidth: 1,
-                                                    marginTop: 15,
-                                                    marginBottom: 15
-                                                }}
-                                        />
-
-                                    </ScrollView>
-
-                                    {/* button */}
-                                    <TouchableOpacity
-                                        style={ styles.Button }
-                                        // onPress={
-                                        //     () => navigation.navigate()
-                                        // }
-                                    >
-                                        <Text style={globalStyles.buttonTxt}>Book A New Appointment</Text>
-                                    </TouchableOpacity>
-                                </View>
-
-                                {/* Past Screen */}
-                                <View
-                                    style={ styles.PastScreen }
-                                >
-                                    <ScrollView
-                                        showsVerticalScrollIndicator={false}
-                                        showsHorizontalScrollIndicator={false}>
-                                        
-                                        <View style={styles.SwapableViews}>
-                                            <Text style={styles.SwapableViewsTitle}>Past</Text>
-                                        </View>
-
-                                    </ScrollView>
-                                </View>
-
-                            </ScrollView>
-                        </View>
-
+                    showsHorizontalScrollIndicator={false}>
+                    <View style={styles.SwapableViews}>
+                      <Text style={styles.SwapableViewsTitle}>Upcoming</Text>
                     </View>
 
-                </ScrollView>
+                    {/* Upcoming View Sub Container for my appointments */}
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                      }}>
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                          width: '70%',
+                        }}>
+                        <View
+                          style={{
+                            flexDirection: 'column',
+                          }}>
+                          <View style={{marginBottom: '0.3%'}}>
+                            <Text style={{fontSize: 12, color: 'grey'}}>
+                              18/02/2021
+                            </Text>
+                          </View>
+
+                          <View
+                            style={{flexDirection: 'row', marginBottom: '3%'}}>
+                            <Text style={{fontSize: 15, textAlign: 'center'}}>
+                              Dentist
+                            </Text>
+                            <Text style={{fontSize: 15, textAlign: 'center'}}>
+                              {' '}
+                              -{' '}
+                            </Text>
+                            <Text style={{fontSize: 15, textAlign: 'center'}}>
+                              Nabeel Iqbal Siddiqui
+                            </Text>
+
+                            <View
+                              style={{
+                                marginStart: '3%',
+                                justifyContent: 'center',
+                              }}>
+                              <Icon
+                                name={'info-circle'}
+                                size={16}
+                                color="#2A2AC0"
+                              />
+                            </View>
+                          </View>
+                        </View>
+                      </View>
+
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                          justifyContent: 'flex-end',
+                          width: '30%',
+                        }}>
+                        <View style={{marginEnd: '3%'}}>
+                          <Icon name={'pencil'} size={20} color="#2A2AC0" />
+                        </View>
+                        <View>
+                          <TouchableOpacity>
+                            <View>
+                              <Text
+                                style={{
+                                  color: '#2A2AC0',
+                                  fontSize: 16,
+                                  fontWeight: '500',
+                                }}>
+                                Modify
+                              </Text>
+                            </View>
+                          </TouchableOpacity>
+                        </View>
+                      </View>
+                    </View>
+
+                    <View
+                      style={{
+                        borderBottomColor: 'lightgrey',
+                        borderBottomWidth: 1,
+                        marginTop: 15,
+                        marginBottom: 15,
+                      }}
+                    />
+                  </ScrollView>
+
+                  {/* button */}
+                  <TouchableOpacity
+                    style={styles.Button}
+                    // onPress={
+                    //     () => navigation.navigate()
+                    // }
+                  >
+                    <Text style={globalStyles.buttonTxt}>
+                      Book A New Appointment
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+
+                {/* Past Screen */}
+                <View style={styles.PastScreen}>
+                  <ScrollView
+                    showsVerticalScrollIndicator={false}
+                    showsHorizontalScrollIndicator={false}>
+                    <View style={styles.SwapableViews}>
+                      <Text style={styles.SwapableViewsTitle}>Past</Text>
+                    </View>
+                  </ScrollView>
+                </View>
+              </ScrollView>
             </View>
-        );
-    }
+          </View>
+        </ScrollView>
+      </View>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
-    containerForMyAppointment: {
-        flex: 1,
-        backgroundColor: '#ECF1FA',
-        padding: 23,
-    },
-    UpcomingInfoTabNavigation: {
-        flexDirection: 'row',
-        height: 550
-    },
-    UpcomingScreen: {
-        flexDirection: "column", 
-        backgroundColor: "white",
-        borderRadius: 15,
-        padding: 20,
-        width: 430,
-        height: '100%',
-    },
-    SwapableViews: {
-        alignItems: 'center',
-        marginBottom: '2%'
-    },
-    SwapableViewsTitle: {
-        fontSize: 18,
-        fontWeight: 'bold',
-    },
-    PastScreen: {
-        flex: 1,
-        flexDirection: "column", 
-        backgroundColor: "white",
-        borderRadius: 15,
-        alignItems: 'center',
-        padding: 20,
-        width: 430,
-        marginLeft: 20,
-    },
-    Button: {
-        width:"100%",
-        color: 'white',
-        backgroundColor: '#2A2AC0',
-        borderRadius:25,
-        height:50,
-        alignItems:"center",
-        justifyContent:"center",
-        marginTop:40,
-        marginBottom:10,
-        alignSelf: 'center'
-    }
-
+  containerForMyAppointment: {
+    flex: 1,
+    backgroundColor: '#ECF1FA',
+    padding: 23,
+  },
+  UpcomingInfoTabNavigation: {
+    flexDirection: 'row',
+    height: 550,
+  },
+  UpcomingScreen: {
+    flexDirection: 'column',
+    backgroundColor: 'white',
+    borderRadius: 15,
+    padding: 20,
+    width: 430,
+    height: '100%',
+  },
+  SwapableViews: {
+    alignItems: 'center',
+    marginBottom: '2%',
+  },
+  SwapableViewsTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  PastScreen: {
+    flex: 1,
+    flexDirection: 'column',
+    backgroundColor: 'white',
+    borderRadius: 15,
+    alignItems: 'center',
+    padding: 20,
+    width: 430,
+    marginLeft: 20,
+  },
+  Button: {
+    width: '100%',
+    color: 'white',
+    backgroundColor: '#2A2AC0',
+    borderRadius: 25,
+    height: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 40,
+    marginBottom: 10,
+    alignSelf: 'center',
+  },
 });
 
 export default MyAppointment;

@@ -1,31 +1,24 @@
-import React, {
-    useState,
-    useContext,
-    useEffect
-} from 'react';
+import React, {useState, useContext, useEffect} from 'react';
 import {
-    Text,
-    View,
-    TextInput,
-    TouchableOpacity,
-    Image,
-    ScrollView,
-    TouchableWithoutFeedback,
-    Keyboard,
-    Linking
+  Text,
+  View,
+  TextInput,
+  TouchableOpacity,
+  Image,
+  ScrollView,
+  TouchableWithoutFeedback,
+  Keyboard,
+  Linking,
 } from 'react-native';
 import HeaderView from '../../../src/components/headerView';
-import { globalStyles } from '../../styles/globalStyles';
+import {globalStyles} from '../../styles/globalStyles';
 import Signup from './signup';
 import ForgetPassword from './ForgetPassword';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DocSahabApi from '../../api/DocSahabApi';
-import {
-    useForm,
-    Controller
-} from 'react-hook-form';
-import { Context as AuthContext } from '../../context/AuthContext';
+import {useForm, Controller} from 'react-hook-form';
+import {Context as AuthContext} from '../../context/AuthContext';
 // testing only
 import FeedBack from '../Dashboard/FeedBack';
 import AppoinmentConfirm from '../Dashboard/AppointmentConfirm';
@@ -33,236 +26,220 @@ import Chat from '../Dashboard/Chat';
 import SignUpAsDoctor from '../Auth/DoctorDetails';
 
 const login = (props) => {
-    
-    const { state, signIn } = useContext(AuthContext);
+  const {state, signIn} = useContext(AuthContext);
 
-    const navigation = useNavigation();
+  const navigation = useNavigation();
 
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    // console.log(state);
-    // console.log("state message: ", state.errorMessage);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  // console.log(state);
+  // console.log("state message: ", state.errorMessage);
 
-    // for useForm
-    const { control, handleSubmit, errors } = useForm();
+  // for useForm
+  const {control, handleSubmit, errors} = useForm();
 
-    // for context function
-    const onSignIn = () => signIn({
-        email, password
-    }, navigate)
+  // for context function
+  const onSignIn = () =>
+    signIn(
+      {
+        email,
+        password,
+      },
+      navigate,
+    );
 
-    const navigate = () => {
-        navigation.navigate('root');
+  const navigate = () => {
+    navigation.navigate('root');
+  };
+
+  // ref for onfocus
+  const emailInputRef = React.useRef(null);
+  const passwordInputRef = React.useRef(null);
+
+  // show error after and before
+  // console.log('Errors if any: ', errors);
+
+  useEffect(() => {
+    //Just for testing logout,
+    // async function logout() {
+    //     await DocSahabApi.get('auth/logout')
+    //     await AsyncStorage.removeItem('token')
+    // }
+    function navigate() {
+      navigation.navigate('doctordetails');
     }
 
-    // ref for onfocus
-    const emailInputRef = React.useRef(null);
-    const passwordInputRef = React.useRef(null);
+    async function checkJwt() {
+      const jwt = await AsyncStorage.getItem('token');
+      console.log('jwt', jwt);
 
-    // show error after and before
-    // console.log('Errors if any: ', errors);
+      if (jwt) {
+        navigation.navigate('root');
+      }
+    }
+    checkJwt();
+    // navigate() // For testing doctors details page
+    // logout()
+  }, []);
 
-    useEffect(() => {
-        //Just for testing logout,
-        // async function logout() {
-        //     await DocSahabApi.get('auth/logout')
-        //     await AsyncStorage.removeItem('token')
-        // }
-        function navigate(){
-            navigation.navigate('doctordetails')
-        }
-       
-        async function checkJwt() {
-            const jwt = await AsyncStorage.getItem('token')
-            console.log("jwt",jwt)
+  return (
+    <View style={globalStyles.containerColor}>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <ScrollView
+          style={globalStyles.scrollView}
+          showsVerticalScrollIndicator={false}
+          showsHorizontalScrollIndicator={false}>
+          <View
+            style={{
+              flex: 1,
+              backgroundColor: '#ECF1FA',
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginTop: '10%',
+            }}>
+            <View style={globalStyles.logoView}>
+              <Image
+                source={require('../../../assets/docsahab.png')}
+                style={{height: 150, width: 150}}
+              />
+            </View>
 
-            if (jwt) {
-                navigation.navigate('root')
-            }
-        }
-        checkJwt()
-        // navigate() // For testing doctors details page
-        // logout()
-    }, []);
+            <HeaderView titletxt="Welcome" />
 
-    return (
+            <Text style={globalStyles.subHeaderTxt}>Sign in to continue</Text>
 
-        <View style={globalStyles.containerColor}>
+            <View style={globalStyles.inputView}>
+              <Controller
+                name="email"
+                defaultValue=""
+                control={control}
+                rules={{required: 'Email is required'}}
+                onFocus={() => {
+                  emailInputRef.current.focus();
+                }}
+                render={(props, {onBlur}) => (
+                  <TextInput
+                    {...props}
+                    style={globalStyles.inputText}
+                    placeholder="Email"
+                    placeholderTextColor="#003f5c"
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                    onChangeText={
+                      ((value) => {
+                        props.onChange(value);
+                      },
+                      setEmail)
+                    }
+                    onBlur={onBlur}
+                    value={email}
+                    ref={emailInputRef}
+                  />
+                )}
+              />
+            </View>
+            {errors.email && (
+              <Text style={globalStyles.errorText}>Email is required</Text>
+            )}
 
-            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <View style={globalStyles.inputView}>
+              <Controller
+                name="password"
+                defaultValue=""
+                control={control}
+                rules={{required: 'Password is required'}}
+                onFocus={() => {
+                  passwordInputRef.current.focus();
+                }}
+                render={(props, {onBlur}) => (
+                  <TextInput
+                    {...props}
+                    secureTextEntry
+                    style={globalStyles.inputText}
+                    placeholder="Password"
+                    placeholderTextColor="#003f5c"
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                    onChangeText={
+                      ((value) => {
+                        props.onChange(value);
+                      },
+                      setPassword)
+                    }
+                    onBlur={onBlur}
+                    value={password}
+                    ref={passwordInputRef}
+                  />
+                )}
+              />
+            </View>
+            {errors.password && (
+              <Text style={globalStyles.errorText}>Password is required</Text>
+            )}
 
-                <ScrollView
-                    style={globalStyles.scrollView}
-                    showsVerticalScrollIndicator={false}
-                    showsHorizontalScrollIndicator={false}
-                >
+            <View style={{alignSelf: 'flex-end', right: 25}}>
+              <TouchableOpacity
+                onPress={() => navigation.navigate(ForgetPassword)}>
+                <Text style={globalStyles.forgetPassLinkTxt}>
+                  Forgot Password?
+                </Text>
+              </TouchableOpacity>
+            </View>
 
-                    <View style={
-                        {
-                            flex: 1,
-                            backgroundColor: '#ECF1FA',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            marginTop: '10%'
-                        }
-                    }>
+            {state.errorMessageForSignIn ? (
+              <View style={globalStyles.inputText}>
+                <Text style={globalStyles.errorMessage}>
+                  {state.errorMessageForSignIn}
+                </Text>
+              </View>
+            ) : null}
 
+            <TouchableOpacity
+              style={globalStyles.Button}
+              onPress={handleSubmit(onSignIn)}>
+              <Text style={globalStyles.buttonTxt}>Sign In</Text>
+            </TouchableOpacity>
 
-                        <View style={globalStyles.logoView}>
-                            <Image source={require('../../../assets/docsahab.png')} style={{ height: 150, width: 150 }} />
-                        </View>
+            {/* for testing purposes starts */}
+            <TouchableOpacity
+              style={globalStyles.Button}
+              onPress={() => navigation.navigate(FeedBack)}>
+              <Text style={globalStyles.buttonTxt}>FeedBack</Text>
+            </TouchableOpacity>
 
-                        <HeaderView titletxt='Welcome' />
+            <TouchableOpacity
+              style={globalStyles.Button}
+              onPress={() => navigation.navigate(SignUpAsDoctor)}>
+              <Text style={globalStyles.buttonTxt}>sign up as doctor</Text>
+            </TouchableOpacity>
 
-                        <Text style={globalStyles.subHeaderTxt}>Sign in to continue</Text>
+            <TouchableOpacity
+              style={globalStyles.Button}
+              onPress={() => navigation.navigate(Chat)}>
+              <Text style={globalStyles.buttonTxt}>Chat</Text>
+            </TouchableOpacity>
 
-                        <View style={globalStyles.inputView} >
-                            <Controller
-                                name="email"
-                                defaultValue=""
-                                control={control}
-                                rules={{ required: 'Email is required' }}
-                                onFocus={() => {
-                                    emailInputRef.current.focus();
-                                }}
-                                render={(props, { onBlur }) => (
-                                    <TextInput
-                                        {...props}
-                                        style={globalStyles.inputText}
-                                        placeholder="Email"
-                                        placeholderTextColor="#003f5c"
-                                        autoCapitalize="none"
-                                        autoCorrect={false}
-                                        onChangeText={(value) => {
-                                            props.onChange(value);
-                                        },
-                                            setEmail
-                                        }
-                                        onBlur={onBlur}
-                                        value={email}
-                                        ref={emailInputRef}
-                                    />
-                                )
-                                }
-                            />
-                        </View>
-                        {errors.email && <Text style={globalStyles.errorText}>Email is required</Text>}
+            <TouchableOpacity
+              style={globalStyles.Button}
+              onPress={() => navigation.navigate('Mart')}>
+              <Text style={globalStyles.buttonTxt}>Mart</Text>
+            </TouchableOpacity>
+            {/* for testing purposes ends */}
 
-                        <View style={globalStyles.inputView} >
-                            <Controller
-                                name="password"
-                                defaultValue=""
-                                control={control}
-                                rules={{ required: 'Password is required' }}
-                                onFocus={() => {
-                                    passwordInputRef.current.focus();
-                                }}
-                                render={(props, { onBlur }) => (
-                                    <TextInput
-                                        {...props}
-                                        secureTextEntry
-                                        style={globalStyles.inputText}
-                                        placeholder="Password"
-                                        placeholderTextColor="#003f5c"
-                                        autoCapitalize="none"
-                                        autoCorrect={false}
-                                        onChangeText={(value) => {
-                                            props.onChange(value);
-                                        },
-                                            setPassword
-                                        }
-                                        onBlur={onBlur}
-                                        value={password}
-                                        ref={passwordInputRef}
-                                    />
-                                )
-                                }
-                            />
-                        </View>
-                        {errors.password && <Text style={globalStyles.errorText}>Password is required</Text>}
-
-                        <View style={{ alignSelf: 'flex-end', right: 25 }}>
-                            <TouchableOpacity onPress={() => navigation.navigate(ForgetPassword)}>
-                                <Text style={globalStyles.forgetPassLinkTxt}>Forgot Password?</Text>
-                            </TouchableOpacity>
-                        </View>
-
-                        {state.errorMessageForSignIn ? (
-                            <View style={globalStyles.inputText}>
-                                <Text style={globalStyles.errorMessage}>{state.errorMessageForSignIn}</Text>
-                            </View>
-                        ) : null
-                        }
-
-                        <TouchableOpacity
-                            style={globalStyles.Button}
-                            onPress={
-                                handleSubmit(onSignIn)
-                            }
-                        >
-                            <Text style={globalStyles.buttonTxt}>Sign In</Text>
-                        </TouchableOpacity>
-
-                        {/* for testing purposes starts */}
-                        <TouchableOpacity
-                            style={globalStyles.Button}
-                            onPress={
-                                () => navigation.navigate(FeedBack)
-                            }
-                        >
-                            <Text style={globalStyles.buttonTxt}>FeedBack</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity
-                            style={globalStyles.Button}
-                            onPress={
-                                () => navigation.navigate(SignUpAsDoctor)
-                            }
-                        >
-                            <Text style={globalStyles.buttonTxt}>sign up as doctor</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity
-                            style={globalStyles.Button}
-                            onPress={
-                                () => navigation.navigate(Chat)
-                            }
-                        >
-                            <Text style={globalStyles.buttonTxt}>Chat</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity
-                            style={globalStyles.Button}
-                            onPress={
-                                () => navigation.navigate('Mart')
-                            }
-                        >
-                            <Text style={globalStyles.buttonTxt}>Mart</Text>
-                        </TouchableOpacity>
-                        {/* for testing purposes ends */}
-
-                        <View style={{ marginTop: '15%', marginBottom: '5%' }}>
-                            <View style={{ flexDirection: 'row' }}>
-                                <Text>
-                                    Doesn't have account?
-                                </Text>
-                                <TouchableOpacity onPress={() => navigation.navigate(Signup)}>
-                                    <Text style={{ color: "#2A2AC0" }}> Sign up </Text>
-                                </TouchableOpacity>
-                                <Text>
-                                    here
-                                </Text>
-                            </View>
-                        </View>
-
-                    </View>
-                </ScrollView>
-
-            </TouchableWithoutFeedback>
-
-        </View>
-
-    );
+            <View style={{marginTop: '15%', marginBottom: '5%'}}>
+              <View style={{flexDirection: 'row'}}>
+                <Text>Doesn't have account?</Text>
+                <TouchableOpacity onPress={() => navigation.navigate(Signup)}>
+                  <Text style={{color: '#2A2AC0'}}> Sign up </Text>
+                </TouchableOpacity>
+                <Text>here</Text>
+              </View>
+            </View>
+          </View>
+        </ScrollView>
+      </TouchableWithoutFeedback>
+    </View>
+  );
 };
 
 export default login;

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {
   View,
   Text,
@@ -9,25 +9,21 @@ import {
 import NavigationBtn from '../../components/navigationBtn';
 import Signin from '../Auth/login';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { globalStyles } from '../../styles/globalStyles';
+import {globalStyles} from '../../styles/globalStyles';
 import 'react-native-gesture-handler';
 
 class AppointmentConfirm extends Component {
-
   render() {
-
     return (
       // root container
       <View
         style={{
           flex: 1,
           backgroundColor: '#ECF1FA',
-        }}
-      >
+        }}>
         <ScrollView
           showsVerticalScrollIndicator={false}
-          showsHorizontalScrollIndicator={false}
-        >
+          showsHorizontalScrollIndicator={false}>
           {/* sub root container */}
           <View style={styles.containerForAppointmentConfirm}>
             <NavigationBtn
@@ -39,16 +35,14 @@ class AppointmentConfirm extends Component {
             <View
               style={{
                 flexDirection: 'row',
-              }}
-            >
+              }}>
               <Icon name={'check-circle'} size={36} color="green" />
 
               <View
                 style={{
                   marginTop: '1.3%',
                   marginStart: '2%',
-                }}
-              >
+                }}>
                 <Text style={styles.headerTxt}>Appointment Confirmed!</Text>
               </View>
             </View>
@@ -64,13 +58,11 @@ class AppointmentConfirm extends Component {
                 alignItems: 'center',
                 justifyContent: 'center',
                 marginBottom: '8%',
-              }}
-            >
+              }}>
               <Text
                 style={{
                   fontSize: 20,
-                }}
-              >
+                }}>
                 Thu, 09 Apr{' '}
               </Text>
 
@@ -79,8 +71,7 @@ class AppointmentConfirm extends Component {
                   fontSize: 20,
                   fontWeight: 'bold',
                   color: 'green',
-                }}
-              >
+                }}>
                 08:00 pm
               </Text>
             </View>
@@ -89,30 +80,27 @@ class AppointmentConfirm extends Component {
               style={{
                 flexDirection: 'row',
                 marginBottom: '5%',
-              }}
-            >
+              }}>
               <View
                 style={{
                   flexDirection: 'column',
                   marginRight: '5%',
                   marginTop: '8%',
-                }}
-              >
+                }}>
                 <Icon name={'map-marker'} size={30} color="#2A2AC0" />
               </View>
 
-              <View style={{ flexDirection: 'column' }}>
+              <View style={{flexDirection: 'column'}}>
                 <View
                   style={{
                     flexDirection: 'row',
                     marginBottom: '7%',
-                  }}
-                >
+                  }}>
                   <Text>Dr. Clara Odding </Text>
-                  <Text style={{ color: 'grey' }}>- Dentist</Text>
+                  <Text style={{color: 'grey'}}>- Dentist</Text>
                 </View>
                 <View>
-                  <Text style={{ color: 'grey' }}>Karachi, Pakistan</Text>
+                  <Text style={{color: 'grey'}}>Karachi, Pakistan</Text>
                 </View>
               </View>
             </View>
@@ -131,12 +119,11 @@ class AppointmentConfirm extends Component {
                 alignContent: 'center',
                 alignItems: 'center',
                 marginBottom: '10%',
-              }}
-            >
+              }}>
               <Icon name={'check-square'} size={230} color="green" />
             </View>
 
-            <View style={{ marginBottom: '2%' }}>
+            <View style={{marginBottom: '2%'}}>
               <TouchableOpacity style={styles.AddToCalender}>
                 <Text style={globalStyles.buttonTxt}>Add to calender</Text>
               </TouchableOpacity>
