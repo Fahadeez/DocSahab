@@ -205,35 +205,35 @@ class Video extends Component {
                 }
 
             </View>
-        );
-    }
+    );
+  }
 }
 
 const styles = StyleSheet.create({
-    Container: {
-        flex: 1,
-        backgroundColor: '#ECF1FA',
-    },
-    Video_Btns_Container: {
-        height: 100,
-        width: '80%',
-        flexDirection: 'row',
-        backgroundColor: 'rgba(255,255,255,0.4)',
-        borderRadius: 30,
-        alignItems: 'center',
-        padding: 9,
-        justifyContent: 'space-evenly',
-        marginBottom: '10%'
-    },
-    Sub_Container: {
-        flex: 1,
-        padding: 23,
-        alignItems: 'center',
-        justifyContent: 'flex-end'
-    },
-    Icon_View: {
-        alignItems: 'center'
-    }
+  Container: {
+    flex: 1,
+    backgroundColor: '#ECF1FA',
+  },
+  Video_Btns_Container: {
+    height: 100,
+    width: '80%',
+    flexDirection: 'row',
+    backgroundColor: 'rgba(255,255,255,0.4)',
+    borderRadius: 30,
+    alignItems: 'center',
+    padding: 9,
+    justifyContent: 'space-evenly',
+    marginBottom: '10%',
+  },
+  Sub_Container: {
+    flex: 1,
+    padding: 23,
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+  },
+  Icon_View: {
+    alignItems: 'center',
+  },
 });
 
 export default Video;
