@@ -93,15 +93,26 @@ app.use((req, res, next) => {
 	next();
 });
 
-app.use('/mypeer',peerServer);
+app.use('/mypeer', peerServer);
 
-io.on('connection',function(socket){
+io.on('connection', function (socket) {
+	console.log("connection established")
+
+	socket.emit("myevent", { value: '1234' })
+
+	socket.on('emitEvent', ({ code }) => {
+		console.log("code", code)
+	})
+
 	socket.on("join-room", ({ userId, roomId }) => {
-		socket.join(roomId);
-		socket.to(roomId).broadcast.emit("user-connected",userId);
+		console.log("user joined", userId)
+		console.log("roomid", roomId)
+		socket.join(roomId, function () {
+			console.log(socket.id + " now in rooms ", socket.rooms);
+		});
+		socket.emit('user-connected', userId);
 	})
 })
-
 //authRoute return a function with app (express app) argument
 require('./Routes/authRoutes')(app);
 require('./Routes/dashboardRoutes')(app);
@@ -110,4 +121,4 @@ require('./Routes/appointmentRoutes')(app);
 
 const PORT = process.env.PORT || 5000;
 
-server.listen(PORT, () => console.log("server is running on ",PORT));
+server.listen(PORT, () => console.log("server is running on ", PORT));

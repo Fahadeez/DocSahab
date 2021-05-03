@@ -28,7 +28,7 @@ class Video extends Component {
     }
     componentDidMount() {
         const { state, joinRoom } = this.context;
-        // console.log("meeting state",state.video)
+        console.log("meeting state cmd",state)
         let isFront = true;
         mediaDevices.enumerateDevices().then((sourceInfos) => {
             let videoSourceId;
@@ -55,10 +55,11 @@ class Video extends Component {
                     },
                 })
                 .then((stream) => {
+                    console.log("join room called")
                     joinRoom(stream)
                 })
                 .catch((error) => {
-                    console.log(error);
+                    console.log("error in meeting ",error);
                 });
         });
     }
@@ -74,13 +75,13 @@ class Video extends Component {
                             style={{ width, height: height * 0.4 }} />
                         <View style={styles.Sub_Container}>
                             <View style={styles.Video_Btns_Container}>
-                                <TouchableOpacity style={styles.Icon_View} onPress={() => this.setState({ audio: !audio })}>
+                                {/* <TouchableOpacity style={styles.Icon_View} onPress={() => this.setState({ audio: !this.state.audio })}>
                                     <Icon
                                         name={"microphone"}
                                         size={34}
                                         color="#2A2AC0"
                                     />
-                                </TouchableOpacity>
+                                </TouchableOpacity> */}
                                 <TouchableOpacity style={styles.Icon_View}>
                                     <Icon
                                         name={"camera"}
@@ -155,7 +156,7 @@ class Video extends Component {
                     // </ImageBackground>
                 }
                 {
-                    state.streams.length > 0 ? (
+                    state.streams?.length > 0 ? (
                         <>
                             {
                                 state.streams.map((stream, index) => {
@@ -179,7 +180,7 @@ class Video extends Component {
                     ) : <Text>Loading...</Text>
                 }
                 {
-                    state.remoteStreams.length > 0 ? (
+                    state.remoteStreams?.length > 0 ? (
                         <>
                             {
                                 state.streams.map((stream, index) => {
