@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   View,
   StyleSheet,
@@ -12,7 +12,7 @@ import HeaderView from '../../components/headerView';
 import NavigationHeaderWithBar from '../../components/navigationHeaderWithBar';
 import {globalStyles} from '../../styles/globalStyles';
 import Icon from 'react-native-vector-icons/Feather';
-
+import DocSahabApi from '../../api/DocSahabApi';
 // import SearchDocScreen from '../SearchDoc';
 // import MedicalRecord from './MedicalRecord';
 

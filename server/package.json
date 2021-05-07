@@ -21,6 +21,7 @@
     "cookie-session": "^1.4.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
+    "faker": "^5.5.3",
     "firebase-admin": "^9.5.0",
     "google-cloud-bucket": "^1.0.0",
     "helmet": "^4.4.1",
@@ -36,6 +37,7 @@
     "passport-local": "^1.0.0",
     "peer": "^0.6.1",
     "puppeteer": "^8.0.0",
-    "socket.io": "^2.3.0"
+    "socket.io": "^2.3.0",
+    "twilio": "^3.62.0"
   }
 }

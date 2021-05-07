@@ -9,6 +9,12 @@ const keys = require('../Config/keys');
 const puppeteer = require('puppeteer');
 const bcrypt = require('bcrypt');
 const moment = require('moment');
+var faker = require('faker');
+// server.js
+// ... Code before
+var AccessToken = require('twilio').jwt.AccessToken;
+var VideoGrant = AccessToken.VideoGrant;
+
 
 const BCRYPT_SALT_ROUNDS = 10;
 
@@ -64,6 +70,30 @@ module.exports = app => {
 			return res.send("Error").status(500)
 		}
 	}
+	// Endpoint to generate access token
+	app.get('/token', function (request, response) {
+		var identity = faker.name.findName();
+		// Create an access token which we will sign and return to the client,
+		// containing the grant we just created
+		var token = new AccessToken(
+			keys.TWILIO_ACCOUNT_SID,
+			keys.TWILIO_API_KEY,
+			keys.TWILIO_API_SECRET
+		);
+
+		// Assign the generated identity to the token
+		token.identity = identity;
+
+		const grant = new VideoGrant();
+		// Grant token access to the Video API features
+		token.addGrant(grant);
+
+		// Serialize the token to a JWT string and include it in a JSON response
+		response.send({
+			identity: identity,
+			token: token.toJwt()
+		});
+	});
 
 	app.post('/auth/login', (req, res, next) => {
 		passport.authenticate('local', (err, user, info) => {

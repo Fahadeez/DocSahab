@@ -1,288 +1,366 @@
-import React from 'react';
-import { SafeAreaView, StatusBar } from 'react-native';
-import ConnectyCube from 'react-native-connectycube';
-import AwesomeAlert from 'react-native-awesome-alerts';
-import RTCViewGrid from './RTCViewGrid';
-import { CallService, AuthService } from '../../../../services';
-import ToolBar from './ToolBar';
-import UsersSelect from './UsersSelect';
-import config from '../../../../config';
-
-export default class VideoScreen extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this._session = null;
-    // this.opponentsIds = props.navigation.getParam('opponentsIds');
-    // this.opponentsIds = "123123asdzxc"
-
-    this.state = {
-      localStream: null,
-      remoteStreams: [],
-      selectedUsersIds: [],
-      isActiveSelect: true,
-      isActiveCall: false,
-      isIncomingCall: false,
-    };
-
-    // this._setUpListeners();
-  }
-
-  // componentWillUnmount() {
-  //   CallService.stopCall();
-  //   AuthService.logout();
+import React, {
+  Component
+} from 'react';
+import {
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+  Button,
+  TouchableOpacity,
+  PermissionsAndroid, TouchableHighlight
+} from 'react-native';
+import {
+  TwilioVideoLocalView, // to get local view 
+  TwilioVideoParticipantView, //to get participant view
+  TwilioVideo
+} from 'react-native-twilio-video-webrtc';
+// make sure you install vector icons and its dependencies
+import MIcon from 'react-native-vector-icons/MaterialIcons';
+import normalize from 'react-native-normalize';
+import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import DocSahabApi from '../../../../api/DocSahabApi';
+export async function GetAllPermissions() {
+// it will ask the permission for user 
+try {
+  // if (Platform.OS === "android") {
+    const userResponse = await PermissionsAndroid.requestMultiple([
+      PermissionsAndroid.PERMISSIONS.CAMERA,
+      PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
+      PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE
+    ]);
+    return userResponse;
   // }
+} catch (err) {
+  console.log(err);
+}
+return null;
+}
+export default class VideoScreen extends Component {
+  state = {
+      isAudioEnabled: true,
+      isVideoEnabled: true,
+      isButtonDisplay: true,
+      status: 'disconnected',
+      participants: new Map(),
+      videoTracks: new Map(),
+      roomName: '',
+      token: '',
+      identity: ''
+  }
+  
   componentDidMount() {
-    console.log("connect cube init",config)
-    ConnectyCube.init(config[0]);
-
-    const calleesIds = [41, 76, 34]; // User's ids
-    const sessionType = 1 // AUDIO is also possible
-    const additionalOptions = {};
-    const session = ConnectyCube.createSession(calleesIds, sessionType, additionalOptions);
-
-    const mediaParams = {
-      audio: true,
-      video: true,
-      options: {
-        muted: true,
-        mirror: true,
-      },
-    };
-
-    session
-      .getUserMedia(mediaParams)
-      .then((localStream) => { this.setState({ localStream }) })
-      .catch((error) => { });
-
-
+    // on start we are asking the permisions
+    GetAllPermissions();
+    DocSahabApi.get('/token').then(results => {
+      const { identity, token } = results.data;
+      this.setState({ identity, token });
+      console.log("accessToken",token)
+    });
+    
   }
-  // componentDidUpdate(prevProps, prevState) {
-  //   const currState = this.state;
-
-  //   if (
-  //     prevState.remoteStreams.length === 1 &&
-  //     currState.remoteStreams.length === 0
-  //   ) {
-  //     CallService.stopCall();
-  //     this.resetState();
-  //   }
-  // }
-
-  // showInomingCallModal = session => {
-  //   this._session = session;
-  //   this.setState({ isIncomingCall: true });
-  // };
-
-  // hideInomingCallModal = () => {
-  //   this._session = null;
-  //   this.setState({ isIncomingCall: false });
-  // };
-
-  // selectUser = userId => {
-  //   this.setState(prevState => ({
-  //     selectedUsersIds: [...prevState.selectedUsersIds, userId],
-  //   }));
-  // };
-
-  // unselectUser = userId => {
-  //   this.setState(prevState => ({
-  //     selectedUsersIds: prevState.selectedUsersIds.filter(id => userId !== id),
-  //   }));
-  // };
-
-  // closeSelect = () => {
-  //   this.setState({ isActiveSelect: false });
-  // };
-
-  // setOnCall = () => {
-  //   this.setState({ isActiveCall: true });
-  // };
-
-  // initRemoteStreams = opponentsIds => {
-  //   const emptyStreams = opponentsIds.map(userId => ({
-  //     userId,
-  //     stream: null,
-  //   }));
-
-  //   this.setState({ remoteStreams: emptyStreams });
-  // };
-
-  // updateRemoteStream = (userId, stream) => {
-  //   this.setState(({ remoteStreams }) => {
-  //     const updatedRemoteStreams = remoteStreams.map(item => {
-  //       if (item.userId === userId) {
-  //         return { userId, stream };
-  //       }
-
-  //       return { userId: item.userId, stream: item.stream };
-  //     });
-
-  //     return { remoteStreams: updatedRemoteStreams };
-  //   });
-  // };
-
-  // removeRemoteStream = userId => {
-  //   this.setState(({ remoteStreams }) => ({
-  //     remoteStreams: remoteStreams.filter(item => item.userId !== userId),
-  //   }));
-  // };
-
-  // setLocalStream = stream => {
-  //   this.setState({ localStream: stream });
-  // };
-
-  // resetState = () => {
-  //   this.setState({
-  //     localStream: null,
-  //     remoteStreams: [],
-  //     selectedUsersIds: [],
-  //     isActiveSelect: true,
-  //     isActiveCall: false,
-  //   });
-  // };
-
-  // // _setUpListeners() {
-  // //   ConnectyCube.videochat.onCallListener = this._onCallListener;
-  // //   ConnectyCube.videochat.onAcceptCallListener = this._onAcceptCallListener;
-  // //   ConnectyCube.videochat.onRejectCallListener = this._onRejectCallListener;
-  // //   ConnectyCube.videochat.onStopCallListener = this._onStopCallListener;
-  // //   ConnectyCube.videochat.onUserNotAnswerListener = this._onUserNotAnswerListener;
-  // //   ConnectyCube.videochat.onRemoteStreamListener = this._onRemoteStreamListener;
-  // // }
-
-  // _onPressAccept = () => {
-  //   CallService.acceptCall(this._session).then(stream => {
-  //     const { opponentsIDs, initiatorID, currentUserID } = this._session;
-  //     const opponentsIds = [initiatorID, ...opponentsIDs].filter(
-  //       userId => currentUserID !== userId,
-  //     );
-
-  //     this.initRemoteStreams(opponentsIds);
-  //     this.setLocalStream(stream);
-  //     this.closeSelect();
-  //     this.hideInomingCallModal();
-  //   });
-  // };
-
-  // _onPressReject = () => {
-  //   CallService.rejectCall(this._session);
-  //   this.hideInomingCallModal();
-  // };
-
-  // _onCallListener = (session, extension) => {
-  //   CallService.processOnCallListener(session)
-  //     .then(() => this.showInomingCallModal(session))
-  //     .catch(this.hideInomingCallModal);
-  // };
-
-  // _onAcceptCallListener = (session, userId, extension) => {
-  //   CallService.processOnAcceptCallListener(session, userId, extension)
-  //     .then(this.setOnCall)
-  //     .catch(this.hideInomingCallModal);
-  // };
-
-  // _onRejectCallListener = (session, userId, extension) => {
-  //   CallService.processOnRejectCallListener(session, userId, extension)
-  //     .then(() => this.removeRemoteStream(userId))
-  //     .catch(this.hideInomingCallModal);
-  // };
-
-  // _onStopCallListener = (session, userId, extension) => {
-  //   const isStoppedByInitiator = session.initiatorID === userId;
-
-  //   CallService.processOnStopCallListener(userId, isStoppedByInitiator)
-  //     .then(() => {
-  //       if (isStoppedByInitiator) {
-  //         this.resetState();
-  //       } else {
-  //         this.removeRemoteStream(userId);
-  //       }
-  //     })
-  //     .catch(this.hideInomingCallModal);
-  // };
-
-  // _onUserNotAnswerListener = (session, userId) => {
-  //   CallService.processOnUserNotAnswerListener(userId)
-  //     .then(() => this.removeRemoteStream(userId))
-  //     .catch(this.hideInomingCallModal);
-  // };
-
-  // _onRemoteStreamListener = (session, userId, stream) => {
-  //   CallService.processOnRemoteStreamListener(userId)
-  //     .then(() => {
-  //       this.updateRemoteStream(userId, stream);
-  //       this.setOnCall();
-  //     })
-  //     .catch(this.hideInomingCallModal);
-  // };
-
-  render() {
-    // const {
-    //   localStream,
-    //   remoteStreams,
-    //   selectedUsersIds,
-    //   isActiveSelect,
-    //   isActiveCall,
-    //   isIncomingCall,
-    // } = this.state;
-
-    // const initiatorName = isIncomingCall
-    //   ? CallService.getUserById(this._session.initiatorID, 'name')
-    //   : '';
-    // const localStreamItem = localStream
-    //   ? [{ userId: 'localStream', stream: localStream }]
-    //   : [];
-    // const streams = [...remoteStreams, ...localStreamItem];
-
-    // CallService.setSpeakerphoneOn(remoteStreams.length > 0);
-
-    return (
-      <SafeAreaView style={{ flex: 1, backgroundColor: 'black' }}>
-        <>
-         { this.state.localStream ? 
-        <ConnectyCube.RTCView objectFit="cover" key={"1123123"} streamURL={this.state.localStream.toURL()} />
-        : null
-         }
-        </>
-        {/* <UsersSelect
-          isActiveSelect={isActiveSelect}
-          opponentsIds={this.opponentsIds}
-          selectedUsersIds={selectedUsersIds}
-          selectUser={this.selectUser}
-          unselectUser={this.unselectUser}
-        />
-        <ToolBar
-          selectedUsersIds={selectedUsersIds}
-          localStream={localStream}
-          isActiveSelect={isActiveSelect}
-          isActiveCall={isActiveCall}
-          closeSelect={this.closeSelect}
-          initRemoteStreams={this.initRemoteStreams}
-          setLocalStream={this.setLocalStream}
-          resetState={this.resetState}
-        />
-        <AwesomeAlert
-          show={isIncomingCall}
-          showProgress={false}
-          title={`Incoming call from ${initiatorName}`}
-          closeOnTouchOutside={false}
-          closeOnHardwareBackPress={true}
-          showCancelButton={true}
-          showConfirmButton={true}
-          cancelText="Reject"
-          confirmText="Accept"
-          cancelButtonColor="red"
-          confirmButtonColor="green"
-          onCancelPressed={this._onPressReject}
-          onConfirmPressed={this._onPressAccept}
-          onDismiss={this.hideInomingCallModal}
-          alertContainerStyle={{ zIndex: 1 }}
-          titleStyle={{ fontSize: 21 }}
-          cancelButtonTextStyle={{ fontSize: 18 }}
-          confirmButtonTextStyle={{ fontSize: 18 }}
-        /> */}
-      </SafeAreaView>
-    );
+_onConnectButtonPress = () => {
+  console.log("in on connect button preess");
+  this.refs.twilioVideo.connect({ roomName: this.state.roomName, accessToken: this.state.token})
+  this.setState({status: 'connecting'})
+  console.log(this.state.status);
+}
+_onEndButtonPress = () => {
+  this.refs.twilioVideo.disconnect()
+}
+_onMuteButtonPress = () => {
+  // on cliking the mic button we are setting it to mute or viceversa
+  this.refs.twilioVideo.setLocalAudioEnabled(!this.state.isAudioEnabled)
+    .then(isEnabled => this.setState({isAudioEnabled: isEnabled}))
+}
+_onFlipButtonPress = () => {
+  // switches between fronst camera and Rare camera
+  this.refs.twilioVideo.flipCamera()
+}
+_onRoomDidConnect = () => {
+  console.log("room did connected");
+  this.setState({status: 'connected'})
+  // console.log("over");
+}
+_onRoomDidDisconnect = ({roomName, error}) => {
+  console.log("ERROR: ", JSON.stringify(error))
+  console.log("disconnected")
+  
+  this.setState({status: 'disconnected'})
+}
+_onRoomDidFailToConnect = (error) => {
+  console.log("ERROR: ", JSON.stringify(error));
+  console.log("failed to connect");
+  this.setState({status: 'disconnected'})
+}
+_onParticipantAddedVideoTrack = ({participant, track}) => {
+  // call everytime a participant joins the same room
+  console.log("onParticipantAddedVideoTrack: ", participant, track)
+this.setState({
+    videoTracks: new Map([
+      ...this.state.videoTracks,
+      [track.trackSid, { participantSid: participant.sid, videoTrackSid: track.trackSid }]
+    ]),
+  });
+  
+  console.log("this.state.videoTracks", this.state.videoTracks);
+}
+_onParticipantRemovedVideoTrack = ({participant, track}) => {
+  // gets called when a participant disconnects.
+  console.log("onParticipantRemovedVideoTrack: ", participant, track)
+const videoTracks = this.state.videoTracks
+  videoTracks.delete(track.trackSid)
+this.setState({videoTracks: { ...videoTracks }})
+}
+ render() {
+      return (
+      <View style={styles.container} >
+      {
+          this.state.status === 'disconnected' &&
+          <View>
+              <Text style={styles.welcome}>
+              React Native Twilio Video
+              </Text>
+              <View style={styles.spacing}>
+                    <Text style={styles.inputLabel}>Room Name</Text>
+                    <TextInput style={styles.inputBox}
+                    placeholder="Room Name"
+                    defaultValue={this.state.roomName}
+                    onChangeText={(text) => this.setState({roomName: text})}
+                    />
+                </View>
+              <View style={styles.spacing}>
+                    <Text style={styles.inputLabel}>Token</Text>
+                    <TextInput style={styles.inputBox}
+                    placeholder="Token"
+                    defaultValue={this.state.token}
+                    onChangeText={(text) => this.setState({token: text})}
+                    />
+                </View>
+              <TouchableHighlight style={[styles.buttonContainer, styles.loginButton]} onPress={this._onConnectButtonPress}>
+                  <Text style={styles.Buttontext}>Connect</Text>
+              </TouchableHighlight>
+          </View>
+      }
+{
+        (this.state.status === 'connected' || this.state.status === 'connecting') &&
+          <View style={styles.callContainer}>
+          {
+            this.state.status === 'connected' &&
+            <View style={styles.remoteGrid}>
+              <TouchableOpacity style = {styles.remoteVideo} onPress={()=>{this.setState({isButtonDisplay:!this.state.isButtonDisplay})}} >
+              {
+                Array.from(this.state.videoTracks, ([trackSid, trackIdentifier]) => {
+                  return (
+                      <TwilioVideoParticipantView
+                        style={styles.remoteVideo}
+                        key={trackSid}
+                        trackIdentifier={trackIdentifier}
+                      />
+                  )
+                })
+              }
+              </TouchableOpacity>
+              <TwilioVideoLocalView
+                enabled={true}
+                style = {this.state.isButtonDisplay ? styles.localVideoOnButtonEnabled : styles.localVideoOnButtonDisabled} 
+              />
+            </View>
+          }
+          <View
+            style = {
+              {
+                display: this.state.isButtonDisplay ? "flex" : "none",
+                position: "absolute",
+                left: 0,
+                bottom: 0,
+                right: 0,
+                height: 100,
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-evenly",
+                // backgroundColor:"blue",
+                // zIndex: 2,
+                zIndex: this.state.isButtonDisplay ? 2 : 0,
+              }
+            } >
+            <TouchableOpacity
+              style={
+                  {
+                    display: this.state.isButtonDisplay ? "flex" : "none",
+                    width: 60,
+                    height: 60,
+                    marginLeft: 10,
+                    marginRight: 10,
+                    borderRadius: 100 / 2,
+                    backgroundColor: 'grey',
+                    justifyContent: 'center',
+                    alignItems: "center"
+                  }
+                }
+              onPress={this._onMuteButtonPress}>
+              < MIcon name ={this.state.isAudioEnabled ? "mic" : "mic-off"} size={24} color='#fff' />
+            </TouchableOpacity>
+             <TouchableOpacity
+              style={
+                  {
+                    display: this.state.isButtonDisplay ? "flex" : "none",
+                    width: 60,
+                    height: 60,
+                    marginLeft: 10,
+                    marginRight: 10,
+                    borderRadius: 100 / 2,
+                    backgroundColor: 'grey',
+                    justifyContent: 'center',
+                    alignItems: "center"
+                  }
+                }
+              onPress={this._onEndButtonPress}>
+              {/* <Text style={{fontSize: 12}}>End</Text> */}
+              < MIcon name = "call-end" size={28} color='#fff' />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={
+                  {
+                    display: this.state.isButtonDisplay ? "flex" : "none",
+                    width: 60,
+                    height: 60,
+                    marginLeft: 10,
+                    marginRight: 10,
+                    borderRadius: 100 / 2,
+                    backgroundColor: 'grey',
+                    justifyContent: 'center',
+                    alignItems: "center"
+                  }
+                }
+              onPress={this._onFlipButtonPress}>
+              {/* <Text style={{fontSize: 12}}>Flip</Text> */}
+              < MCIcon name = "rotate-3d" size={28} color='#fff' />
+            </TouchableOpacity>
+          </View>
+        
+        </View>
+      }
+      <TwilioVideo
+        ref="twilioVideo"
+        onRoomDidConnect={ this._onRoomDidConnect }
+        onRoomDidDisconnect={ this._onRoomDidDisconnect }
+        onRoomDidFailToConnect= { this._onRoomDidFailToConnect }
+        onParticipantAddedVideoTrack={ this._onParticipantAddedVideoTrack }
+        onParticipantRemovedVideoTrack= { this._onParticipantRemovedVideoTrack }
+      />
+      </View>
+      )
   }
 }
+const styles = StyleSheet.create({
+container: {
+  flex: 1,
+  backgroundColor: 'white'
+},
+callContainer: {
+  flex: 1,
+  position: "absolute",
+  bottom: 0,
+  top: 0,
+  left: 0,
+  right: 0,
+  minHeight:"100%"
+},
+welcome: {
+  fontSize: 30,
+  textAlign: 'center',
+  paddingTop: 40
+},
+input: {
+  height: 50,
+  borderWidth: 1,
+  marginRight: 70,
+  marginLeft: 70,
+  marginTop: 50,
+  textAlign: 'center',
+  backgroundColor: 'white'
+},
+button: {
+  marginTop: 100
+},
+localVideoOnButtonEnabled: {
+  bottom: ("40%"),
+  width: "35%",
+  left: "64%",
+  height: "25%",
+  zIndex: 2,
+},
+localVideoOnButtonDisabled: {
+  bottom: ("30%"),
+  width: "35%",
+  left: "64%",
+  height: "25%",
+  zIndex: 2,
+},
+remoteGrid: {
+  flex: 1,
+  flexDirection: "column",
+},
+remoteVideo: {
+  width: wp("100%"),
+  height: hp("100%"),
+  zIndex: 1,
+},
+optionsContainer: {
+  position: "absolute",
+  left: 0,
+  bottom: 0,
+  right: 0,
+  height: 100,
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "space-evenly",
+  zIndex: 2,
+},
+optionButton: {
+  width: 60,
+  height: 60,
+  marginLeft: 10,
+  marginRight: 10,
+  borderRadius: 100 / 2,
+  backgroundColor: 'grey',
+  justifyContent: 'center',
+  alignItems: "center"
+},
+spacing: {
+  padding: 10
+},
+inputLabel: {
+  fontSize: 18
+},
+buttonContainer: {
+  height: normalize(45),
+  flexDirection: 'row',
+  justifyContent: 'center',
+  alignItems: 'center',
+  marginBottom: 20,
+  width: wp('90%'),
+  borderRadius: 30,
+},
+loginButton: {
+  backgroundColor: "#1E3378",
+  width: wp('90%'),
+  justifyContent: 'center',
+  alignItems: 'center',
+  marginLeft: 20,
+  marginTop: 10
+},
+Buttontext: {
+  color: 'white',
+  fontWeight: '500',
+  fontSize: 18
+},
+inputBox: {
+  borderBottomColor: '#cccccc',
+  fontSize: 16,
+  width: wp("95%"),
+  borderBottomWidth:1
+},
+});

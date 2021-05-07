@@ -30,9 +30,6 @@ import PaymentScreen from './src/screens/payment';
 import MartScreen from './src/screens/Mart/Mart';
 import Meeting from './src/screens/Dashboard/VIDEO_SCREEN/Meeting';
 import VideoScreen from './src/screens/Dashboard/VIDEO_SCREEN/VideoScreen';
-import { AuthService } from './src/services'
-import cConfig from './src/config';
-import ConnectyCube from 'react-native-connectycube';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -238,14 +235,7 @@ export default class App extends Component {
 
   }
   componentDidMount = () => {
-    ConnectyCube.init({
-      appId: 4704,
-      authKey: 'nwA4zHH6bndJcXx',
-      authSecret: 'fR4j-RKyMekF4wC',
-    },
-      {
-        debug: { mode: 1 },
-      });
+
     Linking.getInitialURL()
       .then((url) => {
         if (url) {
