@@ -160,7 +160,7 @@ const SeachDocScreen = ({navigation}) => {
                     <View style={{flexDirection: 'row', marginTop: 15}}>
                       <Image
                         source={{
-                          uri: 'https://i.imgflip.com/3ko73y.png',
+                          uri: 'http://www.pngall.com/wp-content/uploads/5/User-Profile-PNG.png',
                         }}
                         style={{width: 80, height: 80, borderRadius: 15}}
                       />

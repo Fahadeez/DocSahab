@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -13,18 +13,29 @@ import NavigationHeaderWithBar from '../../components/navigationHeaderWithBar';
 import {globalStyles} from '../../styles/globalStyles';
 import Icon from 'react-native-vector-icons/Feather';
 import DocSahabApi from '../../api/DocSahabApi';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 // import SearchDocScreen from '../SearchDoc';
 // import MedicalRecord from './MedicalRecord';
 
 const DashboardScreen = ({navigation}) => {
+  const [data, setData] = useState([]);
   // const navigation = useNavigation();
 	useEffect(() => {
-		function navigate() {
+		/* function navigate() {
 			navigation.navigate('Meeting')
 		}
-		navigate()
+		navigate()*/
+
+    async function setUserData() {
+        const userData = await AsyncStorage.getItem('userData');
+        JSON.parse(userData)
+        setData(JSON.parse(userData));
+    }
+
+    setUserData();
 
 	}, []);
+
   return (
     <View style={globalStyles.containerColor}>
       <NavigationHeaderWithBar title="Dashboard" />
@@ -44,7 +55,7 @@ const DashboardScreen = ({navigation}) => {
           <View style={styles.miniParent}>
             <TouchableOpacity
               style={styles.childBox}
-              onPress={() => navigation.navigate('SearchDoc')}>
+              onPress={() => navigation.navigate(data.doctor == false? 'SearchDoc' : 'MyAppointment')}>
               <Image
                 source={require('../../../assets/appointment.png')}
                 style={styles.childBox}

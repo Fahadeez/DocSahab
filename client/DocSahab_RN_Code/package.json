@@ -4,8 +4,8 @@
   "private": true,
   "dllPlugin": {
     "exclude": [
-       "stream",
-       "path"
+      "stream",
+      "path"
     ]
   },
   "scripts": {

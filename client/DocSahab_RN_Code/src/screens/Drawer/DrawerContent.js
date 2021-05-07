@@ -49,7 +49,7 @@ export function DrawerContent(props) {
                         <View style={{flexDirection:'row',marginTop: 15}}>
                             <Avatar.Image 
                                 source={{
-                                    uri: 'https://i.imgflip.com/3ko73y.png'
+                                    uri: 'http://www.pngall.com/wp-content/uploads/5/User-Profile-PNG.png'
                                 }}
                                 size={60}
                             />
@@ -62,9 +62,9 @@ export function DrawerContent(props) {
                         <View style={styles.row}>
                         </View>
                     </View>
-
                     <Drawer.Section style={styles.drawerSection}>
-                        <DrawerItem 
+
+                        <DrawerItem
                             icon={({color, size}) => (
                                 <Icon 
                                 name="calendar-clock" 
@@ -75,7 +75,9 @@ export function DrawerContent(props) {
                             label="My Appointments"
                             onPress={() => {props.navigation.navigate('MyAppointment')}}
                         />
-                        <DrawerItem 
+
+                        {   data.doctor == false?
+                            <DrawerItem 
                             icon={({color, size}) => (
                                 <Icon 
                                 name="heart-plus-outline" 
@@ -86,6 +88,9 @@ export function DrawerContent(props) {
                             label="New Appointment"
                             onPress={() => {props.navigation.navigate('SearchDoc')}}
                         />
+                        : null
+                        }
+                        
                         <DrawerItem 
                             icon={({color, size}) => (
                                 <Icon 
