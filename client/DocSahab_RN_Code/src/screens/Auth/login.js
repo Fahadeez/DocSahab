@@ -24,6 +24,7 @@ import FeedBack from '../Dashboard/FeedBack';
 import AppoinmentConfirm from '../Dashboard/AppointmentConfirm';
 import Chat from '../Dashboard/Chat';
 import SignUpAsDoctor from '../Auth/DoctorDetails';
+import ChatRoom from '../Dashboard/chatRoom';
 
 const login = (props) => {
   const {state, signIn} = useContext(AuthContext);
@@ -213,10 +214,16 @@ const login = (props) => {
               <Text style={globalStyles.buttonTxt}>sign up as doctor</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity
+            {/* <TouchableOpacity
               style={globalStyles.Button}
               onPress={() => navigation.navigate(Chat)}>
               <Text style={globalStyles.buttonTxt}>Chat</Text>
+            </TouchableOpacity> */}
+
+            <TouchableOpacity
+              style={globalStyles.Button}
+              onPress={() => navigation.navigate(ChatRoom)}>
+              <Text style={globalStyles.buttonTxt}>Chat Room</Text>
             </TouchableOpacity>
 
             <TouchableOpacity

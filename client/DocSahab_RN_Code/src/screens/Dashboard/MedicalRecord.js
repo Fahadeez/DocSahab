@@ -22,7 +22,7 @@ import axios from 'axios';
 
 const record = [];
 
-const baseURL = 'http://192.168.0.103:5000';
+const baseURL = 'http://192.168.1.103:5000';
 
 class MedicalRecord extends React.Component {
   constructor(props) {

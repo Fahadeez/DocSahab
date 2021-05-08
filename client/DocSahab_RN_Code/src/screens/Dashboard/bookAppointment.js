@@ -298,8 +298,8 @@ class BookAppoinment extends Component {
                   <RNPickerSelect
                     style={{inputAndroid: {color: 'black'}}}
                     placeholder={{label: 'Select a time', value: ''}}
-                    onValueChange={(value) => {
-                      this.setState({time: value});
+                    onValueChange={(time) => {
+                      this.setState({time});
                     }}
                     items={this.state.timeSlots}
                   />

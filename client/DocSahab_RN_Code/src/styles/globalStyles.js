@@ -85,6 +85,7 @@ export const globalStyles = StyleSheet.create({
   },
   inputText: {
     height: 50,
+    color: 'black',
   },
   inputTitleTxt: {
     fontSize: 24,

@@ -43,7 +43,7 @@ LogBox.ignoreLogs(['Animated: `useNativeDriver` was not specified.']);
 const db = firebase.firestore();
 
 // reference to our chat collection
-const chatsRef = db.collection('chats');
+// const chatsRef = db.collection('chats');
 
 class Chat_Module extends React.Component {
   constructor(props) {
@@ -56,13 +56,16 @@ class Chat_Module extends React.Component {
     };
   }
 
+  // reference to our chat collection
+  chatsRef = db.collection(this.props.chatRoomName);
+
   componentDidMount() {
     this.getUser_Email_Id();
     this.messagesFromDb();
   }
 
   messagesFromDb() {
-    const unSubscribe = chatsRef.onSnapshot((querySnapshot) => {
+    const unSubscribe = this.chatsRef.onSnapshot((querySnapshot) => {
       // it has all the changed data, listen to all the changes
       const messagesFirestore = querySnapshot
         .docChanges()
@@ -82,7 +85,7 @@ class Chat_Module extends React.Component {
 
   onSend = async (messages) => {
     // to add the data(messages) to firestore
-    const writes = messages.map((m) => chatsRef.add(m));
+    const writes = messages.map((m) => this.chatsRef.add(m));
     // sending messages data from frontend to here
     await Promise.all(writes);
   };

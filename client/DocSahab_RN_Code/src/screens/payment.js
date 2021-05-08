@@ -27,15 +27,22 @@ const PaymentScreen = ({navigation, route}) => {
       <ScrollView style={globalStyles.scrollView}>
         <View style={{marginTop: '15%', marginLeft: '5%'}}>
           <View style={{flexDirection: 'row'}}>
+            <Text style={{fontWeight: 'bold'}}>Dr.</Text>
             <Text style={{fontWeight: 'bold'}}>
-              {docData.firstName} {docData.lastName}
+              {docData.firstName.toUpperCase()} {docData.lastName.toUpperCase()}
             </Text>
-            <Text> Confirmation</Text>
+            <Text
+              style={{
+                opacity: 0.5,
+              }}>
+              {' '}
+              ( Appointment Confirmation-In Process )
+            </Text>
           </View>
 
           <View style={styles.scheduleContainer}>
             <Text style={styles.scheduleText}>
-              {moment(date).format('dddd')},{time}
+              {moment(date).format('dddd')}, {time}
             </Text>
           </View>
 
