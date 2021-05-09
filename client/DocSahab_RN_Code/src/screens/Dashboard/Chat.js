@@ -11,6 +11,9 @@ class Chat extends React.Component {
       name: '',
     };
   }
+
+  chatRoomName = this.props.route.params.ChatRoomObject;
+
   // for testing
   // getting the username from email to show the username on top
   get_User_Email = async () => {
@@ -24,6 +27,7 @@ class Chat extends React.Component {
 
   componentDidMount() {
     this.get_User_Email();
+    console.log('value from chat room: ', this.chatRoomName);
   }
 
   render() {
@@ -44,7 +48,7 @@ class Chat extends React.Component {
             flex: 0.9,
             padding: 5,
           }}>
-          <Chat_Module />
+          <Chat_Module chatRoomName={this.chatRoomName} />
         </View>
       </View>
     );

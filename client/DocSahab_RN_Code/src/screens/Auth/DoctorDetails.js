@@ -8,6 +8,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   StyleSheet,
+  LogBox,
 } from 'react-native';
 import SignUp from '../Auth/signup';
 import {globalStyles} from '../../styles/globalStyles';
@@ -51,9 +52,8 @@ const doctordetails = () => {
   const [days, setDay] = useState([]);
 
   var date = new Date();
-  var newDate = date.toLocaleString();
-  const [startTime, setStartTime] = useState(newDate);
-  const [endTime, setEndTime] = useState(newDate);
+  const [startTime, setStartTime] = useState(date);
+  const [endTime, setEndTime] = useState(date);
   const [visibilityStart, setVisibilityStart] = useState(false);
   const [visibilityEnd, setVisibilityEnd] = useState(false);
 
@@ -75,6 +75,12 @@ const doctordetails = () => {
   const navigate = () => {
     navigation.navigate('login');
   };
+
+  LogBox.ignoreLogs([
+    'VirtualizedLists should never be nested inside plain ScrollViews with the same orientation',
+    'Failed prop type: Invalid prop `isVisible` of type `object` supplied to `<<anonymous>>`, expected `boolean`.',
+    'Deprecation warning: value provided is not in a recognized RFC2822 or ISO format. moment construction falls back to js Date(), which is not reliable across all browsers and versions.',
+  ]);
 
   return (
     <View style={globalStyles.containerColor}>
@@ -274,23 +280,21 @@ const doctordetails = () => {
                       isVisible={(startTime, visibilityStart)}
                       onConfirm={(startTime) => {
                         setStartTime(startTime),
-                          console.log(
-                            'start time: ',
-                            startTime.toLocaleString(),
-                          ),
-                          (props.values.startTime = startTime.toString());
+                          console.log('start time: ', startTime.toString()),
+                          (props.values.startTime = startTime);
                       }}
                       onCancel={onPressStartCancel}
                       mode="time"
                       is24Hour={true} //for am and pm
                       display="spinner"
                     />
-                    {/* 
-                                    <View style={ styles.inputLabel }>
-                                        <Text style={globalStyles.inputLabelText}>
-                                            Your Start Time: { startTime.toLocaleString().slice(13, 24) }
-                                        </Text>
-                                    </View> */}
+
+                    {/* <View style={styles.inputLabel}>
+                      <Text style={globalStyles.inputLabelText}>
+                        Your Start Time:{' '}
+                        {startTime.toLocaleString().slice(13, 24)}
+                      </Text>
+                    </View> */}
                     <Text style={globalStyles.errorText}>
                       {props.touched.startTime && props.errors.startTime}
                     </Text>
@@ -305,21 +309,15 @@ const doctordetails = () => {
                       isVisible={(endTime, visibilityEnd)}
                       onConfirm={(endTime) => {
                         setEndTime(endTime),
-                          console.log('end time: ', endTime.toLocaleString()),
-                          (props.values.endTime = endTime.toString());
+                          console.log('end time: ', endTime.toString()),
+                          (props.values.endTime = endTime);
                       }}
                       onCancel={onPressEndCancel}
                       mode="time"
                       is24Hour={true} //for am and pm
                       display="spinner"
-                      timeZoneOffsetInSeconds={3600}
+                      // timeZoneOffsetInSeconds={3600}
                     />
-
-                    {/* <View style={ styles.inputLabel }>
-                                        <Text style={globalStyles.inputLabelText}>
-                                            Your End Time: { endTime.toLocaleString().slice(13, 24) }
-                                        </Text>
-                                    </View> */}
                     <Text style={globalStyles.errorText}>
                       {props.touched.endTime && props.errors.endTime}
                     </Text>
