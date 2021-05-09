@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   StyleSheet,
@@ -13,12 +13,38 @@ import {globalStyles} from '../styles/globalStyles';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import RNPickerSelect from 'react-native-picker-select';
 import moment from 'moment';
+const axios = require('axios')
+const qs = require('querystring')
 
 const PaymentScreen = ({navigation, route}) => {
-  const {card, setSelectedCard} = useState('');
+  const [reason, setReason] = useState('');
+  const [card, setSelectedCard] = useState('');
   const docData = route.params.docData;
   const date = route.params.date;
   const time = route.params.time;
+
+const requestBody = {
+  docId: docData._id,
+  reason: reason,
+  date: date,
+  time: time,
+}
+
+const config = {
+  headers: {
+    'Content-Type': 'application/x-www-form-urlencoded'
+  }
+}
+
+const confirmApp = () => {
+  return async () => {
+    try {
+      const response = await axios.post('https://doc-sahab.herokuapp.com/api/book-appointment', qs.stringify(requestBody), config);
+      console.log(response);
+    } catch (err) {}
+  };
+};
+
 
   return (
     <View styles={globalStyles.containerColor}>
@@ -73,6 +99,8 @@ const PaymentScreen = ({navigation, route}) => {
               placeholderTextColor="#003f5c"
               autoCapitalize="none"
               autoCorrect={false}
+              onChangeText={(text) => setReason(text)}
+              value={reason}
             />
           </View>
 
@@ -109,7 +137,7 @@ const PaymentScreen = ({navigation, route}) => {
           </View>
           <TouchableOpacity
             style={globalStyles.modifiedBtn}
-            onPress={() => navigation.navigate('AppointmentConfirm')}>
+            onPress={confirmApp()}>
             <Text style={globalStyles.buttonTxt}>Pay Now</Text>
           </TouchableOpacity>
 

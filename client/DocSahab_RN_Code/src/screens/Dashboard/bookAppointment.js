@@ -46,12 +46,14 @@ class BookAppoinment extends Component {
     const {state, fetchUser} = this.context;
     fetchUser();
   }
+  
   timePickerItems = (date) => {
     const {
       startCheckupTime,
       endCheckupTime,
       appointments,
     } = this.props.route.params.doctor;
+    console.log(startCheckupTime)
     const startDate = moment(startCheckupTime).format('HH:mm');
     const endDate = moment(endCheckupTime).format('HH:mm');
     const startTime = moment(startDate, 'HH:mm');
@@ -78,10 +80,12 @@ class BookAppoinment extends Component {
       });
     }
     this.setState({timeSlots: array});
+    console.log(array)
   };
   dateSelected = (date) => {
     this.setState({date});
     this.timePickerItems(date);
+    console.log(date)
   };
 
   dayNumber = (day) => {
