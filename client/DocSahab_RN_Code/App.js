@@ -10,6 +10,8 @@ import {createDrawerNavigator} from '@react-navigation/drawer';
 import {NavigationContainer} from '@react-navigation/native';
 import DashboardScreen from './src/screens/Dashboard/dashboard';
 import {Provider as AuthProvider} from './src/context/AuthContext';
+import {Provider as DashboardProvider} from './src/context/dashboardContext';
+import {Provider as MeetingProvider} from './src/context/MeetingContext';
 import {DrawerContent} from './src/screens/Drawer/DrawerContent';
 import resetPassword from './src/screens/Auth/ResetPassword';
 import {Linking} from 'react-native';
@@ -41,6 +43,7 @@ const linking = {
   prefixes: ['docsahab://'],
   config,
 };
+
 function Root({route, navigation}) {
   return (
     <Drawer.Navigator drawerContent={(props) => <DrawerContent {...props} />}>

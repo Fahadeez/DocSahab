@@ -26,7 +26,7 @@ const PaymentScreen = ({navigation, route}) => {
 const requestBody = {
   docId: docData._id,
   reason: reason,
-  date: date,
+  date: date.toString(),
   time: time,
 }
 
@@ -39,7 +39,7 @@ const config = {
 const confirmApp = () => {
   return async () => {
     try {
-      const response = await axios.post('https://doc-sahab.herokuapp.com/api/book-appointment', qs.stringify(requestBody), config);
+      const response = await axios.post('http://192.168.0.106:5000/api/book-appointment', qs.stringify(requestBody), config);
       console.log(response);
     } catch (err) {}
   };
