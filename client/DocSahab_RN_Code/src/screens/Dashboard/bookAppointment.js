@@ -122,6 +122,7 @@ class BookAppoinment extends Component {
     const whiteListDays = days.map((day) => {
       return this.dayNumber(day.value);
     });
+    console.log(whiteListDays)
     const currentDate = moment(date).format('DD/MM/YYYY');
     // if (appt_dates.includes(currentDate)) {
     //     return true

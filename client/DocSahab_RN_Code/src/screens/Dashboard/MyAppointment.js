@@ -12,6 +12,7 @@ import {SearchBar} from 'react-native-elements';
 import NavigationBtn from '../../components/navigationBtn';
 import {globalStyles} from '../../styles/globalStyles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import DocSahabApi from '../../api/DocSahabApi';
 const axios = require('axios');
 
 class MyAppointment extends Component {
@@ -22,12 +23,13 @@ class MyAppointment extends Component {
 
   componentDidMount(){
     this.fetchAppointmentDetails();
+    this.updateSearch();
   }
+
   async fetchAppointmentDetails() {
     try {
-      const response = await axios.get('http://192.168.0.106:5000/auth/current_user');
-      this.setState({userData: response})
-      console.log(response)
+      const response = await DocSahabApi.get('/auth/current_user');
+      this.setState({userData: response.data})
     } catch (err) {console.log(err)}
 
   }
@@ -92,13 +94,12 @@ class MyAppointment extends Component {
 
 
 
-
-
                     {/* Upcoming View Sub Container for my appointments */}
                     <FlatList
                           data={this.state.userData.appointments}
                           renderItem={({item}) => {
                             return (
+                              <View>
                               <View
                       style={{
                         flexDirection: 'row',
@@ -173,12 +174,6 @@ class MyAppointment extends Component {
                         </View>
                       </View>
                     </View>
-                            );
-                          }}
-                          keyExtractor={(item2) => item2.value}
-                        />
-
-                  
                     <View
                       style={{
                         borderBottomColor: 'lightgrey',
@@ -187,6 +182,15 @@ class MyAppointment extends Component {
                         marginBottom: 15,
                       }}
                     />
+                    </View>
+
+
+                            );
+                          }}
+                          keyExtractor={(item) => item.id}
+                        />
+
+            
                   </ScrollView>
 
                   {/* button */}

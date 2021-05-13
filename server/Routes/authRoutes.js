@@ -182,7 +182,7 @@ module.exports = (app) => {
     }
   });
 
-  app.get("/auth/current_user", (req, res) => {
+  app.get("/auth/current_user", async (req, res) => {
     if (req.user) {
       return res.send(req.user).status(200);
     } else {

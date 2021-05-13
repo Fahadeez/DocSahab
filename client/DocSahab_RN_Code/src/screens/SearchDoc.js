@@ -184,15 +184,21 @@ const SeachDocScreen = ({navigation}) => {
                           {item.specialization}
                         </Text>
                         <Text style={styles.caption}>{item.city}</Text>
-                        <FlatList
-                          data={item.timeSlots}
+
+
+                        <View style = {styles.timingsView}>
+                          <FlatList
+                          horizontal
+                          data={item.days}
                           renderItem={({item}) => {
                             return (
-                              <Text style={styles.caption}>{item.value}</Text>
+                                <Text style={styles.caption}>{"| " + item.value + " |"}</Text>
                             );
                           }}
                           keyExtractor={(item2) => item2.value}
+                          showsHorizontalScrollIndicator={false}
                         />
+                        </View>
 
                         {/* <TouchableOpacity>
 	                <Icon name='more-vertical' size={25} color="grey" style = {{alignSelf: 'flex-end'}}/>
@@ -208,6 +214,8 @@ const SeachDocScreen = ({navigation}) => {
               onEndReached={null}
             />
           </View>
+
+
         </ScrollView>
         <View style={{height: '30%', width: '30%'}}></View>
       </View>
@@ -246,6 +254,10 @@ const styles = StyleSheet.create({
     lineHeight: 14,
     color: 'gray',
     marginTop: 3,
+    marginRight: 10
+  },
+  timingsView: {
+    marginTop: 3
   },
   SearchbackgroundStyle: {
     height: 50,
