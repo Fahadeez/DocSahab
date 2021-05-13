@@ -164,7 +164,6 @@ const signIn = (dispatch) => {
         'userData',
         JSON.stringify(response.data.user),
       );
-      console.log(response.data.user)
 
       // save the email on signIn
       await AsyncStorage.setItem('signInData', email);

@@ -25,6 +25,8 @@ const PaymentScreen = ({navigation, route}) => {
 
 const requestBody = {
   docId: docData._id,
+  name: docData.firstName+" "+docData.lastName,
+  specialization: docData.specialization,
   reason: reason,
   date: date.toString(),
   time: time,

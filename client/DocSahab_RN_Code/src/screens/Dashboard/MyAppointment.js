@@ -5,16 +5,32 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
+  FlatList
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {SearchBar} from 'react-native-elements';
 import NavigationBtn from '../../components/navigationBtn';
 import {globalStyles} from '../../styles/globalStyles';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+const axios = require('axios');
 
 class MyAppointment extends Component {
   state = {
     search: '',
+    userData: [],
   };
+
+  componentDidMount(){
+    this.fetchAppointmentDetails();
+  }
+  async fetchAppointmentDetails() {
+    try {
+      const response = await axios.get('http://192.168.0.106:5000/auth/current_user');
+      this.setState({userData: response})
+      console.log(response)
+    } catch (err) {console.log(err)}
+
+  }
 
   updateSearch = (search) => {
     this.setState({search});
@@ -74,8 +90,16 @@ class MyAppointment extends Component {
                       <Text style={styles.SwapableViewsTitle}>Upcoming</Text>
                     </View>
 
+
+
+
+
                     {/* Upcoming View Sub Container for my appointments */}
-                    <View
+                    <FlatList
+                          data={this.state.userData.appointments}
+                          renderItem={({item}) => {
+                            return (
+                              <View
                       style={{
                         flexDirection: 'row',
                         alignItems: 'center',
@@ -91,21 +115,22 @@ class MyAppointment extends Component {
                           }}>
                           <View style={{marginBottom: '0.3%'}}>
                             <Text style={{fontSize: 12, color: 'grey'}}>
-                              18/02/2021
+                              {item.date}
+
                             </Text>
                           </View>
 
                           <View
                             style={{flexDirection: 'row', marginBottom: '3%'}}>
                             <Text style={{fontSize: 15, textAlign: 'center'}}>
-                              Dentist
+                              {item.specialization}
                             </Text>
                             <Text style={{fontSize: 15, textAlign: 'center'}}>
                               {' '}
                               -{' '}
                             </Text>
                             <Text style={{fontSize: 15, textAlign: 'center'}}>
-                              Nabeel Iqbal Siddiqui
+                              {item.name}
                             </Text>
 
                             <View
@@ -148,7 +173,12 @@ class MyAppointment extends Component {
                         </View>
                       </View>
                     </View>
+                            );
+                          }}
+                          keyExtractor={(item2) => item2.value}
+                        />
 
+                  
                     <View
                       style={{
                         borderBottomColor: 'lightgrey',

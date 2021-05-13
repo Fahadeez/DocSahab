@@ -5,6 +5,8 @@ const { Schema } = mongoose;
 const appointmentSchema = Schema({
     
     id: String,
+    name: String,
+    specialization: String,
     date: String,
     time: String,
     reason: String,

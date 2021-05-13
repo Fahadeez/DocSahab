@@ -22,7 +22,7 @@ module.exports = app => {
 
     app.post('/api/book-appointment', async (req, res) => {
         if (req.body && req.user) {
-            const { date, time, reason } = req.body;
+            const { name, specialization, date, time, reason } = req.body;
             const user = req.user;
             console.log("book-appointments",req.body)
             const dateObj = new Date(date)
@@ -50,6 +50,8 @@ module.exports = app => {
                     {
                         $push: {
                             appointments: {
+                                name,
+                                specialization,
                                 date: moment(dateObj).format('DD/MM/YYYY'),
                                 time: time,
                                 reason: reason,
