@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   StyleSheet,
@@ -20,27 +20,26 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const DashboardScreen = ({navigation}) => {
   const [data, setData] = useState([]);
   // const navigation = useNavigation();
-	useEffect(() => {
-		/* function navigate() {
+  useEffect(() => {
+    /* function navigate() {
 			navigation.navigate('Meeting')
 		}
 		navigate()*/
 
     async function setUserData() {
-        const userData = await AsyncStorage.getItem('userData');
-        JSON.parse(userData)
-        setData(JSON.parse(userData));
+      const userData = await AsyncStorage.getItem('userData');
+      JSON.parse(userData);
+      setData(JSON.parse(userData));
     }
 
     setUserData();
-
-	}, []);
+  }, []);
 
   return (
     <View style={globalStyles.containerColor}>
       <NavigationHeaderWithBar title="Dashboard" />
 
-      <View style={globalStyles.SearchbackgroundStyle}>
+      <View style={styles.SearchbackgroundStyle}>
         <Icon
           name="search"
           size={30}
@@ -55,7 +54,11 @@ const DashboardScreen = ({navigation}) => {
           <View style={styles.miniParent}>
             <TouchableOpacity
               style={styles.childBox}
-              onPress={() => navigation.navigate(data.doctor == false? 'SearchDoc' : 'MyAppointment')}>
+              onPress={() =>
+                navigation.navigate(
+                  data.doctor == false ? 'SearchDoc' : 'MyAppointment',
+                )
+              }>
               <Image
                 source={require('../../../assets/appointment.png')}
                 style={styles.childBox}
@@ -112,6 +115,16 @@ const styles = StyleSheet.create({
     height: 200,
     marginTop: '5%',
     borderRadius: 20,
+  },
+
+  SearchbackgroundStyle: {
+    marginTop: '5%',
+    height: 50,
+    width: '90%',
+    backgroundColor: 'white',
+    borderRadius: 20,
+    marginHorizontal: 22,
+    flexDirection: 'row',
   },
 });
 

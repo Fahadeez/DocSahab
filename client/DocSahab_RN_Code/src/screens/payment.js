@@ -13,8 +13,9 @@ import {globalStyles} from '../styles/globalStyles';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import RNPickerSelect from 'react-native-picker-select';
 import moment from 'moment';
-const axios = require('axios')
-const qs = require('querystring')
+const axios = require('axios');
+const qs = require('querystring');
+// const baseURL = 'http://192.168.1.105:5000';
 
 const PaymentScreen = ({navigation, route}) => {
   const [reason, setReason] = useState('');
@@ -23,38 +24,58 @@ const PaymentScreen = ({navigation, route}) => {
   const date = route.params.date;
   const time = route.params.time;
 
-const requestBody = {
-  docId: docData._id,
-  name: docData.firstName+" "+docData.lastName,
-  specialization: docData.specialization,
-  reason: reason,
-  date: date.toString(),
-  time: time,
-}
-
-const config = {
-  headers: {
-    'Content-Type': 'application/x-www-form-urlencoded'
-  }
-}
-
-const confirmApp = () => {
-  return async () => {
-    try {
-      const response = await axios.post('http://192.168.0.106:5000/api/book-appointment', qs.stringify(requestBody), config);
-      console.log(response);
-    } catch (err) {}
+  const requestBody = {
+    docId: docData._id,
+    name: docData.firstName + ' ' + docData.lastName,
+    specialization: docData.specialization,
+    reason: reason,
+    date: date.toString(),
+    time: time,
   };
-};
 
+  const config = {
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+  };
+
+  const confirmApp = () => {
+    return async () => {
+      try {
+        const response = await axios.post(
+          'http://192.168.1.105:5000/api/book-appointment',
+          qs.stringify(requestBody),
+          config,
+        );
+        console.log(response);
+      } catch (err) {}
+    };
+  };
 
   return (
     <View styles={globalStyles.containerColor}>
-      <NavigationBtn styling={globalStyles.headerNavigation} />
+      <View
+        style={{
+          backgroundColor: '#ECF1FA',
+        }}>
+        <View
+          style={{
+            marginLeft: '5%',
+          }}>
+          <NavigationBtn
+            styling={styles.headerNavigation}
+            title="Payment Details"
+          />
+        </View>
+      </View>
 
       <ScrollView style={globalStyles.scrollView}>
-        <View style={{marginTop: '15%', marginLeft: '5%'}}>
-          <View style={{flexDirection: 'row'}}>
+        <View style={{marginLeft: '5%', marginTop: '10%'}}>
+          <View
+            style={{
+              flexDirection: 'row',
+              width: '50%',
+            }}>
             <Text style={{fontWeight: 'bold'}}>Dr.</Text>
             <Text style={{fontWeight: 'bold'}}>
               {docData.firstName.toUpperCase()} {docData.lastName.toUpperCase()}
@@ -62,6 +83,7 @@ const confirmApp = () => {
             <Text
               style={{
                 opacity: 0.5,
+                textAlign: 'left',
               }}>
               {' '}
               ( Appointment Confirmation-In Process )
@@ -182,6 +204,14 @@ const styles = StyleSheet.create({
   amountText: {
     fontSize: 22,
     color: 'darkblue',
+  },
+  headerNavigation: {
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    backgroundColor: '#ECF1FA',
+    marginTop: '5%',
   },
 });
 

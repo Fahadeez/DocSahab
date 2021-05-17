@@ -21,8 +21,8 @@ import {useForm, Controller} from 'react-hook-form';
 import {Context as AuthContext} from '../../context/AuthContext';
 // testing only
 import FeedBack from '../Dashboard/FeedBack';
-import AppoinmentConfirm from '../Dashboard/AppointmentConfirm';
-import Chat from '../Dashboard/Chat';
+// import AppoinmentConfirm from '../Dashboard/AppointmentConfirm';
+// import Chat from '../Dashboard/Chat';
 import SignUpAsDoctor from '../Auth/DoctorDetails';
 import ChatRoom from '../Dashboard/chatRoom';
 
@@ -202,17 +202,17 @@ const login = (props) => {
             </TouchableOpacity>
 
             {/* for testing purposes starts */}
-            <TouchableOpacity
+            {/* <TouchableOpacity
               style={globalStyles.Button}
               onPress={() => navigation.navigate(FeedBack)}>
               <Text style={globalStyles.buttonTxt}>FeedBack</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
 
-            <TouchableOpacity
+            {/* <TouchableOpacity
               style={globalStyles.Button}
               onPress={() => navigation.navigate(SignUpAsDoctor)}>
               <Text style={globalStyles.buttonTxt}>sign up as doctor</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
 
             {/* <TouchableOpacity
               style={globalStyles.Button}
@@ -226,11 +226,11 @@ const login = (props) => {
               <Text style={globalStyles.buttonTxt}>Chat Room</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity
+            {/* <TouchableOpacity
               style={globalStyles.Button}
               onPress={() => navigation.navigate('Mart')}>
               <Text style={globalStyles.buttonTxt}>Mart</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             {/* for testing purposes ends */}
 
             <View style={{marginTop: '15%', marginBottom: '5%'}}>

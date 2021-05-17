@@ -22,7 +22,7 @@ import axios from 'axios';
 
 const record = [];
 
-const baseURL = 'http://192.168.1.103:5000';
+const baseURL = 'http://192.168.1.105:5000';
 
 class MedicalRecord extends React.Component {
   constructor(props) {
@@ -206,7 +206,10 @@ class MedicalRecord extends React.Component {
               styling={styles.headerNavigation}
             />
 
-            <View>
+            <View
+              style={{
+                marginBottom: '6%',
+              }}>
               <Text style={styles.headerTxt}>Medical Records</Text>
             </View>
 
@@ -384,13 +387,12 @@ const styles = StyleSheet.create({
     padding: 23,
   },
   headerTxt: {
-    fontSize: 20,
-    fontWeight: '100',
-    color: 'black',
+    fontSize: 26,
     marginBottom: '5%',
+    color: '#2A2AC0',
+    fontWeight: 'bold',
   },
   headerNavigation: {
-    marginTop: '5%',
     marginBottom: '5%',
     width: '100%',
     height: '5%',
