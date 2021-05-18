@@ -8,7 +8,7 @@ import {
   View,
   Button,
   TouchableOpacity,
-  PermissionsAndroid, TouchableHighlight
+  PermissionsAndroid, TouchableHighlight, Image
 } from 'react-native';
 import {
   TwilioVideoLocalView, // to get local view 
@@ -21,6 +21,9 @@ import normalize from 'react-native-normalize';
 import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import DocSahabApi from '../../../../api/DocSahabApi';
+import HeaderView from '../../../../components/headerView';
+import {globalStyles} from '../../../../styles/globalStyles';
+
 export async function GetAllPermissions() {
 // it will ask the permission for user 
 try {
@@ -115,13 +118,17 @@ this.setState({videoTracks: { ...videoTracks }})
 }
  render() {
       return (
-      <View style={styles.container} >
+      <View style={styles.containerColor} >
       {
           this.state.status === 'disconnected' &&
           <View>
-              <Text style={styles.welcome}>
-              React Native Twilio Video
-              </Text>
+              <HeaderView/>
+              <View style={globalStyles.logoView}>
+              <Image
+                source={require('../../../../../assets/docsahab.png')}
+                style={{height: 200, width: 200}}
+              />
+             </View>
               <View style={styles.spacing}>
                     <Text style={styles.inputLabel}>Room Name</Text>
                     <TextInput style={styles.inputBox}

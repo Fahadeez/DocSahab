@@ -13,6 +13,7 @@ import {globalStyles} from '../styles/globalStyles';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import RNPickerSelect from 'react-native-picker-select';
 import moment from 'moment';
+import DocSahabApi from '../api/DocSahabApi';
 const axios = require('axios')
 const qs = require('querystring')
 
@@ -41,7 +42,7 @@ const config = {
 const confirmApp = () => {
   return async () => {
     try {
-      const response = await axios.post('http://192.168.0.106:5000/api/book-appointment', qs.stringify(requestBody), config);
+      const response = await DocSahabApi.post('/api/book-appointment', qs.stringify(requestBody), config);
       console.log(response);
     } catch (err) {}
   };

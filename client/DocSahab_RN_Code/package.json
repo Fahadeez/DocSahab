@@ -15,6 +15,7 @@
     "test": "jest",
     "lint": "eslint .",
     "postinstall": "node_modules/.bin/rn-nodeify --install crypto,fs --hack"
+    
   },
   "dependencies": {
     "@freakycoder/react-native-bounceable": "^0.2.4",

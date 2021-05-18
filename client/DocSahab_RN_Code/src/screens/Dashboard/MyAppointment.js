@@ -13,6 +13,7 @@ import NavigationBtn from '../../components/navigationBtn';
 import {globalStyles} from '../../styles/globalStyles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DocSahabApi from '../../api/DocSahabApi';
+
 const axios = require('axios');
 
 class MyAppointment extends Component {
@@ -99,7 +100,8 @@ class MyAppointment extends Component {
                           data={this.state.userData.appointments}
                           renderItem={({item}) => {
                             return (
-                              <View>
+                              <TouchableOpacity onPress = {() => this.props.navigation.navigate('Meeting')}>
+                                <View>
                               <View
                       style={{
                         flexDirection: 'row',
@@ -183,8 +185,7 @@ class MyAppointment extends Component {
                       }}
                     />
                     </View>
-
-
+                              </TouchableOpacity>
                             );
                           }}
                           keyExtractor={(item) => item.id}

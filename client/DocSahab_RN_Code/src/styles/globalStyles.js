@@ -104,6 +104,7 @@ export const globalStyles = StyleSheet.create({
   },
   logoView: {
     marginBottom: '5%',
+    alignSelf: 'center'
   },
   headerNavigation: {
     marginTop: '8%',
