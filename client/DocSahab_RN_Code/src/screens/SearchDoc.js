@@ -57,10 +57,10 @@ const SeachDocScreen = ({navigation}) => {
       <NavigationBtn
         screenName="DashboardScreen"
         title="Book an appointment"
-        styling={globalStyles.headerNavigation}
+        styling={styles.headerNavigation}
       />
 
-      <View style={{marginTop: '15%'}}>
+      <View style={{marginTop: '12%'}}>
         <ScrollView>
           <View style={globalStyles.container}>
             <View style={styles.SearchbackgroundStyle}>
@@ -160,7 +160,8 @@ const SeachDocScreen = ({navigation}) => {
                     <View style={{flexDirection: 'row', marginTop: 15}}>
                       <Image
                         source={{
-                          uri: 'http://www.pngall.com/wp-content/uploads/5/User-Profile-PNG.png',
+                          uri:
+                            'http://www.pngall.com/wp-content/uploads/5/User-Profile-PNG.png',
                         }}
                         style={{width: 80, height: 80, borderRadius: 15}}
                       />
@@ -266,6 +267,15 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     marginHorizontal: 22,
     flexDirection: 'row',
+  },
+  headerNavigation: {
+    marginTop: '8%',
+    width: '100%',
+    height: '10%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    marginLeft: '5%',
   },
 });
 

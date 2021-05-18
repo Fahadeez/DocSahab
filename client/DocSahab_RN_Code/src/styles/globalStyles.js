@@ -109,11 +109,13 @@ export const globalStyles = StyleSheet.create({
   headerNavigation: {
     marginTop: '8%',
     width: '100%',
-    height: '5%',
+    // height: '5%',
+    // height: '10%',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-start',
     marginLeft: '5%',
+    // backgroundColor: '#ECF1FA',
   },
   checkboxContainer: {
     flexDirection: 'row',
@@ -150,7 +152,7 @@ export const globalStyles = StyleSheet.create({
   inputLabel: {
     width: '90%',
     backgroundColor: '#ECF1FA',
-    height: 40,
+    height: 50,
     marginBottom: 5,
     padding: 15,
   },

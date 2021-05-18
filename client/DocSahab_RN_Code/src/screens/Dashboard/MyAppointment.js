@@ -5,7 +5,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
-  FlatList
+  FlatList,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {SearchBar} from 'react-native-elements';
@@ -13,7 +13,6 @@ import NavigationBtn from '../../components/navigationBtn';
 import {globalStyles} from '../../styles/globalStyles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DocSahabApi from '../../api/DocSahabApi';
-
 const axios = require('axios');
 
 class MyAppointment extends Component {
@@ -22,7 +21,7 @@ class MyAppointment extends Component {
     userData: [],
   };
 
-  componentDidMount(){
+  componentDidMount() {
     this.fetchAppointmentDetails();
     this.updateSearch();
   }
@@ -30,9 +29,10 @@ class MyAppointment extends Component {
   async fetchAppointmentDetails() {
     try {
       const response = await DocSahabApi.get('/auth/current_user');
-      this.setState({userData: response.data})
-    } catch (err) {console.log(err)}
-
+      this.setState({userData: response.data});
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   updateSearch = (search) => {
@@ -93,105 +93,117 @@ class MyAppointment extends Component {
                       <Text style={styles.SwapableViewsTitle}>Upcoming</Text>
                     </View>
 
-
-
                     {/* Upcoming View Sub Container for my appointments */}
                     <FlatList
-                          data={this.state.userData.appointments}
-                          renderItem={({item}) => {
-                            return (
-                              <TouchableOpacity onPress = {() => this.props.navigation.navigate('Meeting')}>
-                                <View>
-                              <View
-                      style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                      }}>
-                      <View
-                        style={{
-                          flexDirection: 'row',
-                          width: '70%',
-                        }}>
-                        <View
-                          style={{
-                            flexDirection: 'column',
-                          }}>
-                          <View style={{marginBottom: '0.3%'}}>
-                            <Text style={{fontSize: 12, color: 'grey'}}>
-                              {item.date}
-
-                            </Text>
-                          </View>
-
-                          <View
-                            style={{flexDirection: 'row', marginBottom: '3%'}}>
-                            <Text style={{fontSize: 15, textAlign: 'center'}}>
-                              {item.specialization}
-                            </Text>
-                            <Text style={{fontSize: 15, textAlign: 'center'}}>
-                              {' '}
-                              -{' '}
-                            </Text>
-                            <Text style={{fontSize: 15, textAlign: 'center'}}>
-                              {item.name}
-                            </Text>
-
+                      data={this.state.userData.appointments}
+                      renderItem={({item}) => {
+                        return (
+                          <View>
                             <View
                               style={{
-                                marginStart: '3%',
-                                justifyContent: 'center',
+                                flexDirection: 'row',
+                                alignItems: 'center',
                               }}>
-                              <Icon
-                                name={'info-circle'}
-                                size={16}
-                                color="#2A2AC0"
-                              />
-                            </View>
-                          </View>
-                        </View>
-                      </View>
-
-                      <View
-                        style={{
-                          flexDirection: 'row',
-                          justifyContent: 'flex-end',
-                          width: '30%',
-                        }}>
-                        <View style={{marginEnd: '3%'}}>
-                          <Icon name={'pencil'} size={20} color="#2A2AC0" />
-                        </View>
-                        <View>
-                          <TouchableOpacity>
-                            <View>
-                              <Text
+                              <View
                                 style={{
-                                  color: '#2A2AC0',
-                                  fontSize: 16,
-                                  fontWeight: '500',
+                                  flexDirection: 'row',
+                                  width: '70%',
                                 }}>
-                                Modify
-                              </Text>
-                            </View>
-                          </TouchableOpacity>
-                        </View>
-                      </View>
-                    </View>
-                    <View
-                      style={{
-                        borderBottomColor: 'lightgrey',
-                        borderBottomWidth: 1,
-                        marginTop: 15,
-                        marginBottom: 15,
-                      }}
-                    />
-                    </View>
-                              </TouchableOpacity>
-                            );
-                          }}
-                          keyExtractor={(item) => item.id}
-                        />
+                                <View
+                                  style={{
+                                    flexDirection: 'column',
+                                  }}>
+                                  <View style={{marginBottom: '0.3%'}}>
+                                    <Text style={{fontSize: 12, color: 'grey'}}>
+                                      {item.date}
+                                    </Text>
+                                  </View>
 
-            
+                                  <View
+                                    style={{
+                                      flexDirection: 'row',
+                                      marginBottom: '3%',
+                                    }}>
+                                    <Text
+                                      style={{
+                                        fontSize: 15,
+                                        textAlign: 'center',
+                                      }}>
+                                      {item.specialization}
+                                    </Text>
+                                    <Text
+                                      style={{
+                                        fontSize: 15,
+                                        textAlign: 'center',
+                                      }}>
+                                      {' '}
+                                      -{' '}
+                                    </Text>
+                                    <Text
+                                      style={{
+                                        fontSize: 15,
+                                        textAlign: 'center',
+                                      }}>
+                                      {item.name}
+                                    </Text>
+
+                                    <View
+                                      style={{
+                                        marginStart: '3%',
+                                        justifyContent: 'center',
+                                      }}>
+                                      <Icon
+                                        name={'info-circle'}
+                                        size={16}
+                                        color="#2A2AC0"
+                                      />
+                                    </View>
+                                  </View>
+                                </View>
+                              </View>
+
+                              <View
+                                style={{
+                                  flexDirection: 'row',
+                                  justifyContent: 'flex-end',
+                                  width: '30%',
+                                }}>
+                                <View style={{marginEnd: '3%'}}>
+                                  <Icon
+                                    name={'pencil'}
+                                    size={20}
+                                    color="#2A2AC0"
+                                  />
+                                </View>
+                                <View>
+                                  <TouchableOpacity>
+                                    <View>
+                                      <Text
+                                        style={{
+                                          color: '#2A2AC0',
+                                          fontSize: 16,
+                                          fontWeight: '500',
+                                        }}>
+                                        Modify
+                                      </Text>
+                                    </View>
+                                  </TouchableOpacity>
+                                </View>
+                              </View>
+                            </View>
+                            <View
+                              style={{
+                                borderBottomColor: 'lightgrey',
+                                borderBottomWidth: 1,
+                                marginTop: 15,
+                                marginBottom: 15,
+                              }}
+                            />
+                          </View>
+                        );
+                      }}
+                      keyExtractor={(item) => item.id}
+                    />
                   </ScrollView>
 
                   {/* button */}
