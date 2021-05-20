@@ -116,19 +116,18 @@ const videoTracks = this.state.videoTracks
   videoTracks.delete(track.trackSid)
 this.setState({videoTracks: { ...videoTracks }})
 }
- render() {
+render() {
       return (
-      <View style={styles.containerColor} >
+      <View style={globalStyles.container} >
       {
           this.state.status === 'disconnected' &&
           <View>
-              <HeaderView/>
               <View style={globalStyles.logoView}>
               <Image
                 source={require('../../../../../assets/docsahab.png')}
                 style={{height: 200, width: 200}}
               />
-             </View>
+            </View>
               <View style={styles.spacing}>
                     <Text style={styles.inputLabel}>Room Name</Text>
                     <TextInput style={styles.inputBox}

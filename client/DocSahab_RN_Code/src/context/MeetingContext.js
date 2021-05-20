@@ -5,7 +5,7 @@ import {useNavigation} from '@react-navigation/native';
 import {ToastAndroid} from 'react-native';
 import IO from 'socket.io-client';
 
-const API_URI = 'http://192.168.1.105:5000';
+const API_URI = 'https://doc-sahab.herokuapp.com';
 // export const API_URI = 'https://doc-sahab.herokuapp.com';
 
 const meetingReducer = (state, action) => {

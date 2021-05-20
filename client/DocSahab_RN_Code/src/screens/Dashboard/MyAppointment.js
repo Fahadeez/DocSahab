@@ -29,6 +29,7 @@ class MyAppointment extends Component {
   async fetchAppointmentDetails() {
     try {
       const response = await DocSahabApi.get('/auth/current_user');
+      console.log(response);
       this.setState({userData: response.data});
     } catch (err) {
       console.log(err);
@@ -98,6 +99,7 @@ class MyAppointment extends Component {
                       data={this.state.userData.appointments}
                       renderItem={({item}) => {
                         return (
+                          <TouchableOpacity onPress = {() => this.props.navigation.navigate('Meeting')}>
                           <View>
                             <View
                               style={{
@@ -200,6 +202,7 @@ class MyAppointment extends Component {
                               }}
                             />
                           </View>
+                          </TouchableOpacity>
                         );
                       }}
                       keyExtractor={(item) => item.id}

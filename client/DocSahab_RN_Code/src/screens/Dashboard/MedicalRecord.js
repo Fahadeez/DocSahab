@@ -12,7 +12,7 @@ import NavigationBtn from '../../components/navigationBtn';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import DashboardScreen from '../Dashboard/dashboard';
 import DocumentPicker from 'react-native-document-picker';
-import axios from 'axios';
+import DocSahabApi from '../../api/DocSahabApi';
 
 // const config = {
 //     headers: {
@@ -22,7 +22,7 @@ import axios from 'axios';
 
 const record = [];
 
-const baseURL = 'http://192.168.1.105:5000';
+const baseURL = 'http://192.168.0.106:5000';
 
 class MedicalRecord extends React.Component {
   constructor(props) {
@@ -67,9 +67,9 @@ class MedicalRecord extends React.Component {
       const data = new FormData();
       data.append('file', recordToUpload);
 
-      let res = await axios.post(
+      let res = await DocSahabApi.post(
         // 'http://192.168.0.105:5000/api/upload-report',data,{
-        baseURL + '/api/upload-report',
+        '/api/upload-report',
         data,
         {
           headers: {
@@ -86,7 +86,7 @@ class MedicalRecord extends React.Component {
   };
 
   getAllRecords = () => {
-    fetch(baseURL + '/api/get-all-reports')
+    fetch(baseURL+'/api/get-all-reports')
       .then((record) => record.json())
       .then((recordJson) => {
         this.setState({
@@ -176,7 +176,7 @@ class MedicalRecord extends React.Component {
 
   deleteRecord = async (record) => {
     try {
-      record = await axios.post(baseURL + '/api/delete-report');
+      record = await DocSahabApi.post('/api/delete-report');
       if (record.status === 200) {
         ToastAndroid.show('Record deleted successfully', ToastAndroid.LONG);
       } else {
