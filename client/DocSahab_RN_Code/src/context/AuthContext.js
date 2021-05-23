@@ -29,6 +29,7 @@ const fetchUser = (dispatch) => {
   return async () => {
     try {
       const response = await DocSahabApi.get('/auth/current_user');
+      console.log("Current User",response.data)
       dispatch({type: 'fetch_user', payload: response.data});
     } catch (err) {}
   };

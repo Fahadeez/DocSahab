@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import {
   View,
   StyleSheet,
@@ -10,22 +10,22 @@ import {
 } from 'react-native';
 import HeaderView from '../../components/headerView';
 import NavigationHeaderWithBar from '../../components/navigationHeaderWithBar';
-import {globalStyles} from '../../styles/globalStyles';
+import { globalStyles } from '../../styles/globalStyles';
 import Icon from 'react-native-vector-icons/Feather';
 import DocSahabApi from '../../api/DocSahabApi';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Context as AuthContext } from '../../context/AuthContext';
+
 // import SearchDocScreen from '../SearchDoc';
 // import MedicalRecord from './MedicalRecord';
 
-const DashboardScreen = ({navigation}) => {
+const DashboardScreen = ({ navigation }) => {
+  const { state, fetchUser } = useContext(AuthContext);
+
   const [data, setData] = useState([]);
   // const navigation = useNavigation();
   useEffect(() => {
-    /* function navigate() {
-			navigation.navigate('Meeting')
-		}
-		navigate()*/
-
+    fetchUser()
     async function setUserData() {
       const userData = await AsyncStorage.getItem('userData');
       JSON.parse(userData);
@@ -49,7 +49,7 @@ const DashboardScreen = ({navigation}) => {
         <TextInput placeholder="Search" style={globalStyles.searchBar} />
       </View>
 
-      <ScrollView style={{marginTop: '6%'}}>
+      <ScrollView style={{ marginTop: '6%' }}>
         <View style={styles.parentBox}>
           <View style={styles.miniParent}>
             <TouchableOpacity

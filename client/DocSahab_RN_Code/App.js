@@ -26,8 +26,7 @@ import Chat from './src/screens/Dashboard/Chat';
 import MyAppointment from './src/screens/Dashboard/MyAppointment';
 import PaymentScreen from './src/screens/payment';
 import MartScreen from './src/screens/Mart/Mart';
-import Meeting from './src/screens/Dashboard/VIDEO_SCREEN/Meeting';
-import VideoScreen from './src/screens/Dashboard/VIDEO_SCREEN/VideoScreen';
+import VideoScreen from './src/screens/Dashboard/VIDEO_SCREEN/Meeting';
 import ChatRoom from './src/screens/Dashboard/chatRoom';
 
 const Stack = createStackNavigator();

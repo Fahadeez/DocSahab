@@ -7,14 +7,17 @@ import {
   TextInput,
   ScrollView,
   TouchableOpacity,
+  ToastAndroid
 } from 'react-native';
 import NavigationBtn from '../components/navigationBtn';
 import {globalStyles} from '../styles/globalStyles';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import RNPickerSelect from 'react-native-picker-select';
 import moment from 'moment';
+import DocSahabApi from '../api/DocSahabApi'
 const axios = require('axios');
 const qs = require('querystring');
+
 // const baseURL = 'http://192.168.1.105:5000';
 
 const PaymentScreen = ({navigation, route}) => {
@@ -39,17 +42,17 @@ const PaymentScreen = ({navigation, route}) => {
     },
   };
 
-  const confirmApp = () => {
-    return async () => {
-      try {
-        const response = await axios.post(
-          'http://192.168.1.105:5000/api/book-appointment',
-          qs.stringify(requestBody),
-          config,
-        );
-        console.log(response);
-      } catch (err) {}
-    };
+  const confirmApp = async () => {
+    const res = await DocSahabApi.post("/api/book-appointment",requestBody)
+    if(res.status === 200){
+      ToastAndroid.show("Appointment confirmed",ToastAndroid.LONG);
+      navigation.navigate('root')
+    }
+    else{
+      ToastAndroid.show("Error, Please try again",ToastAndroid.LONG);
+
+    }
+    
   };
 
   return (
@@ -168,7 +171,7 @@ const PaymentScreen = ({navigation, route}) => {
           </View>
           <TouchableOpacity
             style={globalStyles.modifiedBtn}
-            onPress={confirmApp()}>
+            onPress={confirmApp}>
             <Text style={globalStyles.buttonTxt}>Pay Now</Text>
           </TouchableOpacity>
 

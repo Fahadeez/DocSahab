@@ -6,6 +6,9 @@ const admin = require('firebase-admin');
 // const stream = require('stream');
 // const jwt = require('jsonwebtoken');
 const moment = require('moment')
+const nodemailer = require("nodemailer");
+const keys = require("../Config/keys");
+
 const User = mongoose.model('users');
 const Doctor = mongoose.model('doctors');
 
@@ -22,47 +25,78 @@ module.exports = app => {
 
     app.post('/api/book-appointment', async (req, res) => {
         if (req.body && req.user) {
-            const { name, specialization, date, time, reason } = req.body;
-            const user = req.user;
-            console.log("book-appointments",req.body)
+            const { name, specialization, date, time, reason, docId } = req.body;
+            console.log("book-appointments", req.body)
             const dateObj = new Date(date)
-            if(user.doctor){
-                const doctor = await Doctor.findByIdAndUpdate(
-                    { _id: req.user._id },
-                    {
-                        $push: {
-                            appointments: {
-                                date: moment(dateObj).format('DD/MM/YYYY'),
-                                time: time,
-                                reason: reason,
-                                // fees: '1000'
-                            },
+            const doctor = await Doctor.findByIdAndUpdate(
+                { _id: docId },
+                {
+                    $push: {
+                        appointments: {
+                            date: moment(dateObj).format('DD/MM/YYYY'),
+                            time: time,
+                            reason: reason,
+                            fees: '1000'
                         },
-                    }
-                )
-                doctor.save();
-                res.send('Appoitment confirmed').status(200);
-            }
-            else{
-                const dateObj = new Date(date)
-                const user = await User.findByIdAndUpdate(
-                    { _id: req.user._id },
-                    {
-                        $push: {
-                            appointments: {
-                                name,
-                                specialization,
-                                date: moment(dateObj).format('DD/MM/YYYY'),
-                                time: time,
-                                reason: reason,
-                                // fees: '1000'
-    
-                            },
+                    },
+                }
+            )
+            doctor.save();
+            const user = await User.findByIdAndUpdate(
+                { _id: req.user._id },
+                {
+                    $push: {
+                        appointments: {
+                            name,
+                            specialization,
+                            date: moment(dateObj).format('DD/MM/YYYY'),
+                            time: time,
+                            reason: reason,
+                            fees: '1000'
+
                         },
+                    },
+                }
+            )
+            user.save();
+            let meetingID = Math.random().toString(36).substring(2);
+
+            const transporter = nodemailer.createTransport({
+                service: 'gmail',
+                auth: {
+                    user: 'no.repy.docSahab@gmail.com',
+                    pass: keys.gmailPass,
+                },
+            });
+            const mailOptions = {
+                from: 'no.repy.docSahab@gmail.com',
+                to: `${req.user.email},${doctor.email}`,
+                subject: 'Appointment confirmation',
+                html: `<div> 
+                <h4>Your appointment has been scheduled on Doc Sahab, Following are your appointment details,</h4>
+                <h2>Appointment details</h2>
+                      <h3>Doctor: ${name}</h3>
+                      <h3>Specialization: ${specialization}</h3>
+                      <h3>Reason: ${reason}</h3>
+                      <h3>Date: ${date}</h3>
+                      <h3>Time: ${time} </h3>
+                      <h3>Meeting room ID: ${meetingID}</h3></div>`,
+
+            };
+
+            console.log('sending mail');
+            try {
+                transporter.sendMail(mailOptions, (err, response) => {
+                    if (err) {
+                        console.log('there was an error: ', err);
+                        return res.json({ Error: 'There was an error!' }).status(400);
+                    } else {
+                        res.send('Appointment confirmed, Email sent').status(200);
+
                     }
-                )
-                user.save();
-                res.send('Appoitment confirmed').status(200);
+                });
+            } catch (err) {
+                console.log(err);
             }
         }
 
