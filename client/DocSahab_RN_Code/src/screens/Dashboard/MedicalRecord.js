@@ -7,6 +7,7 @@ import {
   ScrollView,
   ToastAndroid,
   FlatList,
+  Linking,
 } from 'react-native';
 import NavigationBtn from '../../components/navigationBtn';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -22,7 +23,7 @@ import DocSahabApi from '../../api/DocSahabApi';
 
 const record = [];
 
-const baseURL = 'http://192.168.0.106:5000';
+const baseURL = 'http://192.168.1.105:5000';
 
 class MedicalRecord extends React.Component {
   constructor(props) {
@@ -86,7 +87,7 @@ class MedicalRecord extends React.Component {
   };
 
   getAllRecords = () => {
-    fetch(baseURL+'/api/get-all-reports')
+    fetch(baseURL + '/api/get-all-reports')
       .then((record) => record.json())
       .then((recordJson) => {
         this.setState({
@@ -141,20 +142,15 @@ class MedicalRecord extends React.Component {
               justifyContent: 'flex-end',
               width: '30%',
             }}>
-            {/* <View style={{ marginEnd: '5%' }}>
-                        <TouchableOpacity
-                            onPress={ 
-                                () => { 
-                                    console.log('download')
-                            }}
-                        >
-                            <Icon
-                                name={"arrow-circle-down"}
-                                size={22}
-                                color="#2A2AC0"
-                            />
-                        </TouchableOpacity>
-                    </View> */}
+            <View style={{marginEnd: '5%'}}>
+              <TouchableOpacity
+                onPress={() => {
+                  // console.log('download');
+                  Linking.openURL(record.item.mediaLink);
+                }}>
+                <Icon name={'arrow-circle-down'} size={22} color="#2A2AC0" />
+              </TouchableOpacity>
+            </View>
 
             <View>
               <TouchableOpacity
