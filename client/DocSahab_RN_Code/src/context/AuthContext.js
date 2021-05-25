@@ -5,6 +5,10 @@ import {useNavigation} from '@react-navigation/native';
 import {ToastAndroid} from 'react-native';
 import * as RootNavigation from '../RootNavigation.js';
 import uuid from 'react-native-uuid';
+import axios from 'axios';
+
+
+axios.defaults.withCredentials = true;
 
 const authReducer = (state, action) => {
   switch (action.type) {
@@ -25,13 +29,24 @@ const authReducer = (state, action) => {
   }
 };
 
+const config = {
+	headers: {
+    Accept: "application/json",
+    "Content-Type": "application/json",
+    'Access-Control-Allow-Origin': '*'
+	},
+	withCredentials: true,
+};
+
 const fetchUser = (dispatch) => {
   return async () => {
     try {
-      const response = await DocSahabApi.get('/auth/current_user');
+      const response = await axios.get('http://192.168.10.8:5000/auth/current_user',config);
       console.log("Current User",response.data)
       dispatch({type: 'fetch_user', payload: response.data});
-    } catch (err) {}
+    } catch (err) {
+      console.log(err)
+    }
   };
 };
 

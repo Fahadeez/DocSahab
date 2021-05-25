@@ -62,10 +62,10 @@ const login = (props) => {
 
   useEffect(() => {
     //Just for testing logout,
-    // async function logout() {
-    //     await DocSahabApi.get('auth/logout')
-    //     await AsyncStorage.removeItem('token')
-    // }
+    async function logout() {
+        await DocSahabApi.get('/auth/logout')
+        await AsyncStorage.removeItem('token')
+    }
     function navigate() {
       navigation.navigate('doctordetails');
     }

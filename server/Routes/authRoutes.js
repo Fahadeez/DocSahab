@@ -101,6 +101,7 @@ module.exports = (app) => {
   });
 
   app.post("/auth/signup", function (req, res, next) {
+    console.log("/auth/signup",req.body)
     const d = Date();
     let date = d.toString();
     let body = req.body,
@@ -186,7 +187,7 @@ module.exports = (app) => {
     if (req.user) {
       return res.send(req.user).status(200);
     } else {
-      res.send("No user logged in").status(404);
+      return res.send("No user logged in").status(404);
     }
   });
 
@@ -232,6 +233,7 @@ module.exports = (app) => {
                     startCheckupTime: moment(startTime).toDate(),
                     endCheckupTime: moment(endTime).toDate(),
                     yearsOfExp,
+                    doctor: true
                   }
                 );
                 doctor.save();

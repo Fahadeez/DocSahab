@@ -8,16 +8,20 @@ const User = mongoose.model('users');
 const Doctor = mongoose.model('doctors');
 
 passport.serializeUser((user, done) => {
-  done(null, user);
+  console.log("serialize user");
+  done(null, {id: user.id,doctor: user.doctor});
 });
-passport.deserializeUser((user, done) => {
-  if (user.doctor) {
-    Doctor.findById(user._id).then(user => {
+passport.deserializeUser((data, done) => {
+  console.log("deserialize ",data);
+  if (data.doctor === true) {
+    console.log("doctor deserialize")
+    Doctor.findById(data.id).then(user => {
       done(null, user);
     })
   }
   else {
-    User.findById(user._id).then(user => {
+    console.log("user deserialize")
+    User.findById(data.id).then(user => {
       done(null, user);
     });
   }

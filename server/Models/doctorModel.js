@@ -2,7 +2,9 @@ const mongoose = require('mongoose');
 var bcrypt = require('bcrypt');
 const likedProfileSchema = require('./likedProfiles');
 const ratedBySchema = require('./ratedBy')
-const appointmentSchema = require('./appointmentModel')
+const appointmentSchema = require('./appointmentModel');
+const patientSchema = require('./patientsModel');
+
 const { Schema } = mongoose;
 
 const doctorSchema = new Schema({
@@ -12,7 +14,7 @@ const doctorSchema = new Schema({
     email: String,
     password: String,
     confirmPassword: String,
-    role: String,
+    doctor: Boolean,
     country: String,
     city: String,
     bio: String,
@@ -22,7 +24,7 @@ const doctorSchema = new Schema({
     timeSlots: Array,
     startCheckupTime: String,
     endCheckupTime: String,
-    appointments:[appointmentSchema],
+    appointments: [appointmentSchema],
     contact: String,
     imgUrl: String,
     qualification: String,
@@ -30,6 +32,7 @@ const doctorSchema = new Schema({
     profilePic: String,
     stars: Number,
     rating: Number,
+    patients: [patientSchema],
     noOfReviews: { type: Number, default: 0 },
     resetPasswordToken: String,
     resetPasswordExpires: Date,

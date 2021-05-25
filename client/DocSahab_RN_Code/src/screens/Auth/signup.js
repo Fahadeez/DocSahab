@@ -273,9 +273,9 @@ const signup = () => {
                         thumbColor={doctor ? '#2A2AC0' : '#f4f3f4'}
                         onValueChange={(value) => {
                           setDoctor(value);
-                          props.values.doctor = doctor;
+                          props.values.doctor = value;
                         }}
-                        value={(props.values.doctor = doctor)}
+                        value={(props.values.doctor)}
                       />
                     </View>
 

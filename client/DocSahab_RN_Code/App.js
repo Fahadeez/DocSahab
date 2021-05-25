@@ -1,21 +1,21 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import 'react-native-gesture-handler';
 import login from './src/screens/Auth/login';
 import signup from './src/screens/Auth/signup';
 import doctordetails from './src/screens/Auth/DoctorDetails';
 import forgetpassword from './src/screens/Auth/ForgetPassword';
 import SearchDocScreen from './src/screens/SearchDoc';
-import {createStackNavigator} from '@react-navigation/stack';
-import {createDrawerNavigator} from '@react-navigation/drawer';
-import {NavigationContainer} from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import { NavigationContainer } from '@react-navigation/native';
 import DashboardScreen from './src/screens/Dashboard/dashboard';
-import {Provider as AuthProvider} from './src/context/AuthContext';
-import {Provider as DashboardProvider} from './src/context/dashboardContext';
-import {Provider as MeetingProvider} from './src/context/MeetingContext';
-import {DrawerContent} from './src/screens/Drawer/DrawerContent';
+import { Provider as AuthProvider } from './src/context/AuthContext';
+import { Provider as DashboardProvider } from './src/context/dashboardContext';
+import { Provider as MeetingProvider } from './src/context/MeetingContext';
+import { DrawerContent } from './src/screens/Drawer/DrawerContent';
 import resetPassword from './src/screens/Auth/ResetPassword';
-import {Linking} from 'react-native';
-import {navigationRef} from './src/RootNavigation';
+import { Linking } from 'react-native';
+import { navigationRef } from './src/RootNavigation';
 import Verifyemail from './src/screens/Auth/VerifyEmail';
 import BookAppoinment from './src/screens/Dashboard/bookAppointment';
 import FeedBack from './src/screens/Dashboard/FeedBack';
@@ -28,6 +28,7 @@ import PaymentScreen from './src/screens/payment';
 import MartScreen from './src/screens/Mart/Mart';
 import VideoScreen from './src/screens/Dashboard/VIDEO_SCREEN/Meeting';
 import ChatRoom from './src/screens/Dashboard/chatRoom';
+import PatientHistory from './src/screens/Dashboard/PatientHistory';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -43,7 +44,7 @@ const linking = {
   config,
 };
 
-function Root({route, navigation}) {
+function Root({ route, navigation }) {
   return (
     <Drawer.Navigator drawerContent={(props) => <DrawerContent {...props} />}>
       <Drawer.Screen
@@ -96,6 +97,13 @@ function Root({route, navigation}) {
         }}
         name="Mart"
         component={MartScreen}
+      />
+      <Drawer.Screen
+        options={{
+          headerShown: null,
+        }}
+        name="patientHistory"
+        component={PatientHistory}
       />
     </Drawer.Navigator>
   );
@@ -220,7 +228,7 @@ function Auth() {
 
         {/* testing purpose */}
         <Stack.Screen
-          options={{headerShown: null}}
+          options={{ headerShown: null }}
           name="ChatRoom"
           component={ChatRoom}
         />

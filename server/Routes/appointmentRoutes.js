@@ -29,7 +29,10 @@ module.exports = app => {
             console.log("book-appointments", req.body)
             const dateObj = new Date(date)
             const doctor = await Doctor.findByIdAndUpdate(
-                { _id: docId },
+                {
+                    _id: docId
+
+                },
                 {
                     $push: {
                         appointments: {
@@ -38,10 +41,29 @@ module.exports = app => {
                             reason: reason,
                             fees: '1000'
                         },
-                    },
+                    }
+
                 }
             )
             doctor.save();
+            const doctor2 = await Doctor.findByIdAndUpdate({
+                _id: docId,
+                'patients.patientID': { $ne: req.user._id }
+            }, {
+                $addToSet: {
+                    patients: {
+                        patientID: req.user._id,
+                        patientName: req.user.firstName + " " + req.user.lastName
+                    }
+                }
+            }, {
+                upsert: true,
+                multi: true,
+                new: true
+            })
+
+            doctor2.save()
+
             const user = await User.findByIdAndUpdate(
                 { _id: req.user._id },
                 {
@@ -80,7 +102,10 @@ module.exports = app => {
                       <h3>Reason: ${reason}</h3>
                       <h3>Date: ${date}</h3>
                       <h3>Time: ${time} </h3>
-                      <h3>Meeting room ID: ${meetingID}</h3></div>`,
+                      <h3>Meeting room ID: ${meetingID}</h3>
+                      <br>
+                      <b>Note: Please join the meeting on provided date and time via meeting id </b>
+                      </div>`,
 
             };
 
@@ -99,8 +124,24 @@ module.exports = app => {
                 console.log(err);
             }
         }
+    });
+
+    app.get("/api/get-all-patients", async (req, res) => {
+        if (req.user) {
+            if (req.user.patients) {
+                const patients = req.user.patients
+                return res.send(patients).status(200)
+            }
+            else {
+                return res.send("No patient available yet").status(400)
+            }
+        }
+        else {
+            return res.send("User not logged in").status(500)
+        }
 
     });
+
 
     // app.get('/api/doctor/:id', async (req, res) => {
     //     const id = req.params.id;

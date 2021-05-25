@@ -24,8 +24,9 @@ const DashboardScreen = ({ navigation }) => {
 
   const [data, setData] = useState([]);
   // const navigation = useNavigation();
+  
   useEffect(() => {
-    fetchUser()
+    fetchUser();
     async function setUserData() {
       const userData = await AsyncStorage.getItem('userData');
       JSON.parse(userData);

@@ -1,4 +1,4 @@
-import React, { useContext,useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { View, StyleSheet } from 'react-native';
 import {
     useTheme,
@@ -16,7 +16,7 @@ import {
     DrawerItem
 } from '@react-navigation/drawer';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {globalStyles} from '../../styles/globalStyles';
+import { globalStyles } from '../../styles/globalStyles';
 import { Context as AuthContext } from '../../context/AuthContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -25,35 +25,35 @@ export function DrawerContent(props) {
     const [data, setData] = useState([]);
 
 
-    function navigate(){
+    function navigate() {
         props.navigation.navigate('login')
     }
 
 
     useEffect(() => {
-       async function setUserData() {
+        async function setUserData() {
             const userData = await AsyncStorage.getItem('userData');
             console.log(userData)
             setData(JSON.parse(userData));
-    }
+        }
 
-    setUserData();
+        setUserData();
 
     }, []);
 
-    return(
+    return (
         <View style={styles.drawerContent}>
             <DrawerContentScrollView {...props}>
                 <View style={styles.drawerContent}>
                     <View style={styles.userInfoSection}>
-                        <View style={{flexDirection:'row',marginTop: 15}}>
-                            <Avatar.Image 
+                        <View style={{ flexDirection: 'row', marginTop: 15 }}>
+                            <Avatar.Image
                                 source={{
                                     uri: 'http://www.pngall.com/wp-content/uploads/5/User-Profile-PNG.png'
                                 }}
                                 size={60}
                             />
-                            <View style={{marginLeft:15, flexDirection:'column'}}>
+                            <View style={{ marginLeft: 15, flexDirection: 'column' }}>
                                 <Title style={styles.title}>{data.firstName + " " + data.lastName}</Title>
                                 <Caption style={styles.caption}>{data.doctor == false ? 'User' : 'Doctor'}</Caption>
                             </View>
@@ -65,101 +65,111 @@ export function DrawerContent(props) {
                     <Drawer.Section style={styles.drawerSection}>
 
                         <DrawerItem
-                            icon={({color, size}) => (
-                                <Icon 
-                                name="calendar-clock" 
-                                color={'#2A2AC0'}
-                                size={size}
+                            icon={({ color, size }) => (
+                                <Icon
+                                    name="calendar-clock"
+                                    color={'#2A2AC0'}
+                                    size={size}
                                 />
                             )}
                             label="My Appointments"
-                            onPress={() => {props.navigation.navigate('MyAppointment')}}
+                            onPress={() => { props.navigation.navigate('MyAppointment') }}
                         />
 
-                        {   data.doctor == false?
-                            <DrawerItem 
-                            icon={({color, size}) => (
-                                <Icon 
-                                name="heart-plus-outline" 
-                                color={'#2A2AC0'}
-                                size={size}
-                                />
-                            )}
-                            label="New Appointment"
-                            onPress={() => {props.navigation.navigate('SearchDoc')}}
-                        />
-                        : null
+                        {data.doctor === false ?
+                            <DrawerItem
+                                icon={({ color, size }) => (
+                                    <Icon
+                                        name="heart-plus-outline"
+                                        color={'#2A2AC0'}
+                                        size={size}
+                                    />
+                                )}
+                                label="New Appointment"
+                                onPress={() => { props.navigation.navigate('SearchDoc') }}
+                            />
+                            : <DrawerItem
+                                icon={({ color, size }) => (
+                                    <Icon
+                                        name="heart-plus-outline"
+                                        color={'#2A2AC0'}
+                                        size={size}
+                                    />
+                                )}
+                                label="Patient history"
+                                onPress={() => { props.navigation.navigate('patientHistory') }}
+                            />
                         }
-                        
-                        <DrawerItem 
-                            icon={({color, size}) => (
-                                <Icon 
-                                name="file-account-outline" 
-                                color={'#2A2AC0'}
-                                size={size}
+
+                        <DrawerItem
+                            icon={({ color, size }) => (
+                                <Icon
+                                    name="file-account-outline"
+                                    color={'#2A2AC0'}
+                                    size={size}
                                 />
                             )}
                             label="Medical Records"
-                            onPress={() => {props.navigation.navigate('MedicalRecord')}}
+                            onPress={() => { props.navigation.navigate('MedicalRecord') }}
                         />
-                           <DrawerItem 
-                            icon={({color, size}) => (
-                                <Icon 
-                                name="file-account-outline" 
-                                color={'#2A2AC0'}
-                                size={size}
+                        <DrawerItem
+                            icon={({ color, size }) => (
+                                <Icon
+                                    name="file-account-outline"
+                                    color={'#2A2AC0'}
+                                    size={size}
                                 />
                             )}
                             label="Join a meeting"
-                            onPress={() => {props.navigation.navigate('Meeting')}}
+                            onPress={() => { props.navigation.navigate('Meeting') }}
                         />
-                        <DrawerItem 
-                            icon={({color, size}) => (
-                                <Icon 
-                                name="shopping-outline" 
-                                color={'#2A2AC0'}
-                                size={size}
+                        <DrawerItem
+                            icon={({ color, size }) => (
+                                <Icon
+                                    name="shopping-outline"
+                                    color={'#2A2AC0'}
+                                    size={size}
                                 />
                             )}
                             label="Mart"
-                            onPress={() => {props.navigation.navigate('Mart')}}
+                            onPress={() => { props.navigation.navigate('Mart') }}
                         />
-                        <DrawerItem 
-                            icon={({color, size}) => (
-                                <Icon 
-                                name="account-settings" 
-                                color={'#2A2AC0'}
-                                size={size}
+                        <DrawerItem
+                            icon={({ color, size }) => (
+                                <Icon
+                                    name="account-settings"
+                                    color={'#2A2AC0'}
+                                    size={size}
                                 />
                             )}
                             label="Account Settings"
-                            onPress={() => {props.navigation.navigate('SupportScreen')}}
+                            onPress={() => { props.navigation.navigate('SupportScreen') }}
                         />
-                        <DrawerItem 
-                            icon={({color, size}) => (
-                                <Icon 
-                                name="information-outline" 
-                                color={'#2A2AC0'}
-                                size={size}
+                        <DrawerItem
+                            icon={({ color, size }) => (
+                                <Icon
+                                    name="information-outline"
+                                    color={'#2A2AC0'}
+                                    size={size}
                                 />
                             )}
                             label="Help"
-                            onPress={() => {props.navigation.navigate('Help')}}
+                            onPress={() => { props.navigation.navigate('Help') }}
                         />
                     </Drawer.Section>
                 </View>
             </DrawerContentScrollView>
             <Drawer.Section style={styles.bottomDrawerSection}>
-                <DrawerItem 
-                    icon={({color, size}) => (
-                        <Icon 
-                        name="exit-to-app" 
-                        color={'#2A2AC0'}
-                        size={size}
+                <DrawerItem
+                    icon={({ color, size }) => (
+                        <Icon
+                            name="exit-to-app"
+                            color={'#2A2AC0'}
+                            size={size}
                         />
                     )}
                     label="Logout"
-                    onPress={() => {signOut(navigate)}}
+                    onPress={() => { signOut(navigate) }}
                 />
             </Drawer.Section>
         </View>
@@ -168,43 +178,43 @@ export function DrawerContent(props) {
 
 const styles = StyleSheet.create({
     drawerContent: {
-      flex: 1,
+        flex: 1,
     },
     userInfoSection: {
-      paddingLeft: 20,
-      backgroundColor: '#ECF1FA'
+        paddingLeft: 20,
+        backgroundColor: '#ECF1FA'
     },
     title: {
-      fontSize: 16,
-      marginTop: 3,
-      fontWeight: 'bold',
-      color: '#2A2AC0'
+        fontSize: 16,
+        marginTop: 3,
+        fontWeight: 'bold',
+        color: '#2A2AC0'
     },
     caption: {
-      fontSize: 14,
-      lineHeight: 14,
-      color: '#181461'
+        fontSize: 14,
+        lineHeight: 14,
+        color: '#181461'
     },
     row: {
-      marginTop: 20,
-      flexDirection: 'row',
-      alignItems: 'center',
+        marginTop: 20,
+        flexDirection: 'row',
+        alignItems: 'center',
     },
     section: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      marginRight: 15,
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginRight: 15,
     },
     paragraph: {
-      fontWeight: 'bold',
-      marginRight: 3,
+        fontWeight: 'bold',
+        marginRight: 3,
     },
     drawerSection: {
-      marginTop: 15,
+        marginTop: 15,
     },
     bottomDrawerSection: {
         marginBottom: 15,
         borderTopColor: '#f4f4f4',
         borderTopWidth: 1
     }
-  });
+});
