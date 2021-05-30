@@ -26,8 +26,6 @@ const upload = multer({
 
 // const storage = new Storage();
 module.exports = app => {
-
-
 	app.post('/api/upload-report', upload.single('file'), async (req, res) => {
 
 		if (!req.file || !req.user) {
@@ -77,10 +75,10 @@ module.exports = app => {
 	});
 
 	app.post('/api/delete-report', async (req, res) => {
+		console.log("/api/delete-report",req.body)
 		if (req.user) {
 			const adminbucket = admin.storage().bucket();
-			let dirName = req.user._id;
-			adminbucket.deleteFiles({ prefix: 'files/' + dirName + '/' + req.body.fileName })
+			adminbucket.deleteFiles({ prefix: req.body.fileName })
 				.then(() => {
 					console.log("file deleted")
 					return res.send("File deleted successfully")
@@ -92,7 +90,6 @@ module.exports = app => {
 		else {
 			res.send("User must log in!")
 		}
-
 	})
 
 	app.get('/api/get-all-reports', async (req, res) => {

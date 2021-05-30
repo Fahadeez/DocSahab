@@ -21,7 +21,6 @@ import DocSahabApi from '../../api/DocSahabApi';
 //     }
 // }
 
-const record = [];
 
 class MedicalRecord extends React.Component {
   constructor(props) {
@@ -29,7 +28,7 @@ class MedicalRecord extends React.Component {
     this.state = {
       search: '',
       file: null,
-      record: record,
+      record: [],
       refreshing: false,
     };
   }
@@ -84,17 +83,16 @@ class MedicalRecord extends React.Component {
     }
   };
 
-  getAllRecords = () => {
-    DocSahabApi.get('/api/get-all-reports')
-      .then((record) => record.json())
-      .then((recordJson) => {
-        this.setState({
-          record: recordJson,
-          refreshing: false,
-        });
-        // console.log('data: ', recordJson);
-      })
-      .catch((err) => console.log(err));
+  getAllRecords = async () => {
+    this.setState({
+      refreshing: true,
+    });
+    const res = await DocSahabApi.get('/api/get-all-reports')
+    this.setState({
+      record: res.data,
+      refreshing: false,
+    });
+    console.log('data: ', res.data);
   };
 
   renderItem = (record) => {
@@ -152,7 +150,7 @@ class MedicalRecord extends React.Component {
 
             <View>
               <TouchableOpacity
-                onPress={(record) => this.deleteRecord(record.id)}>
+                onPress={() => this.deleteRecord(record)}>
                 <Icon name={'trash'} size={22} color="#2A2AC0" />
               </TouchableOpacity>
             </View>
@@ -168,9 +166,10 @@ class MedicalRecord extends React.Component {
     });
   };
 
-  deleteRecord = async (record) => {
+  deleteRecord = async (item) => {
+    console.log("item",item.item.name);
     try {
-      record = await DocSahabApi.post('/api/delete-report');
+     const record = await DocSahabApi.post('/api/delete-report',{fileName:item.item.name});
       if (record.status === 200) {
         ToastAndroid.show('Record deleted successfully', ToastAndroid.LONG);
       } else {
