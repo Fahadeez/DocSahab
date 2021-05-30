@@ -23,8 +23,6 @@ import DocSahabApi from '../../api/DocSahabApi';
 
 const record = [];
 
-const baseURL = 'http://192.168.1.105:5000';
-
 class MedicalRecord extends React.Component {
   constructor(props) {
     super(props);
@@ -41,7 +39,7 @@ class MedicalRecord extends React.Component {
   }
 
   updateSearch = (search) => {
-    this.setState({search});
+    this.setState({ search });
   };
 
   selectRecord = async () => {
@@ -50,7 +48,7 @@ class MedicalRecord extends React.Component {
         type: [DocumentPicker.types.allFiles],
       });
       console.log('res: ' + JSON.stringify(res));
-      this.setState({file: res});
+      this.setState({ file: res });
     } catch (err) {
       if (DocumentPicker.isCancel(err)) {
         alert('Selection Canceled');
@@ -61,7 +59,7 @@ class MedicalRecord extends React.Component {
   };
 
   uploadRecord = async () => {
-    const {file} = this.state;
+    const { file } = this.state;
     console.log('file', file);
     if (file != null) {
       const recordToUpload = file;
@@ -87,7 +85,7 @@ class MedicalRecord extends React.Component {
   };
 
   getAllRecords = () => {
-    fetch(baseURL + '/api/get-all-reports')
+    DocSahabApi.get('/api/get-all-reports')
       .then((record) => record.json())
       .then((recordJson) => {
         this.setState({
@@ -101,7 +99,7 @@ class MedicalRecord extends React.Component {
 
   renderItem = (record) => {
     return (
-      <View style={{padding: 10}}>
+      <View style={{ padding: 10 }}>
         <View
           style={{
             flexDirection: 'row',
@@ -120,8 +118,8 @@ class MedicalRecord extends React.Component {
               style={{
                 flexDirection: 'column',
               }}>
-              <View style={{marginBottom: '0.3%'}}>
-                <Text style={{fontSize: 11, color: 'grey'}}>
+              <View style={{ marginBottom: '0.3%' }}>
+                <Text style={{ fontSize: 11, color: 'grey' }}>
                   {record.item.timeCreated.slice(0, 10)}
                 </Text>
               </View>
@@ -131,7 +129,7 @@ class MedicalRecord extends React.Component {
                   flexDirection: 'row',
                   marginBottom: '3%',
                 }}>
-                <Text style={{fontSize: 16}}>{record.item.name.slice(31)}</Text>
+                <Text style={{ fontSize: 16 }}>{record.item.name.slice(31)}</Text>
               </View>
             </View>
           </View>
@@ -142,7 +140,7 @@ class MedicalRecord extends React.Component {
               justifyContent: 'flex-end',
               width: '30%',
             }}>
-            <View style={{marginEnd: '5%'}}>
+            <View style={{ marginEnd: '5%' }}>
               <TouchableOpacity
                 onPress={() => {
                   // console.log('download');
@@ -165,7 +163,7 @@ class MedicalRecord extends React.Component {
   };
 
   handleRefresh = () => {
-    this.setState({refreshing: false}, () => {
+    this.setState({ refreshing: false }, () => {
       this.getAllRecords();
     });
   };
@@ -184,7 +182,7 @@ class MedicalRecord extends React.Component {
   };
 
   render() {
-    const {search, file} = this.state;
+    const { search, file } = this.state;
     return (
       // root container
       <View

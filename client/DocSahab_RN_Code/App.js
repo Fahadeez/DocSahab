@@ -29,6 +29,7 @@ import MartScreen from './src/screens/Mart/Mart';
 import VideoScreen from './src/screens/Dashboard/VIDEO_SCREEN/Meeting';
 import ChatRoom from './src/screens/Dashboard/chatRoom';
 import PatientHistory from './src/screens/Dashboard/PatientHistory';
+import PatientRecords from './src/screens/Dashboard/PatientRecords';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -98,6 +99,7 @@ function Root({ route, navigation }) {
         name="Mart"
         component={MartScreen}
       />
+
       <Drawer.Screen
         options={{
           headerShown: null,
@@ -105,6 +107,15 @@ function Root({ route, navigation }) {
         name="patientHistory"
         component={PatientHistory}
       />
+
+      <Drawer.Screen
+        options={{
+          headerShown: null,
+        }}
+        name="patientRecords"
+        component={PatientRecords}
+      />
+      
     </Drawer.Navigator>
   );
 }

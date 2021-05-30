@@ -48,7 +48,6 @@ module.exports = app => {
             doctor.save();
             const doctor2 = await Doctor.findByIdAndUpdate({
                 _id: docId,
-                'patients.patientID': { $ne: req.user._id }
             }, {
                 $addToSet: {
                     patients: {
@@ -56,14 +55,9 @@ module.exports = app => {
                         patientName: req.user.firstName + " " + req.user.lastName
                     }
                 }
-            }, {
-                upsert: true,
-                multi: true,
-                new: true
             })
 
-            doctor2.save()
-
+            doctor2.save();
             const user = await User.findByIdAndUpdate(
                 { _id: req.user._id },
                 {

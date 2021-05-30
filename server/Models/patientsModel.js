@@ -1,12 +1,12 @@
 const mongoose = require('mongoose');
-
 const { Schema } = mongoose;
 
 const patientSchema = Schema({
 
-    patientID: String,
+    patientID: {type: String, unique: true, required: true},
     patientName: String
 
-}, { strict: false });
+});
+
 
 module.exports = patientSchema;
