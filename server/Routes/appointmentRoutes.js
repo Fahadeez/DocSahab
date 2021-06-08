@@ -39,7 +39,9 @@ module.exports = app => {
                             date: moment(dateObj).format('DD/MM/YYYY'),
                             time: time,
                             reason: reason,
-                            fees: '1000'
+                            fees: '1000',
+                            id: req.user._id,
+                            name: req.user.firstName + " " + req.user.lastName
                         },
                     }
 

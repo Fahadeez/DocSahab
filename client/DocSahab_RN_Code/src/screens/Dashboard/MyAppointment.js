@@ -31,6 +31,7 @@ class MyAppointment extends Component {
       const response = await DocSahabApi.get('/auth/current_user');
       console.log(response);
       this.setState({userData: response.data});
+      console.log(response.data.appointments)
     } catch (err) {
       console.log(err);
     }
@@ -99,7 +100,9 @@ class MyAppointment extends Component {
                       data={this.state.userData.appointments}
                       renderItem={({item}) => {
                         return (
-                          <TouchableOpacity onPress = {() => this.props.navigation.navigate('Meeting')}>
+                          <TouchableOpacity onPress = {() => this.props.navigation.navigate('Meeting', {
+                            id: item.id
+                            })}>
                           <View>
                             <View
                               style={{
@@ -146,8 +149,16 @@ class MyAppointment extends Component {
                                         fontSize: 15,
                                         textAlign: 'center',
                                       }}>
-                                      {item.name}
+                                      {item.name + "  "}
                                     </Text>
+                                    <Text
+                                      style={{
+                                        fontSize: 15,
+                                        textAlign: 'center',
+                                      }}>
+                                      {item.time}
+                                    </Text>
+
 
                                     <View
                                       style={{

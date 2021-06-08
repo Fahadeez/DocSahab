@@ -28,7 +28,9 @@ class PatientHistory extends Component {
     }
   }
 
-  navigateToReport(id){
+  navigateToReport(){
+    const id = this.props.route.params.id;
+    console.log(id);
     this.props.navigation.navigate("patientRecords",{
       id
     })
@@ -40,8 +42,11 @@ class PatientHistory extends Component {
         {this.state.patients.map(item => {
           return (
             <View>
-              <TouchableOpacity onPress={() => this.navigateToReport(item.patientID)}>
-                <Text>{item.patientName}</Text>
+              <Text>Patient Records</Text>
+              <TouchableOpacity onPress={() => this.navigateToReport()}>
+                <View>
+                  <Text>{item.patientName}</Text>
+                </View>
               </TouchableOpacity>
             </View>
           )

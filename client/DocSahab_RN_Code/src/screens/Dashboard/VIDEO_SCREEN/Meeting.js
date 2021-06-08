@@ -39,6 +39,17 @@ import React, {
   }
   return null;
   }
+
+  const config = {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        'Access-Control-Allow-Origin': '*'
+      },
+      withCredentials: true,
+    };
+
+
   export default class VideoScreen extends Component {
     state = {
         isAudioEnabled: true,
@@ -49,7 +60,8 @@ import React, {
         videoTracks: new Map(),
         roomName: '',
         token: '',
-        identity: ''
+        identity: '',
+        role: null
     }
     
     componentDidMount() {
@@ -60,8 +72,20 @@ import React, {
         this.setState({ identity, token });
         console.log("accessToken",token)
       });
+
+    this.fetchUser();
       
     }
+
+  async fetchUser() {
+  try {
+    const response = await DocSahabApi('/auth/current_user',config);
+    console.log(response.data.doctor)
+    this.setState({role: response.data.doctor})
+  } catch (err) {
+    console.log(err)
+    }
+  };
   _onConnectButtonPress = () => {
     console.log("in on connect button preess");
     this.refs.twilioVideo.connect({ roomName: this.state.roomName, accessToken: this.state.token})
@@ -115,6 +139,13 @@ import React, {
     videoTracks.delete(track.trackSid)
   this.setState({videoTracks: { ...videoTracks }})
   }
+  navigateToReport(){
+    const id = this.props.route.params.id;
+    this.props.navigation.navigate("patientRecords",{
+      id
+    })
+  }
+
   render() {
         return (
         <View style={globalStyles.container} >
@@ -199,7 +230,7 @@ import React, {
                       marginLeft: 10,
                       marginRight: 10,
                       borderRadius: 100 / 2,
-                      backgroundColor: 'grey',
+                      backgroundColor: 'blue',
                       justifyContent: 'center',
                       alignItems: "center"
                     }
@@ -216,7 +247,7 @@ import React, {
                       marginLeft: 10,
                       marginRight: 10,
                       borderRadius: 100 / 2,
-                      backgroundColor: 'grey',
+                      backgroundColor: 'blue',
                       justifyContent: 'center',
                       alignItems: "center"
                     }
@@ -234,15 +265,65 @@ import React, {
                       marginLeft: 10,
                       marginRight: 10,
                       borderRadius: 100 / 2,
-                      backgroundColor: 'grey',
+                      backgroundColor: 'blue',
                       justifyContent: 'center',
                       alignItems: "center"
                     }
                   }
                 onPress={this._onFlipButtonPress}>
+
+
                 {/* <Text style={{fontSize: 12}}>Flip</Text> */}
                 < MCIcon name = "rotate-3d" size={28} color='#fff' />
               </TouchableOpacity>
+
+              <TouchableOpacity
+                style={
+                    {
+                      display: this.state.isButtonDisplay ? "flex" : "none",
+                      width: 60,
+                      height: 60,
+                      marginLeft: 10,
+                      marginRight: 10,
+                      borderRadius: 100 / 2,
+                      backgroundColor: 'blue',
+                      justifyContent: 'center',
+                      alignItems: "center"
+                    }
+                  }
+                onPress={() => {
+                  this.props.navigation.navigate('Chat', {
+                  ChatRoomObject: this.state.roomName,
+                });
+                  }}>
+
+                
+                {/* <Text style={{fontSize: 12}}>Flip</Text> */}
+                < MCIcon name = "chat-outline" size={28} color='#fff' />
+              </TouchableOpacity>
+
+              {this.state.role = false ? null :
+
+                <TouchableOpacity
+                style={
+                    {
+                      display: this.state.isButtonDisplay ? "flex" : "none",
+                      width: 60,
+                      height: 60,
+                      marginLeft: 10,
+                      marginRight: 10,
+                      borderRadius: 100 / 2,
+                      backgroundColor: 'blue',
+                      justifyContent: 'center',
+                      alignItems: "center"
+                    }
+                  }
+                onPress={() => {
+                  this.navigateToReport()
+                  }}>
+                < MCIcon name = "file" size={28} color='#fff' />
+                </TouchableOpacity>
+              }
             </View>
           
           </View>
