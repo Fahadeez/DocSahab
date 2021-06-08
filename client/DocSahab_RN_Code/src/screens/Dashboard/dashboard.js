@@ -15,7 +15,7 @@ import Icon from 'react-native-vector-icons/Feather';
 import DocSahabApi from '../../api/DocSahabApi';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Context as AuthContext } from '../../context/AuthContext';
-
+import IconAD from 'react-native-vector-icons/AntDesign';
 // import SearchDocScreen from '../SearchDoc';
 // import MedicalRecord from './MedicalRecord';
 
@@ -24,7 +24,7 @@ const DashboardScreen = ({ navigation }) => {
 
   const [data, setData] = useState([]);
   // const navigation = useNavigation();
-  
+
   useEffect(() => {
     fetchUser();
     async function setUserData() {
@@ -39,16 +39,6 @@ const DashboardScreen = ({ navigation }) => {
   return (
     <View style={globalStyles.containerColor}>
       <NavigationHeaderWithBar title="Dashboard" />
-
-      <View style={styles.SearchbackgroundStyle}>
-        <Icon
-          name="search"
-          size={30}
-          color="grey"
-          style={globalStyles.searchIcon}
-        />
-        <TextInput placeholder="Search" style={globalStyles.searchBar} />
-      </View>
 
       <ScrollView style={{ marginTop: '6%' }}>
         <View style={styles.parentBox}>
@@ -68,7 +58,9 @@ const DashboardScreen = ({ navigation }) => {
 
             <TouchableOpacity
               style={styles.childBox}
-              onPress={() => navigation.navigate('MedicalRecord')}>
+              onPress={() => navigation.navigate(
+                data.doctor == false ? 'MedicalRecord' : 'patientHistory'
+                )}>
               <Image
                 source={require('../../../assets/records.png')}
                 style={styles.childBox}
@@ -77,18 +69,24 @@ const DashboardScreen = ({ navigation }) => {
           </View>
 
           <View style={styles.miniParent}>
-            <TouchableOpacity style={styles.childBox}>
-              <Image
-                source={require('../../../assets/settings.png')}
-                style={styles.childBox}
-              />
+            <TouchableOpacity style={styles.childBox}
+            onPress={() => navigation.navigate("Mart")}>
+              <Text style={styles.textStyle}>Mart</Text>
+              <IconAD
+                style={styles.iconsStyle}
+                name="shoppingcart"
+                size={80}
+                color="blue" />
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.childBox}>
-              <Image
-                source={require('../../../assets/forum.png')}
-                style={styles.childBox}
-              />
+            <TouchableOpacity style={styles.childBox}
+            onPress={() => navigation.navigate("aboutUs")}>
+              <Text style={styles.textStyle}>About us</Text>
+              <IconAD
+                style={styles.iconsStyle}
+                name="infocirlceo"
+                size={80}
+                color="blue" />
             </TouchableOpacity>
           </View>
         </View>
@@ -116,6 +114,16 @@ const styles = StyleSheet.create({
     height: 200,
     marginTop: '5%',
     borderRadius: 20,
+  },
+  iconsStyle: {
+    padding: 20,
+    paddingBottom: 0,
+    alignSelf: 'center',
+  },
+  textStyle: {
+    padding: 20,
+    fontSize: 15,
+    fontWeight: "900"
   },
 
   SearchbackgroundStyle: {

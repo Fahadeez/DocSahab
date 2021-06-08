@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { ToastAndroid, TouchableOpacity } from 'react-native';
+import { ToastAndroid, TouchableOpacity, StyleSheet } from 'react-native';
 import { View, Text } from 'react-native';
 import DocSahabApi from '../../api/DocSahabApi';
+import NavigationBtn from '../../components/navigationBtn';
 
 class PatientHistory extends Component {
   constructor(props) {
@@ -28,24 +29,27 @@ class PatientHistory extends Component {
     }
   }
 
-  navigateToReport(){
-    const id = this.props.route.params.id;
-    console.log(id);
-    this.props.navigation.navigate("patientRecords",{
+  navigateToReport(id) {
+    this.props.navigation.navigate("patientRecords", {
       id
     })
   }
 
   render() {
     return (
-      <View>
+      <View style={styles.parentBox}>
+        <NavigationBtn
+          screenName={'DashboardScreen'}
+          styling={styles.headerNavigation}
+          title="Patient history"
+        />
         {this.state.patients.map(item => {
           return (
-            <View>
-              <Text>Patient Records</Text>
-              <TouchableOpacity onPress={() => this.navigateToReport()}>
-                <View>
-                  <Text>{item.patientName}</Text>
+            <View >
+
+              <TouchableOpacity onPress={() => this.navigateToReport(item.patientID)}>
+                <View style={styles.list}>
+                  <Text style={styles.name}>{item.patientName}</Text>
                 </View>
               </TouchableOpacity>
             </View>
@@ -56,4 +60,24 @@ class PatientHistory extends Component {
   }
 }
 
+const styles = StyleSheet.create({
+  headerNavigation: {
+    marginTop: 0
+  },
+  parentBox: {
+    backgroundColor: '#ECF1FA',
+    flex: 1,
+    padding: 20
+  },
+  list: {
+    borderBottomWidth: 1,
+    borderBottomColor: "#d1d1d1",
+    padding: 15,
+    marginTop: 30
+  },
+  name: {
+    fontSize: 18,
+  }
+
+});
 export default PatientHistory;

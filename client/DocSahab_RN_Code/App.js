@@ -80,7 +80,7 @@ function Root({ route, navigation }) {
         options={{
           headerShown: null,
         }}
-        name="Help"
+        name="aboutUs"
         component={Help}
       />
 

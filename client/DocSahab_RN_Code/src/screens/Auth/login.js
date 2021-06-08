@@ -219,12 +219,12 @@ const login = (props) => {
               onPress={() => navigation.navigate(Chat)}>
               <Text style={globalStyles.buttonTxt}>Chat</Text>
             </TouchableOpacity> */}
-
+{/* 
             <TouchableOpacity
               style={globalStyles.Button}
               onPress={() => navigation.navigate('ChatRoom')}>
               <Text style={globalStyles.buttonTxt}>Chat Room</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
 
             {/* <TouchableOpacity
               style={globalStyles.Button}
