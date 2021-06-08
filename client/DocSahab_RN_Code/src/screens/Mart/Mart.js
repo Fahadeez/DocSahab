@@ -20,7 +20,7 @@ const MartScreen = () => {
 
 	const [search, setSearch] = useState('');
 
-	const sections = [{id: 1, type:'All Products'}, {id: 2, type:'Masks'}, {id: 3, type:'Comfort Pads'}, {id: 4, type:'Machines'}, {id: 5, type:'Tools'}];
+	const sections = [{id: 1, type:'All Products'}, {id: 2, type:'Masks'}, {id: 3, type:'Bands'}, {id: 4, type:'Machines'}, {id: 5, type:'Tools'}];
 
 	const products = [
 
