@@ -21,6 +21,7 @@ class PatientHistory extends Component {
           resArr.push({ patientID: item.patientID, patientName: item.patientName });
         }
       });
+      console.log("patients___",resArr)
       this.setState({ patients: resArr })
 
     }
