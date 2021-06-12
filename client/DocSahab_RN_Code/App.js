@@ -30,6 +30,7 @@ import VideoScreen from './src/screens/Dashboard/VIDEO_SCREEN/Meeting';
 import ChatRoom from './src/screens/Dashboard/chatRoom';
 import PatientHistory from './src/screens/Dashboard/PatientHistory';
 import PatientRecords from './src/screens/Dashboard/PatientRecords';
+import RecordMeeting from './src/screens/Dashboard/RecordMeeting';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -242,6 +243,14 @@ function Auth() {
           options={{ headerShown: null }}
           name="ChatRoom"
           component={ChatRoom}
+        />
+
+         <Stack.Screen
+          options={{
+            headerShown: null,
+          }}
+          name="RecordMeeting"
+          component={RecordMeeting}
         />
       </Stack.Navigator>
     </NavigationContainer>

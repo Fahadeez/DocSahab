@@ -40,16 +40,6 @@ import React, {
   return null;
   }
 
-  const config = {
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        'Access-Control-Allow-Origin': '*'
-      },
-      withCredentials: true,
-    };
-
-
   export default class VideoScreen extends Component {
     state = {
         isAudioEnabled: true,
@@ -61,7 +51,7 @@ import React, {
         roomName: '',
         token: '',
         identity: '',
-        role: null
+        role: false
     }
     
     componentDidMount() {
@@ -79,7 +69,14 @@ import React, {
 
   async fetchUser() {
   try {
-    const response = await DocSahabApi('/auth/current_user',config);
+    const response = await DocSahabApi('/auth/current_user',{
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        'Access-Control-Allow-Origin': '*'
+      },
+      withCredentials: true,
+    });
     console.log(response.data.doctor)
     this.setState({role: response.data.doctor})
   } catch (err) {
@@ -141,7 +138,8 @@ import React, {
   }
   navigateToReport(){
     const id = this.props.route.params.id;
-    this.props.navigation.navigate("patientRecords",{
+    console.log(this.props.route.params.id)
+    this.props.navigation.navigate('RecordMeeting',{
       id
     })
   }
@@ -302,12 +300,10 @@ import React, {
                 < MCIcon name = "chat-outline" size={28} color='#fff' />
               </TouchableOpacity>
 
-              {this.state.role = false ? null :
-
                 <TouchableOpacity
                 style={
                     {
-                      display: this.state.isButtonDisplay ? "flex" : "none",
+                      display: this.state.role == false ? "none" : "flex",
                       width: 60,
                       height: 60,
                       marginLeft: 10,
@@ -323,7 +319,7 @@ import React, {
                   }}>
                 < MCIcon name = "file" size={28} color='#fff' />
                 </TouchableOpacity>
-              }
+              
             </View>
           
           </View>
@@ -335,6 +331,7 @@ import React, {
           onRoomDidFailToConnect= { this._onRoomDidFailToConnect }
           onParticipantAddedVideoTrack={ this._onParticipantAddedVideoTrack }
           onParticipantRemovedVideoTrack= { this._onParticipantRemovedVideoTrack }
+          navigateToReport = {this.navigateToReport}
         />
         </View>
         )
