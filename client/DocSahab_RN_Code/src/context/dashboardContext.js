@@ -1,17 +1,34 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import createDataContext from './index';
 import DocSahabApi from '../api/DocSahabApi';
-import {useNavigation} from '@react-navigation/native';
-import {ToastAndroid} from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { ToastAndroid } from 'react-native';
 import * as RootNavigation from '../RootNavigation.js';
 
 const dashboardReducer = (state, action) => {
   switch (action.type) {
-    case '':
-      return;
+    case 'add_to_cart':
+      console.log("state.cart", state.cart)
+      return {
+        ...state,
+        cart: [...state.cart, action.payload]
+      }
     default:
       return state;
   }
+};
+
+const addToCart = (dispatch) => {
+  return async (item) => {
+    try {
+      // const response = await axios.get('http://192.168.10.8:5000/auth/current_user',config);
+      // console.log("Current User",response.data)
+      dispatch({ type: 'add_to_cart', payload: item });
+      console.log("item in action", item)
+    } catch (err) {
+      console.log(err)
+    }
+  };
 };
 
 const signUp = (dispatch) => {
@@ -74,12 +91,13 @@ const signUp = (dispatch) => {
 };
 
 // action functions
-export const {Provider, Context} = createDataContext(
+export const { Provider, Context } = createDataContext(
   dashboardReducer,
-  {signUp},
+  { signUp, addToCart },
   // { isSignedIn: false, errorMessage: ''}
   {
     token: null,
+    cart: [],
     errorMessageForSignIn: '',
     errorMessageForSignUp: '',
     errorMessageUpdatePassword: '',

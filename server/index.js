@@ -8,7 +8,8 @@ const morgan = require('morgan');
 const cors = require('cors');
 
 require('./Models/user');
-require('./Models/doctorModel')
+require('./Models/doctorModel');
+require('./Models/orderModel');
 
 const keys = require('./Config/keys');
 
@@ -61,13 +62,6 @@ app.use(
 	})
 );
 
-// app.use(session({ 
-// secret: 'super secret',
-// resave: false,
-// saveUninitialized: false,
-// maxAge: 30 * 24 * 60 * 60 * 1000, //30 days
-
-// }));
 
  //Must inorder to receive post request in req.body object
  app.use(express.static(__dirname));

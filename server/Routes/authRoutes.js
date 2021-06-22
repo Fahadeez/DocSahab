@@ -207,6 +207,9 @@ module.exports = (app) => {
       yearsOfExp,
       email,
       reg_no,
+      account_no,
+      bank,
+      fees
     } = req.body;
     if (req.body) {
       const resp = await PMCRegCodeScrapping(reg_no, res);
@@ -228,11 +231,13 @@ module.exports = (app) => {
                     specialization,
                     qualification,
                     days,
-                    // startCheckupTime: moment(startTime).format("hh:mm a"),
-                    // endCheckupTime: moment(endTime).format("hh:mm a"),
                     startCheckupTime: moment(startTime).toDate(),
                     endCheckupTime: moment(endTime).toDate(),
                     yearsOfExp,
+                    regNo: reg_no,
+                    Bank: bank,
+                    accountNo: account_no,
+                    fees,
                     doctor: true
                   }
                 );

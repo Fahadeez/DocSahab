@@ -1,95 +1,93 @@
 import React, {
-    Component
-  } from 'react';
-  import {
-    StyleSheet,
-    Text,
-    TextInput,
-    View,
-    Button,
-    TouchableOpacity,
-    PermissionsAndroid, TouchableHighlight, Image
-  } from 'react-native';
-  import {
-    TwilioVideoLocalView, // to get local view 
-    TwilioVideoParticipantView, //to get participant view
-    TwilioVideo
-  } from 'react-native-twilio-video-webrtc';
-  // make sure you install vector icons and its dependencies
-  import MIcon from 'react-native-vector-icons/MaterialIcons';
-  import normalize from 'react-native-normalize';
-  import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-  import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-  import DocSahabApi from '../../../api/DocSahabApi';
-  import {globalStyles} from '../../../styles/globalStyles';
-  
-  export async function GetAllPermissions() {
+  Component
+} from 'react';
+import {
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+  Button,
+  TouchableOpacity,
+  PermissionsAndroid, TouchableHighlight, Image
+} from 'react-native';
+import {
+  TwilioVideoLocalView, // to get local view 
+  TwilioVideoParticipantView, //to get participant view
+  TwilioVideo
+} from 'react-native-twilio-video-webrtc';
+// make sure you install vector icons and its dependencies
+import MIcon from 'react-native-vector-icons/MaterialIcons';
+import normalize from 'react-native-normalize';
+import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import DocSahabApi from '../../../api/DocSahabApi';
+import { globalStyles } from '../../../styles/globalStyles';
+import NavigationBtn from '../../../components/navigationBtn';
+
+export async function GetAllPermissions() {
   // it will ask the permission for user 
   try {
     // if (Platform.OS === "android") {
-      const userResponse = await PermissionsAndroid.requestMultiple([
-        PermissionsAndroid.PERMISSIONS.CAMERA,
-        PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
-        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE
-      ]);
-      return userResponse;
+    const userResponse = await PermissionsAndroid.requestMultiple([
+      PermissionsAndroid.PERMISSIONS.CAMERA,
+      PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
+      PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE
+    ]);
+    return userResponse;
     // }
   } catch (err) {
     console.log(err);
   }
   return null;
+}
+
+export default class VideoScreen extends Component {
+  state = {
+    isAudioEnabled: true,
+    isVideoEnabled: true,
+    isButtonDisplay: true,
+    status: 'disconnected',
+    participants: new Map(),
+    videoTracks: new Map(),
+    roomName: '',
+    token: '',
+    identity: '',
+    role: false
   }
 
-  const config = {
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        'Access-Control-Allow-Origin': '*'
-      },
-      withCredentials: true,
-    };
-
-
-  export default class VideoScreen extends Component {
-    state = {
-        isAudioEnabled: true,
-        isVideoEnabled: true,
-        isButtonDisplay: true,
-        status: 'disconnected',
-        participants: new Map(),
-        videoTracks: new Map(),
-        roomName: '',
-        token: '',
-        identity: '',
-        role: null
-    }
-    
-    componentDidMount() {
-      // on start we are asking the permisions
-      GetAllPermissions();
-      DocSahabApi.get('/token').then(results => {
-        const { identity, token } = results.data;
-        this.setState({ identity, token });
-        console.log("accessToken",token)
-      });
+  componentDidMount() {
+    // on start we are asking the permisions
+    GetAllPermissions();
+    DocSahabApi.get('/token').then(results => {
+      const { identity, token } = results.data;
+      this.setState({ identity, token });
+      console.log("accessToken", token)
+    });
 
     this.fetchUser();
-      
-    }
+
+  }
 
   async fetchUser() {
-  try {
-    const response = await DocSahabApi('/auth/current_user',config);
-    console.log(response.data.doctor)
-    this.setState({role: response.data.doctor})
-  } catch (err) {
-    console.log(err)
+    try {
+      const response = await DocSahabApi('/auth/current_user', {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          'Access-Control-Allow-Origin': '*'
+        },
+        withCredentials: true,
+      });
+      console.log(response.data.doctor)
+      this.setState({ role: response.data.doctor })
+    } catch (err) {
+      console.log(err)
     }
   };
   _onConnectButtonPress = () => {
     console.log("in on connect button preess");
-    this.refs.twilioVideo.connect({ roomName: this.state.roomName, accessToken: this.state.token})
-    this.setState({status: 'connecting'})
+    this.refs.twilioVideo.connect({ roomName: this.state.roomName, accessToken: this.state.token })
+    this.setState({ status: 'connecting' })
     console.log(this.state.status);
   }
   _onEndButtonPress = () => {
@@ -98,7 +96,7 @@ import React, {
   _onMuteButtonPress = () => {
     // on cliking the mic button we are setting it to mute or viceversa
     this.refs.twilioVideo.setLocalAudioEnabled(!this.state.isAudioEnabled)
-      .then(isEnabled => this.setState({isAudioEnabled: isEnabled}))
+      .then(isEnabled => this.setState({ isAudioEnabled: isEnabled }))
   }
   _onFlipButtonPress = () => {
     // switches between fronst camera and Rare camera
@@ -106,123 +104,147 @@ import React, {
   }
   _onRoomDidConnect = () => {
     console.log("room did connected");
-    this.setState({status: 'connected'})
+    this.setState({ status: 'connected' })
     // console.log("over");
   }
-  _onRoomDidDisconnect = ({roomName, error}) => {
+  _onRoomDidDisconnect = ({ roomName, error }) => {
     console.log("ERROR: ", JSON.stringify(error))
     console.log("disconnected")
-    
-    this.setState({status: 'disconnected'})
+
+    this.setState({ status: 'disconnected' })
   }
   _onRoomDidFailToConnect = (error) => {
     console.log("ERROR: ", JSON.stringify(error));
     console.log("failed to connect");
-    this.setState({status: 'disconnected'})
+    this.setState({ status: 'disconnected' })
   }
-  _onParticipantAddedVideoTrack = ({participant, track}) => {
+  _onParticipantAddedVideoTrack = ({ participant, track }) => {
     // call everytime a participant joins the same room
     console.log("onParticipantAddedVideoTrack: ", participant, track)
-  this.setState({
+    this.setState({
       videoTracks: new Map([
         ...this.state.videoTracks,
         [track.trackSid, { participantSid: participant.sid, videoTrackSid: track.trackSid }]
       ]),
     });
-    
+
     console.log("this.state.videoTracks", this.state.videoTracks);
   }
-  _onParticipantRemovedVideoTrack = ({participant, track}) => {
+  _onParticipantRemovedVideoTrack = ({ participant, track }) => {
     // gets called when a participant disconnects.
     console.log("onParticipantRemovedVideoTrack: ", participant, track)
-  const videoTracks = this.state.videoTracks
+    const videoTracks = this.state.videoTracks
     videoTracks.delete(track.trackSid)
-  this.setState({videoTracks: { ...videoTracks }})
+    this.setState({ videoTracks: { ...videoTracks } })
   }
-  navigateToReport(){
+  navigateToReport() {
     const id = this.props.route.params.id;
-    this.props.navigation.navigate("patientRecords",{
+    console.log(this.props.route.params.id)
+    this.props.navigation.navigate('RecordMeeting', {
       id
     })
   }
 
   render() {
-        return (
+    return (
+      <View style={{ flex: 1,  backgroundColor: '#ECF1FA',}}>
+        <NavigationBtn
+          screenName={'DashboardScreen'}
+          styling={{ marginLeft: 20 }}
+        />
         <View style={globalStyles.container} >
-        {
+
+          {
             this.state.status === 'disconnected' &&
             <View>
-                <View style={globalStyles.logoView}>
+              <View style={globalStyles.logoView}>
                 <Image
                   source={require('../../../../assets/docsahab.png')}
-                  style={{height: 200, width: 200}}
+                  style={{ height: 200, width: 200 }}
                 />
               </View>
-                <View style={styles.spacing}>
-                      <Text style={styles.inputLabel}>Room Name</Text>
-                      <TextInput style={styles.inputBox}
-                      placeholder="Room Name"
-                      defaultValue={this.state.roomName}
-                      onChangeText={(text) => this.setState({roomName: text})}
-                      />
-                  </View>
-                <View style={styles.spacing}>
+              <View style={styles.spacing}>
+                <Text style={styles.inputLabel}>Room Name</Text>
+                <TextInput style={styles.inputBox}
+                  placeholder="Room Name"
+                  defaultValue={this.state.roomName}
+                  onChangeText={(text) => this.setState({ roomName: text })}
+                />
+              </View>
+              {/* <View style={styles.spacing}>
                       <Text style={styles.inputLabel}>Token</Text>
                       <TextInput style={styles.inputBox}
                       placeholder="Token"
                       defaultValue={this.state.token}
                       onChangeText={(text) => this.setState({token: text})}
                       />
-                  </View>
-                <TouchableHighlight style={[styles.buttonContainer, styles.loginButton]} onPress={this._onConnectButtonPress}>
-                    <Text style={styles.Buttontext}>Connect</Text>
-                </TouchableHighlight>
+                  </View> */}
+              <TouchableHighlight style={[styles.buttonContainer, styles.loginButton]} onPress={this._onConnectButtonPress}>
+                <Text style={styles.Buttontext}>Connect</Text>
+              </TouchableHighlight>
             </View>
-        }
-  {
-          (this.state.status === 'connected' || this.state.status === 'connecting') &&
+          }
+          {
+            (this.state.status === 'connected' || this.state.status === 'connecting') &&
             <View style={styles.callContainer}>
-            {
-              this.state.status === 'connected' &&
-              <View style={styles.remoteGrid}>
-                <TouchableOpacity style = {styles.remoteVideo} onPress={()=>{this.setState({isButtonDisplay:!this.state.isButtonDisplay})}} >
-                {
-                  Array.from(this.state.videoTracks, ([trackSid, trackIdentifier]) => {
-                    return (
-                        <TwilioVideoParticipantView
-                          style={styles.remoteVideo}
-                          key={trackSid}
-                          trackIdentifier={trackIdentifier}
-                        />
-                    )
-                  })
-                }
+              {
+                this.state.status === 'connected' &&
+                <View style={styles.remoteGrid}>
+                  <TouchableOpacity style={styles.remoteVideo} onPress={() => { this.setState({ isButtonDisplay: !this.state.isButtonDisplay }) }} >
+                    {
+                      Array.from(this.state.videoTracks, ([trackSid, trackIdentifier]) => {
+                        return (
+                          <TwilioVideoParticipantView
+                            style={styles.remoteVideo}
+                            key={trackSid}
+                            trackIdentifier={trackIdentifier}
+                          />
+                        )
+                      })
+                    }
+                  </TouchableOpacity>
+                  <TwilioVideoLocalView
+                    enabled={true}
+                    style={this.state.isButtonDisplay ? styles.localVideoOnButtonEnabled : styles.localVideoOnButtonDisabled}
+                  />
+                </View>
+              }
+              <View
+                style={
+                  {
+                    display: this.state.isButtonDisplay ? "flex" : "none",
+                    position: "absolute",
+                    left: 0,
+                    bottom: 0,
+                    right: 0,
+                    height: 100,
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "space-evenly",
+                    // backgroundColor:"blue",
+                    // zIndex: 2,
+                    zIndex: this.state.isButtonDisplay ? 2 : 0,
+                  }
+                } >
+                <TouchableOpacity
+                  style={
+                    {
+                      display: this.state.isButtonDisplay ? "flex" : "none",
+                      width: 60,
+                      height: 60,
+                      marginLeft: 10,
+                      marginRight: 10,
+                      borderRadius: 100 / 2,
+                      backgroundColor: 'blue',
+                      justifyContent: 'center',
+                      alignItems: "center"
+                    }
+                  }
+                  onPress={this._onMuteButtonPress}>
+                  < MIcon name={this.state.isAudioEnabled ? "mic" : "mic-off"} size={24} color='#fff' />
                 </TouchableOpacity>
-                <TwilioVideoLocalView
-                  enabled={true}
-                  style = {this.state.isButtonDisplay ? styles.localVideoOnButtonEnabled : styles.localVideoOnButtonDisabled} 
-                />
-              </View>
-            }
-            <View
-              style = {
-                {
-                  display: this.state.isButtonDisplay ? "flex" : "none",
-                  position: "absolute",
-                  left: 0,
-                  bottom: 0,
-                  right: 0,
-                  height: 100,
-                  flexDirection: "row",
-                  alignItems: "center",
-                  justifyContent: "space-evenly",
-                  // backgroundColor:"blue",
-                  // zIndex: 2,
-                  zIndex: this.state.isButtonDisplay ? 2 : 0,
-                }
-              } >
-              <TouchableOpacity
-                style={
+                <TouchableOpacity
+                  style={
                     {
                       display: this.state.isButtonDisplay ? "flex" : "none",
                       width: 60,
@@ -235,11 +257,12 @@ import React, {
                       alignItems: "center"
                     }
                   }
-                onPress={this._onMuteButtonPress}>
-                < MIcon name ={this.state.isAudioEnabled ? "mic" : "mic-off"} size={24} color='#fff' />
-              </TouchableOpacity>
-               <TouchableOpacity
-                style={
+                  onPress={this._onEndButtonPress}>
+                  {/* <Text style={{fontSize: 12}}>End</Text> */}
+                  < MIcon name="call-end" size={28} color='#fff' />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={
                     {
                       display: this.state.isButtonDisplay ? "flex" : "none",
                       width: 60,
@@ -252,60 +275,15 @@ import React, {
                       alignItems: "center"
                     }
                   }
-                onPress={this._onEndButtonPress}>
-                {/* <Text style={{fontSize: 12}}>End</Text> */}
-                < MIcon name = "call-end" size={28} color='#fff' />
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={
-                    {
-                      display: this.state.isButtonDisplay ? "flex" : "none",
-                      width: 60,
-                      height: 60,
-                      marginLeft: 10,
-                      marginRight: 10,
-                      borderRadius: 100 / 2,
-                      backgroundColor: 'blue',
-                      justifyContent: 'center',
-                      alignItems: "center"
-                    }
-                  }
-                onPress={this._onFlipButtonPress}>
+                  onPress={this._onFlipButtonPress}>
 
 
-                {/* <Text style={{fontSize: 12}}>Flip</Text> */}
-                < MCIcon name = "rotate-3d" size={28} color='#fff' />
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={
-                    {
-                      display: this.state.isButtonDisplay ? "flex" : "none",
-                      width: 60,
-                      height: 60,
-                      marginLeft: 10,
-                      marginRight: 10,
-                      borderRadius: 100 / 2,
-                      backgroundColor: 'blue',
-                      justifyContent: 'center',
-                      alignItems: "center"
-                    }
-                  }
-                onPress={() => {
-                  this.props.navigation.navigate('Chat', {
-                  ChatRoomObject: this.state.roomName,
-                });
-                  }}>
-
-                
-                {/* <Text style={{fontSize: 12}}>Flip</Text> */}
-                < MCIcon name = "chat-outline" size={28} color='#fff' />
-              </TouchableOpacity>
-
-              {this.state.role = false ? null :
+                  {/* <Text style={{fontSize: 12}}>Flip</Text> */}
+                  < MCIcon name="rotate-3d" size={28} color='#fff' />
+                </TouchableOpacity>
 
                 <TouchableOpacity
-                style={
+                  style={
                     {
                       display: this.state.isButtonDisplay ? "flex" : "none",
                       width: 60,
@@ -318,29 +296,57 @@ import React, {
                       alignItems: "center"
                     }
                   }
-                onPress={() => {
-                  this.navigateToReport()
+                  onPress={() => {
+                    this.props.navigation.navigate('Chat', {
+                      ChatRoomObject: this.state.roomName,
+                    });
                   }}>
-                < MCIcon name = "file" size={28} color='#fff' />
+
+
+                  {/* <Text style={{fontSize: 12}}>Flip</Text> */}
+                  < MCIcon name="chat-outline" size={28} color='#fff' />
                 </TouchableOpacity>
-              }
+
+                <TouchableOpacity
+                  style={
+                    {
+                      display: this.state.role == false ? "none" : "flex",
+                      width: 60,
+                      height: 60,
+                      marginLeft: 10,
+                      marginRight: 10,
+                      borderRadius: 100 / 2,
+                      backgroundColor: 'blue',
+                      justifyContent: 'center',
+                      alignItems: "center"
+                    }
+                  }
+                  onPress={() => {
+                    this.navigateToReport()
+                  }}>
+                  < MCIcon name="file" size={28} color='#fff' />
+                </TouchableOpacity>
+
+              </View>
+
             </View>
-          
-          </View>
-        }
-        <TwilioVideo
-          ref="twilioVideo"
-          onRoomDidConnect={ this._onRoomDidConnect }
-          onRoomDidDisconnect={ this._onRoomDidDisconnect }
-          onRoomDidFailToConnect= { this._onRoomDidFailToConnect }
-          onParticipantAddedVideoTrack={ this._onParticipantAddedVideoTrack }
-          onParticipantRemovedVideoTrack= { this._onParticipantRemovedVideoTrack }
-        />
+          }
+          <TwilioVideo
+            ref="twilioVideo"
+            onRoomDidConnect={this._onRoomDidConnect}
+            onRoomDidDisconnect={this._onRoomDidDisconnect}
+            onRoomDidFailToConnect={this._onRoomDidFailToConnect}
+            onParticipantAddedVideoTrack={this._onParticipantAddedVideoTrack}
+            onParticipantRemovedVideoTrack={this._onParticipantRemovedVideoTrack}
+            navigateToReport={this.navigateToReport}
+          />
         </View>
-        )
-    }
+      </View>
+
+    )
   }
-  const styles = StyleSheet.create({
+}
+const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white'
@@ -352,7 +358,7 @@ import React, {
     top: 0,
     left: 0,
     right: 0,
-    minHeight:"100%"
+    minHeight: "100%"
   },
   welcome: {
     fontSize: 30,
@@ -447,6 +453,6 @@ import React, {
     borderBottomColor: '#cccccc',
     fontSize: 16,
     width: wp("95%"),
-    borderBottomWidth:1
+    borderBottomWidth: 1
   },
-  });
+});

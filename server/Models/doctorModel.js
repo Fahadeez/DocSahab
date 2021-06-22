@@ -1,7 +1,5 @@
 const mongoose = require('mongoose');
 var bcrypt = require('bcrypt');
-const likedProfileSchema = require('./likedProfiles');
-const ratedBySchema = require('./ratedBy')
 const appointmentSchema = require('./appointmentModel');
 const patientSchema = require('./patientsModel');
 
@@ -22,6 +20,10 @@ const doctorSchema = new Schema({
     specialization: String,
     days: Array,
     timeSlots: Array,
+    regNo: String,
+    accountNo: String,
+    Bank: String,
+    fees: String,
     startCheckupTime: String,
     endCheckupTime: String,
     appointments: [appointmentSchema],
@@ -36,8 +38,6 @@ const doctorSchema = new Schema({
     noOfReviews: { type: Number, default: 0 },
     resetPasswordToken: String,
     resetPasswordExpires: Date,
-    likedProfiles: [likedProfileSchema],
-    ratedBy: [ratedBySchema]
 
 }, { timestamps: { createdAt: 'dateOfJoin' } })
 

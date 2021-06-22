@@ -33,7 +33,7 @@ const headerWithCart = (props) => {
             }}>
             {props.title}
           </Text>
-          <TouchableOpacity style={{alignSelf: 'center', marginTop: '40%'}}>
+          <TouchableOpacity onPress={() => navigation.navigate("checkout")} style={{alignSelf: 'center', marginTop: '40%'}}>
             <Icon name="shopping-cart" size={40} color="#2A2AC0" />
           </TouchableOpacity>
         </View>

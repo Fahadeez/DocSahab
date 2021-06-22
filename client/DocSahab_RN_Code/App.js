@@ -30,6 +30,9 @@ import VideoScreen from './src/screens/Dashboard/VIDEO_SCREEN/Meeting';
 import ChatRoom from './src/screens/Dashboard/chatRoom';
 import PatientHistory from './src/screens/Dashboard/PatientHistory';
 import PatientRecords from './src/screens/Dashboard/PatientRecords';
+import RecordMeeting from './src/screens/Dashboard/RecordMeeting';
+import ProductDetails from './src/screens/Mart/ProductDetails';
+import Checkout from './src/screens/Mart/Checkout';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -115,7 +118,7 @@ function Root({ route, navigation }) {
         name="patientRecords"
         component={PatientRecords}
       />
-      
+
     </Drawer.Navigator>
   );
 }
@@ -243,6 +246,30 @@ function Auth() {
           name="ChatRoom"
           component={ChatRoom}
         />
+
+        <Stack.Screen
+          options={{
+            headerShown: null,
+          }}
+          name="RecordMeeting"
+          component={RecordMeeting}
+        />
+
+        <Stack.Screen
+          options={{
+            headerShown: null,
+          }}
+          name="productDetails"
+          component={ProductDetails}
+        />
+        <Stack.Screen
+          options={{
+            headerShown: null,
+          }}
+          name="checkout"
+          component={Checkout}
+        />
+
       </Stack.Navigator>
     </NavigationContainer>
   );

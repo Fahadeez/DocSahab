@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   StyleSheet,
@@ -9,20 +9,24 @@ import {
   TouchableOpacity,
   ToastAndroid
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import NavigationBtn from '../components/navigationBtn';
-import {globalStyles} from '../styles/globalStyles';
+import { globalStyles } from '../styles/globalStyles';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import RNPickerSelect from 'react-native-picker-select';
 import moment from 'moment';
 import DocSahabApi from '../api/DocSahabApi'
+import { Button, Overlay } from 'react-native-elements';
+
 const axios = require('axios');
 const qs = require('querystring');
 
 // const baseURL = 'http://192.168.1.105:5000';
 
-const PaymentScreen = ({navigation, route}) => {
+const PaymentScreen = ({ navigation, route }) => {
   const [reason, setReason] = useState('');
   const [card, setSelectedCard] = useState('');
+  const [visible, setVisible] = useState(false);
   const docData = route.params.docData;
   const date = route.params.date;
   const time = route.params.time;
@@ -34,6 +38,9 @@ const PaymentScreen = ({navigation, route}) => {
     reason: reason,
     date: date.toString(),
     time: time,
+    fees: docData.fees,
+    accountNo: docData.accountNo,
+    Bank: docData.Bank
   };
 
   const config = {
@@ -42,17 +49,24 @@ const PaymentScreen = ({navigation, route}) => {
     },
   };
 
+  const toggleOverlay = () => {
+    setVisible(!visible);
+  };
+
   const confirmApp = async () => {
-    const res = await DocSahabApi.post("/api/book-appointment",requestBody)
-    if(res.status === 200){
-      ToastAndroid.show("Appointment confirmed",ToastAndroid.LONG);
-      navigation.navigate('root')
+    //  await AsyncStorage.setItem("appointment_details",JSON.stringify(requestBody))
+
+    const res = await DocSahabApi.post("/api/book-appointment", requestBody)
+    if (res.status === 200) {
+      ToastAndroid.show("Appointment confirmed", ToastAndroid.LONG);
+      setVisible(true)
+      // navigation.navigate('root')
     }
-    else{
-      ToastAndroid.show("Error, Please try again",ToastAndroid.LONG);
+    else {
+      ToastAndroid.show("Error, Please try again", ToastAndroid.LONG);
 
     }
-    
+
   };
 
   return (
@@ -72,15 +86,27 @@ const PaymentScreen = ({navigation, route}) => {
         </View>
       </View>
 
+      <Overlay overlayStyle={styles.overlay} isVisible={visible} onBackdropPress={toggleOverlay}>
+        <Text style={styles.overlayHeading}>Payment Confirmation</Text>
+        <Text style={styles.overlayText}>Please pay amount {docData.fees} at following bank account and wait for your doctor's acknowlegment to confirm your appointment.</Text>
+        <Text style={[styles.overlayText, { marginTop: 20 }]}>Bank name: {docData.Bank}</Text>
+        <Text style={styles.overlayText}>Bank account no: {docData.accountNo}</Text>
+        <Button
+          title="Ok"
+          onPress={toggleOverlay}
+          containerStyle={{ backgroundColor: '#2e2d84', marginTop: 30, width: 200, alignSelf: 'center' }}
+        />
+      </Overlay>
+
       <ScrollView style={globalStyles.scrollView}>
-        <View style={{marginLeft: '5%', marginTop: '10%'}}>
+        <View style={{ marginLeft: '5%', marginTop: '10%' }}>
           <View
             style={{
               flexDirection: 'row',
               width: '50%',
             }}>
-            <Text style={{fontWeight: 'bold'}}>Dr.</Text>
-            <Text style={{fontWeight: 'bold'}}>
+            <Text style={{ fontWeight: 'bold' }}>Dr.</Text>
+            <Text style={{ fontWeight: 'bold' }}>
               {docData.firstName.toUpperCase()} {docData.lastName.toUpperCase()}
             </Text>
             <Text
@@ -106,9 +132,9 @@ const PaymentScreen = ({navigation, route}) => {
               marginTop: '6%',
             }}>
             <Icon name="map-marker-outline" color={'#2A2AC0'} size={25} />
-            <View style={{marginLeft: '5%'}}>
-              <Text style={{color: 'gray'}}>B-102 Awesome Apartment</Text>
-              <Text style={{color: 'gray'}}>Guslitan-e-Jauhar, Karachi</Text>
+            <View style={{ marginLeft: '5%' }}>
+              <Text style={{ color: 'gray' }}>B-102 Awesome Apartment</Text>
+              <Text style={{ color: 'gray' }}>Guslitan-e-Jauhar, Karachi</Text>
             </View>
           </View>
 
@@ -139,13 +165,13 @@ const PaymentScreen = ({navigation, route}) => {
           </View>
 
           <View>
-            <Text style={[styles.amountText, {fontWeight: 'bold'}]}>
+            <Text style={[styles.amountText, { fontWeight: 'bold' }]}>
               Total Amount:
             </Text>
-            <Text style={styles.amountText}>Rs: 1000</Text>
+            <Text style={styles.amountText}>Rs: {docData.fees}</Text>
           </View>
-
-          <View style={{marginVertical: '10%'}}>
+          {/* 
+          <View style={{ marginVertical: '10%' }}>
             <Text
               style={{
                 color: 'darkblue',
@@ -156,26 +182,26 @@ const PaymentScreen = ({navigation, route}) => {
             </Text>
             <View style={globalStyles.belowpickerView}>
               <RNPickerSelect
-                style={{inputAndroid: {color: 'black'}}}
-                placeholder={{label: 'Select Card', value: ''}}
+                style={{ inputAndroid: { color: 'black' } }}
+                placeholder={{ label: 'Select Card', value: '' }}
                 onValueChange={(card, value) => {
                   setSelectedCard(value);
                 }}
                 selectedValue={card}
                 items={[
-                  {label: 'Card1', value: 'Card1'},
-                  {label: 'Card2', value: 'Card2'},
+                  { label: 'Card1', value: 'Card1' },
+                  { label: 'Card2', value: 'Card2' },
                 ]}
               />
             </View>
-          </View>
+          </View> */}
           <TouchableOpacity
             style={globalStyles.modifiedBtn}
             onPress={confirmApp}>
             <Text style={globalStyles.buttonTxt}>Pay Now</Text>
           </TouchableOpacity>
 
-          <View style={{height: 200}}></View>
+          <View style={{ height: 200 }}></View>
         </View>
       </ScrollView>
     </View>
@@ -216,6 +242,20 @@ const styles = StyleSheet.create({
     backgroundColor: '#ECF1FA',
     marginTop: '5%',
   },
+  overlay: {
+    padding: 20,
+    height: 400,
+  },
+  overlayText: {
+    fontSize: 20,
+    fontWeight: "600"
+  },
+  overlayHeading: {
+    fontSize: 26,
+    fontWeight: 'bold',
+    color: 'darkblue',
+    marginBottom: 30
+  }
 });
 
 export default PaymentScreen;

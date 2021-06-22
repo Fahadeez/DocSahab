@@ -7,6 +7,7 @@ import {
   TextInput,
   TouchableOpacity,
   Image,
+  BackHandler
 } from 'react-native';
 import HeaderView from '../../components/headerView';
 import NavigationHeaderWithBar from '../../components/navigationHeaderWithBar';
@@ -32,8 +33,14 @@ const DashboardScreen = ({ navigation }) => {
       JSON.parse(userData);
       setData(JSON.parse(userData));
     }
-
     setUserData();
+
+    BackHandler.addEventListener('hardwareBackPress', () => true)
+
+    return () => {
+      BackHandler.removeEventListener('hardwareBackPress', () => true)
+    }
+
   }, []);
 
   return (
@@ -60,7 +67,7 @@ const DashboardScreen = ({ navigation }) => {
               style={styles.childBox}
               onPress={() => navigation.navigate(
                 data.doctor == false ? 'MedicalRecord' : 'patientHistory'
-                )}>
+              )}>
               <Image
                 source={require('../../../assets/records.png')}
                 style={styles.childBox}
@@ -70,7 +77,7 @@ const DashboardScreen = ({ navigation }) => {
 
           <View style={styles.miniParent}>
             <TouchableOpacity style={styles.childBox}
-            onPress={() => navigation.navigate("Mart")}>
+              onPress={() => navigation.navigate("Mart")}>
               <Text style={styles.textStyle}>Mart</Text>
               <IconAD
                 style={styles.iconsStyle}
@@ -80,7 +87,7 @@ const DashboardScreen = ({ navigation }) => {
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.childBox}
-            onPress={() => navigation.navigate("aboutUs")}>
+              onPress={() => navigation.navigate("aboutUs")}>
               <Text style={styles.textStyle}>About us</Text>
               <IconAD
                 style={styles.iconsStyle}

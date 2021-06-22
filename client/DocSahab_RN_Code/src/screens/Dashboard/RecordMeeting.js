@@ -5,7 +5,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import DashboardScreen from '../Dashboard/dashboard';
 import DocSahabApi from '../../api/DocSahabApi';
 
-class PatientRecords extends Component {
+class RecordMeeting extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -210,4 +210,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default PatientRecords;
+export default RecordMeeting;

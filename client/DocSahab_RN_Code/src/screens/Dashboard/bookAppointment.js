@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
   View,
   Text,
@@ -10,14 +10,15 @@ import {
   ScrollView,
 } from 'react-native';
 import NavigationBtn from '../../components/navigationBtn';
-import {globalStyles} from '../../styles/globalStyles';
+import { globalStyles } from '../../styles/globalStyles';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import 'react-native-gesture-handler';
 import Flag from 'react-native-flags';
 import CalendarStrip from 'react-native-calendar-strip';
 import RNPickerSelect from 'react-native-picker-select';
-import {Context as AuthContext} from '../../context/AuthContext';
+import { Context as AuthContext } from '../../context/AuthContext';
 import moment from 'moment';
+import { Button, Overlay } from 'react-native-elements';
 
 const numStars = 5;
 
@@ -31,6 +32,7 @@ class BookAppoinment extends Component {
       timeSlots: [],
       date: '',
       time: '',
+      visible: false
     };
   }
   bookAppointment = async () => {
@@ -43,10 +45,10 @@ class BookAppoinment extends Component {
   };
 
   componentDidMount() {
-    const {state, fetchUser} = this.context;
+    const { state, fetchUser } = this.context;
     fetchUser();
   }
-  
+
   timePickerItems = (date) => {
     const {
       startCheckupTime,
@@ -79,13 +81,16 @@ class BookAppoinment extends Component {
         value: result,
       });
     }
-    this.setState({timeSlots: array});
+    this.setState({ timeSlots: array });
     console.log(array)
   };
   dateSelected = (date) => {
-    this.setState({date});
+    this.setState({ date });
     this.timePickerItems(date);
     console.log(date)
+  };
+  toggleOverlay = () => {
+    this.setState({ visible: !this.state.visible })
   };
 
   dayNumber = (day) => {
@@ -113,7 +118,7 @@ class BookAppoinment extends Component {
   };
 
   datesBlacklistFunc = (date) => {
-    const {days, appointments} = this.props.route.params.doctor;
+    const { days, appointments } = this.props.route.params.doctor;
     const appt_dates = appointments.map((appt) => {
       return moment(appt.date).format('DD/MM/YYYY');
     });
@@ -161,6 +166,19 @@ class BookAppoinment extends Component {
           flex: 1,
           backgroundColor: '#ECF1FA',
         }}>
+
+        <Overlay overlayStyle={styles.overlay} isVisible={this.state.visible} onBackdropPress={this.toggleOverlay}>
+          <Text style={styles.overlayHeading}>Account details</Text>
+          <Text style={[styles.overlayText,{ marginTop: 20 }]}>Fees: {Doc_data.fees}</Text>
+          <Text style={styles.overlayText}>Bank name: {Doc_data.Bank}</Text>
+          <Text style={styles.overlayText}>Bank account no: {Doc_data.accountNo}</Text>
+          <Button
+            title="Ok"
+            onPress={this.toggleOverlay}
+            containerStyle={{ backgroundColor: '#2e2d84', marginTop: 30, width: 200, alignSelf: 'center' }}
+          />
+        </Overlay>
+
         <ScrollView
           showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}>
@@ -179,7 +197,7 @@ class BookAppoinment extends Component {
                   source={require('../../../assets/BookAppointment/doctor.jpg')}
                 />
               </View>
-              <View style={{flex: 2, height: 130}}>
+              <View style={{ flex: 2, height: 130 }}>
                 <View style={styles.DocProfileInfo}>
                   <Text
                     style={{
@@ -237,20 +255,22 @@ class BookAppoinment extends Component {
                       flexDirection: 'column',
                       marginBottom: '5%',
                     }}>
-                    <Text
+                    <TouchableOpacity
+                      onPress={this.toggleOverlay}
                       style={{
                         marginBottom: '5%',
                         fontSize: 20,
                         fontWeight: '900',
+                        
                       }}>
-                      Thu, 09 Apr
-                    </Text>
+                     <Text style={{ color: 'blue' }}>Account details</Text>
+                    </TouchableOpacity>
 
                     <Text
                       style={{
                         color: 'grey',
                       }}>
-                      3 Slots Available
+                      Availabel slots
                     </Text>
                   </View>
                 </View>
@@ -271,8 +291,8 @@ class BookAppoinment extends Component {
                     Select Your Date
                   </Text>
                   <CalendarStrip
-                    calendarAnimation={{type: 'sequence', duration: 50}}
-                    style={{height: 100, width: '100%', marginBottom: '10%'}}
+                    calendarAnimation={{ type: 'sequence', duration: 50 }}
+                    style={{ height: 100, width: '100%', marginBottom: '10%' }}
                     datesBlacklist={(date) => this.datesBlacklistFunc(date)}
                     daySelectionAnimation={{
                       type: 'background',
@@ -301,10 +321,10 @@ class BookAppoinment extends Component {
                 {/* timing dropdown */}
                 <View style={styles.pickerView}>
                   <RNPickerSelect
-                    style={{inputAndroid: {color: 'black'}}}
-                    placeholder={{label: 'Select a time', value: ''}}
+                    style={{ inputAndroid: { color: 'black' } }}
+                    placeholder={{ label: 'Select a time', value: '' }}
                     onValueChange={(time) => {
-                      this.setState({time});
+                      this.setState({ time });
                     }}
                     items={this.state.timeSlots}
                   />
@@ -362,7 +382,7 @@ class BookAppoinment extends Component {
                           <Flag code="PK" size={24} />
                           <Text style={styles.LanguageLabel}>Urdu</Text>
 
-                          <Flag code="GB" size={24} style={{marginLeft: 30}} />
+                          <Flag code="GB" size={24} style={{ marginLeft: 30 }} />
                           <Text style={styles.LanguageLabel}>English</Text>
                         </View>
                       </View>
@@ -780,6 +800,20 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 15,
   },
+  overlay: {
+    padding: 20,
+    height: 400,
+  },
+  overlayText: {
+    fontSize: 20,
+    fontWeight: "600"
+  },
+  overlayHeading: {
+    fontSize: 26,
+    fontWeight: 'bold',
+    color: 'darkblue',
+    marginBottom: 30
+  }
 });
 
 export default BookAppoinment;

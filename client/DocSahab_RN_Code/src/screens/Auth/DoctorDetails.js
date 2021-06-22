@@ -31,6 +31,9 @@ const DocDetValSchema = yup.object({
   days: yup.array().required('Day is required'),
   startTime: yup.string().required('Start time is required'),
   endTime: yup.string().required('End time is required'),
+  account_no: yup.string().required('Account no is required'),
+  fees: yup.string().required('Fees is required'),
+
 });
 
 var Day = [
@@ -48,6 +51,8 @@ const doctordetails = () => {
   const navigation = useNavigation();
 
   const [qualification, setQualification] = useState();
+  const [bank, setBank] = useState();
+
   const [specialization, setSpecialization] = useState();
   const [days, setDay] = useState([]);
 
@@ -98,6 +103,9 @@ const doctordetails = () => {
             startTime: '',
             endTime: '',
             days: [],
+            bank: '',
+            account_no: '',
+            fees: ''
           }}
           validationSchema={DocDetValSchema}
           onSubmit={(values, actions) => {
@@ -142,6 +150,20 @@ const doctordetails = () => {
                     </View>
                     <Text style={globalStyles.errorText}>
                       {props.touched.yearsOfExp && props.errors.yearsOfExp}
+                    </Text>
+
+                    <View style={globalStyles.inputView}>
+                      <TextInput
+                        style={globalStyles.inputText}
+                        placeholder="Fees"
+                        placeholderTextColor="#003f5c"
+                        onChangeText={props.handleChange('fees')}
+                        value={props.values.fees}
+                        onBlur={props.handleBlur('fees')}
+                      />
+                    </View>
+                    <Text style={globalStyles.errorText}>
+                      {props.touched.fees && props.errors.fees}
                     </Text>
 
                     {/* qualification drop down */}
@@ -262,6 +284,66 @@ const doctordetails = () => {
                       {props.touched.specialization &&
                         props.errors.specialization}
                     </Text>
+
+                    <View style={globalStyles.inputView}>
+                      <TextInput
+                        style={globalStyles.inputText}
+                        placeholder="Bank account number"
+                        placeholderTextColor="#003f5c"
+                        onChangeText={props.handleChange('account_no')}
+                        value={props.values.account_no}
+                        onBlur={props.handleBlur('account_no')}
+                      />
+                    </View>
+                    <Text style={globalStyles.errorText}>
+                      {props.touched.account_no && props.errors.account_no}
+                    </Text>
+                    
+                    {/* Bank drop down */}
+                    <View style={globalStyles.inputLabel}>
+                      <Text style={globalStyles.inputLabelText}>
+                        Select your bank
+                      </Text>
+                    </View>
+
+                    <View style={globalStyles.pickerView}>
+                      <RNPickerSelect
+                        style={{inputAndroid: {color: 'black'}}}
+                        placeholder={{
+                          label: 'Select your bank',
+                          value: '',
+                        }}
+                        onValueChange={(bank, value) => {
+                          setBank(value);
+                          props.values.bank = bank;
+                        }}
+                        selectedValue={bank}
+                        items={[
+                          {label: 'Bank Alfalah', value: 'Bank Alfalah'},
+                          {label: 'Meezan Bank', value: 'Meezan Bank'},
+                          {label: 'Habib Bank', value: 'Habib Bank'},
+                          {
+                            label: 'UBL',
+                            value: 'UBL',
+                          },
+                          {label: 'Standard chartered', value: 'Standard chartered'},
+                          {label: 'Askari Bank', value: 'Askari Bank'},
+                          {
+                            label: 'Bank Al-Habib',
+                            value: 'Bank Al-Habib',
+                          },
+                          {
+                            label: 'Faysal Bank',
+                            value: 'Faysal Bank',
+                          },
+                        ]}
+                      />
+                    </View>
+                    <Text style={globalStyles.errorText}>
+                      {props.touched.qualification &&
+                        props.errors.qualification}
+                    </Text>
+
 
                     {/* time range picker */}
                     <View style={globalStyles.inputLabel}>

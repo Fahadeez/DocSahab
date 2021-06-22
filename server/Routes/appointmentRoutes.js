@@ -19,19 +19,19 @@ const storage = client.new({
     jsonKeyFile: join(__dirname, './serviceAccountKeys.json'),
 });
 const bucket = 'e-tutor-9f2c2.appspot.com/';
-
+const { v4: uuidv4 } = require('uuid');
 // const storage = new Storage();
 module.exports = app => {
 
     app.post('/api/book-appointment', async (req, res) => {
         if (req.body && req.user) {
-            const { name, specialization, date, time, reason, docId } = req.body;
+            const { name, specialization, date, time, reason, docId, fees, accountNo, Bank } = req.body;
             console.log("book-appointments", req.body)
             const dateObj = new Date(date)
+            const uniqueId = uuidv4();
             const doctor = await Doctor.findByIdAndUpdate(
                 {
                     _id: docId
-
                 },
                 {
                     $push: {
@@ -39,9 +39,11 @@ module.exports = app => {
                             date: moment(dateObj).format('DD/MM/YYYY'),
                             time: time,
                             reason: reason,
-                            fees: '1000',
+                            fees: fees,
                             id: req.user._id,
-                            name: req.user.firstName + " " + req.user.lastName
+                            name: req.user.firstName + " " + req.user.lastName,
+                            paymentAcknowlegment: false,
+                            uniqueId
                         },
                     }
 
@@ -51,7 +53,7 @@ module.exports = app => {
             const doctor2 = await Doctor.findByIdAndUpdate({
                 _id: docId,
             }, {
-                $addToSet: {
+                $push: {
                     patients: {
                         patientID: req.user._id,
                         patientName: req.user.firstName + " " + req.user.lastName
@@ -70,7 +72,9 @@ module.exports = app => {
                             date: moment(dateObj).format('DD/MM/YYYY'),
                             time: time,
                             reason: reason,
-                            fees: '1000'
+                            paymentAcknowlegment: false,
+                            fees: fees,
+                            uniqueId
 
                         },
                     },
@@ -92,6 +96,11 @@ module.exports = app => {
                 subject: 'Appointment confirmation',
                 html: `<div> 
                 <h4>Your appointment has been scheduled on Doc Sahab, Following are your appointment details,</h4>
+                <h3>Please pay amount ${fees} to the following bank account and wait for the doctor's acknowlegment</h3>
+                <h2>Bank account details </h2>
+                <h3>Bank name: ${Bank}</h3>
+                <h3>Bank Account no: ${accountNo}</h3>
+
                 <h2>Appointment details</h2>
                       <h3>Doctor: ${name}</h3>
                       <h3>Specialization: ${specialization}</h3>
@@ -102,7 +111,6 @@ module.exports = app => {
                       <br>
                       <b>Note: Please join the meeting on provided date and time via meeting id </b>
                       </div>`,
-
             };
 
             console.log('sending mail');
@@ -138,6 +146,38 @@ module.exports = app => {
 
     });
 
+    app.post('/api/change-payment-status', async (req, res) => {
+        if (req.body && req.user) {
+            console.log("/api/change-payment-status", req.body)
+            const { id, uniqueId } = req.body.data
+
+            User.updateOne({ _id: id, "appointments.uniqueId": uniqueId }, {
+                $set: {
+                    "appointments.$.paymentAcknowlegment": req.body.status
+                },
+            }, function (err, resp) {
+                if (err) {
+
+                }
+                else {
+                    console.log("User record updated")
+                }
+            })
+            Doctor.updateOne({ _id: req.user._id, "appointments.uniqueId": uniqueId }, {
+                $set: {
+                    "appointments.$.paymentAcknowlegment": req.body.status
+                },
+            }, function (err, resp) {
+                if (err) {
+
+                }
+                else {
+                    console.log("Doctor record updated")
+                    res.send("Record updated").status(200)
+                }
+            })
+        }
+    });
 
     // app.get('/api/doctor/:id', async (req, res) => {
     //     const id = req.params.id;

@@ -119,6 +119,9 @@ const signUpAsDoctor = (dispatch) => {
       endTime,
       yearsOfExp,
       reg_no,
+      bank,
+      account_no,
+      fees
     },
     navigate,
   ) => {
@@ -130,6 +133,9 @@ const signUpAsDoctor = (dispatch) => {
       endTime,
       yearsOfExp,
       reg_no,
+      account_no,
+      bank,
+      fees
     });
     try {
       const email = await AsyncStorage.getItem('doctorSignUpEmail');
@@ -143,6 +149,9 @@ const signUpAsDoctor = (dispatch) => {
         yearsOfExp,
         email,
         reg_no,
+        bank,
+        account_no,
+        fees
       });
       console.log(response.data);
       if (response.data == "Doctor's details saved") {

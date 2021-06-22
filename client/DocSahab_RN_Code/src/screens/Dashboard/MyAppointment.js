@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
   View,
   Text,
@@ -6,19 +6,24 @@ import {
   TouchableOpacity,
   ScrollView,
   FlatList,
+  Switch,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import {SearchBar} from 'react-native-elements';
+import { SearchBar } from 'react-native-elements';
 import NavigationBtn from '../../components/navigationBtn';
-import {globalStyles} from '../../styles/globalStyles';
+import { globalStyles } from '../../styles/globalStyles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DocSahabApi from '../../api/DocSahabApi';
-const axios = require('axios');
+import { Button, Overlay } from 'react-native-elements';
 
 class MyAppointment extends Component {
   state = {
     search: '',
     userData: [],
+    refreshing: false,
+    visible: false,
+    paymentStatus: false
+
   };
 
   componentDidMount() {
@@ -27,22 +32,67 @@ class MyAppointment extends Component {
   }
 
   async fetchAppointmentDetails() {
+    this.setState({
+      refreshing: true,
+    });
     try {
       const response = await DocSahabApi.get('/auth/current_user');
       console.log(response);
-      this.setState({userData: response.data});
-      console.log(response.data.appointments)
+      this.setState({ userData: response.data, refreshing: false });
     } catch (err) {
       console.log(err);
     }
   }
 
   updateSearch = (search) => {
-    this.setState({search});
+    this.setState({ search });
   };
 
+  handleRefresh = () => {
+    this.setState({ refreshing: false }, () => {
+      this.fetchAppointmentDetails();
+    });
+  };
+  toggleOverlay = () => {
+    this.setState({ visible: !this.state.visible })
+  };
+  async changePaymentStatus(appointment) {
+    try{
+      const res = await DocSahabApi.post("/api/change-payment-status", { data: appointment, status: this.state.paymentStatus})
+      if(res.status === 200){
+        this.setState({ visible: false })
+      }
+    }
+    catch(e){
+      console.log(e)
+    }
+  }
+
+  renderSwitch(appointment) {
+
+    return (
+      <>
+        <Switch
+          trackColor={{ false: '#767577', true: '#C4C9FC' }}
+          thumbColor={'#f4f3f4'}
+          style={{ alignSelf: 'flex-start', marginLeft: 30 }}
+          onValueChange={(value) => {
+            this.setState({ paymentStatus: value });
+          }}
+          value={this.state.paymentStatus}
+        />
+        <Button
+          title="Ok"
+          onPress={() => this.changePaymentStatus(appointment)}
+          containerStyle={{ backgroundColor: '#2e2d84', marginTop: 30, width: 200, alignSelf: 'center' }}
+        />
+      </>
+    )
+  }
+
+
   render() {
-    const {search} = this.state;
+    const { search } = this.state;
 
     return (
       // root container
@@ -51,6 +101,7 @@ class MyAppointment extends Component {
           flex: 1,
           backgroundColor: '#ECF1FA',
         }}>
+
         <ScrollView
           showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}>
@@ -60,24 +111,6 @@ class MyAppointment extends Component {
               screenName={'DashboardScreen'}
               title="Your Appointments"
             />
-
-            <View style={{marginBottom: '10%', marginTop: '5%'}}>
-              <SearchBar
-                inputContainerStyle={{backgroundColor: 'white'}}
-                containerStyle={{
-                  backgroundColor: '#ECF1FA',
-                  borderTopWidth: 0,
-                  borderBottomWidth: 0,
-                  margin: 0,
-                  padding: 0,
-                }}
-                round
-                searchIcon={{size: 30}}
-                placeholder="Search"
-                onChangeText={this.updateSearch}
-                value={search}
-              />
-            </View>
 
             {/* my appointments details tab navigation */}
             <View style={styles.UpcomingInfoTabNavigation}>
@@ -98,121 +131,130 @@ class MyAppointment extends Component {
                     {/* Upcoming View Sub Container for my appointments */}
                     <FlatList
                       data={this.state.userData.appointments}
-                      renderItem={({item}) => {
+                      refreshing={this.state.refreshing}
+                      showsVerticalScrollIndicator={false}
+                      onRefresh={this.handleRefresh}
+                      renderItem={({ item }) => {
+                        console.log("Item__Appointment",item)
                         return (
-                          <TouchableOpacity onPress = {() => this.props.navigation.navigate('Meeting', {
-                            id: item.id
-                            })}>
-                          <View>
-                            <View
-                              style={{
-                                flexDirection: 'row',
-                                alignItems: 'center',
-                              }}>
+                          <TouchableOpacity onPress={() => this.state.userData.doctor ? this.toggleOverlay() : null}>
+                            <Overlay overlayStyle={styles.overlay} isVisible={this.state.visible} onBackdropPress={this.toggleOverlay}>
+                              <Text style={styles.overlayHeading}>Did you get the payment?</Text>
+                              {this.renderSwitch(item)}
+
+                            </Overlay>
+                            <View>
                               <View
                                 style={{
                                   flexDirection: 'row',
-                                  width: '70%',
+                                  alignItems: 'center',
                                 }}>
                                 <View
                                   style={{
-                                    flexDirection: 'column',
+                                    flexDirection: 'row',
+                                    width: '70%',
                                   }}>
-                                  <View style={{marginBottom: '0.3%'}}>
-                                    <Text style={{fontSize: 12, color: 'grey'}}>
-                                      {item.date}
-                                    </Text>
-                                  </View>
-
                                   <View
                                     style={{
-                                      flexDirection: 'row',
-                                      marginBottom: '3%',
+                                      flexDirection: 'column',
                                     }}>
-                                    <Text
-                                      style={{
-                                        fontSize: 15,
-                                        textAlign: 'center',
-                                      }}>
-                                      {item.specialization}
-                                    </Text>
-                                    <Text
-                                      style={{
-                                        fontSize: 15,
-                                        textAlign: 'center',
-                                      }}>
-                                      {' '}
-                                      -{' '}
-                                    </Text>
-                                    <Text
-                                      style={{
-                                        fontSize: 15,
-                                        textAlign: 'center',
-                                      }}>
-                                      {item.name + "  "}
-                                    </Text>
-                                    <Text
-                                      style={{
-                                        fontSize: 15,
-                                        textAlign: 'center',
-                                      }}>
-                                      {item.time}
-                                    </Text>
-
+                                    <View style={{ marginBottom: '0.3%' }}>
+                                      <Text style={{ fontSize: 12, color: 'grey' }}>
+                                        {item.date}
+                                      </Text>
+                                    </View>
 
                                     <View
                                       style={{
-                                        marginStart: '3%',
-                                        justifyContent: 'center',
+                                        flexDirection: 'row',
+                                        marginBottom: '3%',
                                       }}>
-                                      <Icon
-                                        name={'info-circle'}
-                                        size={16}
-                                        color="#2A2AC0"
-                                      />
+                                      <Text
+                                        style={{
+                                          fontSize: 15,
+                                          textAlign: 'center',
+                                        }}>
+                                        {item.specialization}
+                                      </Text>
+                                      <Text
+                                        style={{
+                                          fontSize: 15,
+                                          textAlign: 'center',
+                                        }}>
+                                        {' '}
+                                      -{' '}
+                                      </Text>
+                                      <Text
+                                        style={{
+                                          fontSize: 15,
+                                          textAlign: 'center',
+                                        }}>
+                                        {item.name + "  "}
+                                      </Text>
+                                      <Text
+                                        style={{
+                                          fontSize: 15,
+                                          textAlign: 'center',
+                                        }}>
+                                        {item.time}
+                                      </Text>
+                                      <View
+                                        style={{
+                                          marginStart: '3%',
+                                          justifyContent: 'center',
+                                        }}>
+                                        <Icon
+                                          name={'info-circle'}
+                                          size={16}
+                                          color="#2A2AC0"
+                                        />
+                                      </View>
                                     </View>
+                                    <View>
+                                      <Text>Payment status: {item.paymentAcknowlegment ? "Paid" : "Not paid"}</Text>
+                                    </View>
+                                  </View>
+
+                                </View>
+
+                                <View
+                                  style={{
+                                    flexDirection: 'row',
+                                    justifyContent: 'flex-end',
+                                    width: '30%',
+                                  }}>
+                                  <View style={{ marginEnd: '3%' }}>
+                                    <Icon
+                                      name={'pencil'}
+                                      size={20}
+                                      color="#2A2AC0"
+                                    />
+                                  </View>
+                                  <View>
+                                    <TouchableOpacity>
+                                      <View>
+                                        <Text
+                                          style={{
+                                            color: '#2A2AC0',
+                                            fontSize: 16,
+                                            fontWeight: '500',
+                                          }}>
+                                          Modify
+                                      </Text>
+                                      </View>
+                                    </TouchableOpacity>
                                   </View>
                                 </View>
                               </View>
-
                               <View
                                 style={{
-                                  flexDirection: 'row',
-                                  justifyContent: 'flex-end',
-                                  width: '30%',
-                                }}>
-                                <View style={{marginEnd: '3%'}}>
-                                  <Icon
-                                    name={'pencil'}
-                                    size={20}
-                                    color="#2A2AC0"
-                                  />
-                                </View>
-                                <View>
-                                  <TouchableOpacity>
-                                    <View>
-                                      <Text
-                                        style={{
-                                          color: '#2A2AC0',
-                                          fontSize: 16,
-                                          fontWeight: '500',
-                                        }}>
-                                        Modify
-                                      </Text>
-                                    </View>
-                                  </TouchableOpacity>
-                                </View>
-                              </View>
+                                  borderBottomColor: 'lightgrey',
+                                  borderBottomWidth: 1,
+                                  marginTop: 15,
+                                  marginBottom: 15,
+                                }}
+                              />
                             </View>
-                            <View
-                              style={{
-                                borderBottomColor: 'lightgrey',
-                                borderBottomWidth: 1,
-                                marginTop: 15,
-                                marginBottom: 15,
-                              }}
-                            />
-                          </View>
                           </TouchableOpacity>
                         );
                       }}
@@ -223,9 +265,9 @@ class MyAppointment extends Component {
                   {/* button */}
                   <TouchableOpacity
                     style={styles.Button}
-                    // onPress={
-                    //     () => navigation.navigate()
-                    // }
+                  // onPress={
+                  //     () => navigation.navigate()
+                  // }
                   >
                     <Text style={globalStyles.buttonTxt}>
                       Book A New Appointment
@@ -300,6 +342,20 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     alignSelf: 'center',
   },
+  overlay: {
+    padding: 20,
+    height: 400,
+  },
+  overlayText: {
+    fontSize: 20,
+    fontWeight: "600"
+  },
+  overlayHeading: {
+    fontSize: 26,
+    fontWeight: 'bold',
+    color: 'darkblue',
+    marginBottom: 30
+  }
 });
 
 export default MyAppointment;

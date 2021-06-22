@@ -5,8 +5,11 @@ const { Storage } = require('@google-cloud/storage');
 const admin = require('firebase-admin');
 // const stream = require('stream');
 // const jwt = require('jsonwebtoken');
+const moment = require('moment')
 const User = mongoose.model('users');
 const Doctor = mongoose.model('doctors');
+const Order = mongoose.model('orders');
+
 
 const { join } = require('path');
 const { client } = require('google-cloud-bucket');
@@ -53,83 +56,26 @@ module.exports = app => {
 		});
 	});
 
-	app.post('/api/addLikedProfile', async (req, res) => {
+	app.post('/api/order-details', async (req, res) => {
+		console.log("/api/order-details",req.body);
 		if (req.body && req.user) {
-			const user = await User.findByIdAndUpdate(
-				{ _id: req.user._id },
-				{
-					$push: {
-						likedProfiles: {
-							id: req.body.id,
-						},
-					},
-				}
-			);
-			user.save();
-			res.send('record updated').status(200);
-		}
-	});
-
-	app.post('/api/removeLikedProfile', async (req, res) => {
-		if (req.body && req.user) {
-			const user = await User.findByIdAndUpdate(
-				{ _id: req.user._id },
-				{
-					$pull: {
-						likedProfiles: {
-							id: req.body.id,
-						},
-					},
-				}
-			);
-			user.save();
-			res.send('record updated').status(200);
-		}
-	});
-
-	app.get('/api/removeAllLikedProfiles', async (req, res) => {
-		if (req.body && req.user) {
-			const user = await User.findByIdAndUpdate(
-				{ _id: req.user._id },
-				{
-					$set: {
-						likedProfiles: []
-					},
-				}
-			);
-			user.save();
-			res.send('ok').status(200);
-		}
-	});
-
-	app.get('/api/getLikedProfiles', async (req, res) => {
-
-		if (req.user) {
-			User.findById({ _id: req.user._id }, async (err, user) => {
-				if (err) {
-					console.log('Error finding user');
-					//return res.send('Error find user')
+			const { subTotal, paymentMethod, products } = req.body;
+			const order = new Order();
+			order.subTotal = subTotal;
+			order.paymentMethod = paymentMethod;
+			order.products = products;
+			order.userId = req.user._id;
+			order.date = JSON.stringify(moment());
+			order.save().then((resp) => {
+				if (resp) {
+					return res.send("Order saved successfully").status(200);
 				} else {
-					console.log('user found, mapping array');
-					const idarr = user.likedProfiles.map(async profile => {
-						const ids = await User.findById({ _id: profile.id });
-						// console.log("ID: ",ids)
-						return ids;
-					});
-
-					// console.log("ID Array before: ", JSON.stringify(idarr))
-
-					Promise.all(idarr).then(list => {
-						// console.log("ID Array: ", list)
-						return res.send(list).status(200);
-					});
+					return res.send("db error").status(400);
 				}
 			});
-			//return res.send('record fetched').status(200);
 		}
-		console.log('User not logged in');
-		//return res.send().status(400);
 	});
+
 
 	app.post('/api/select-doctor-with-name', async (req, res) => {
 		const { limit } = req.query;
@@ -160,7 +106,7 @@ module.exports = app => {
 			if (city) {
 				condition.city = city;
 			}
-			if(specialization){
+			if (specialization) {
 				condition.specialization = specialization;
 			}
 			const query = Doctor.find(condition).limit(checkLim)
@@ -175,7 +121,7 @@ module.exports = app => {
 		} else if (name && !filters) {
 
 			const query2 = Doctor.find({ firstName: name.toLowerCase() }).limit(checkLim)
-			query2.exec((err,doctor) => {
+			query2.exec((err, doctor) => {
 				if (err) {
 					return res.send('Error in DB').status(400);
 				}
@@ -193,7 +139,7 @@ module.exports = app => {
 
 			console.log("Filters in selectByName", filters)
 			// const { gender, qualification, country, city, state } = req.body.filters;
-			let condition = { };
+			let condition = {};
 			if (gender) {
 				condition.gender = gender;
 			}
@@ -203,11 +149,11 @@ module.exports = app => {
 			if (city) {
 				condition.city = city;
 			}
-			if(specialization){
+			if (specialization) {
 				condition.specialization = specialization;
 			}
 			const query3 = Doctor.find(condition).limit(checkLim)
-			query3.exec((err,doctor ) => {
+			query3.exec((err, doctor) => {
 				if (err) {
 					return res.send('Error in DB').status(400);
 				}

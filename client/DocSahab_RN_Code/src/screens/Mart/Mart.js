@@ -4,7 +4,7 @@ import HeaderWithCart from '../../components/headerWithCart';
 import {globalStyles} from '../../styles/globalStyles';
 import Icon from 'react-native-vector-icons/Feather';
 
-const MartScreen = () => {
+const MartScreen = ({ navigation }) => {
 
 	var [ isPress, setIsPress ] = React.useState(false);
 
@@ -24,10 +24,10 @@ const MartScreen = () => {
 
 	const products = [
 
-	{id: 1, name: 'Posture Cushion', sales: '1198', ratings: 5},
-	{id: 2, name: 'Thermometer', sales: '1000', ratings: 5},
-	{id: 3, name: 'NAUCARTURE Thigh Pad', sales: '950', ratings: 5},
-	{id: 4, name: 'Omron Blood Pressure Machine', sales: '600', ratings: 4}
+	{id: 1, name: 'Posture Cushion', sales: '1198', ratings: 2, description: "Buy Pure Posture Seat Cushion at pocket friendly price, you can also use this comfortable cushion in your cars and home or office chair to avoid lower back pain.", price: "1900"},
+	{id: 2, name: 'Thermometer', sales: '1000', ratings: 4, description: "IR thermometers allow users to measure body temperature quickly and noninvasively. Product description. IR thermometers consist of an IR probe, electronic circuitry, a microprocessor, and an LCD or LED display. There are two types of IR thermometry: ear and skin.", price: "700"},
+	{id: 3, name: 'NAUCARTURE Thigh Pad', sales: '950', ratings: 5, description: "This is a Vegetarian product. About this item. Material: Neoprene ,size : 5 Inch .1 pc of thigh support is a versatile leg brace ...", price: "550"},
+	{id: 4, name: 'Omron Blood Pressure Machine', sales: '600', ratings: 1, description: " MANUAL BLOOD PRESSURE MONITORS. Manual devices include a cuff that wraps around your arm, a rubber squeeze bulb, and a gauge that ...", price: "2500"}
 
 	];
 
@@ -82,12 +82,14 @@ const MartScreen = () => {
 
 					    	<View>
 					    		<View style = {styles.productView}>
-					        	<TouchableOpacity>
+					        	<TouchableOpacity onPress={() => navigation.navigate("productDetails",{
+									item
+								})}>
 					        		<View style = {styles.imageContainer}>
 					        			<Image source={require('../../../assets/image.jpg')} style= {{height: '100%', width: '100%'}} />
 					        		</View>
 				                    <Text numberOfLines={1} style= {{alignSelf: 'center', paddingBottom: 5}}>{item.name}</Text>
-				                    <Text style= {{alignSelf: 'center', fontSize: 11, paddingBottom: 20}}>Total Sales: {item.sales}</Text>
+				                    <Text style= {{alignSelf: 'center', fontSize: 11, paddingBottom: 20}}>{item.price}</Text>
 					        	</TouchableOpacity>
 					        </View>
 					    		<View style = {styles.row}></View>
@@ -100,10 +102,6 @@ const MartScreen = () => {
 
 				/>
 				</View>
-					    
-					    
-					    
-
 
 				<View>
 					<Text style = {styles.sectionText}>Best Rated</Text>
@@ -121,7 +119,7 @@ const MartScreen = () => {
 					        			<Image source={require('../../../assets/image.jpg')} style= {{height: '100%', width: '100%'}} />
 					        		</View>
 				                    <Text numberOfLines={1} style= {{alignSelf: 'center', paddingBottom: 5}}>{item.name}</Text>
-				                    <Text style= {{alignSelf: 'center', fontSize: 11, paddingBottom: 20}}>Total Sales: {item.sales}</Text>
+				                    <Text style= {{alignSelf: 'center', fontSize: 11, paddingBottom: 20}}>{item.price}</Text>
 					        	</TouchableOpacity>
 					        </View>
 					    		<View style = {styles.row}></View>
@@ -150,7 +148,7 @@ const MartScreen = () => {
 					        			<Image source={require('../../../assets/image.jpg')} style= {{height: '100%', width: '100%'}} />
 					        		</View>
 				                    <Text numberOfLines={1} style= {{alignSelf: 'center', paddingBottom: 5}}>{item.name}</Text>
-				                    <Text style= {{alignSelf: 'center', fontSize: 11, paddingBottom: 20}}>Total Sales: {item.sales}</Text>
+				                    <Text style= {{alignSelf: 'center', fontSize: 11, paddingBottom: 20}}>{item.price}</Text>
 					        	</TouchableOpacity>
 					        </View>
 					    		<View style = {styles.row}></View>
