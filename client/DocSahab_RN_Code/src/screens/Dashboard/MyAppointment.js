@@ -14,9 +14,15 @@ import NavigationBtn from '../../components/navigationBtn';
 import { globalStyles } from '../../styles/globalStyles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DocSahabApi from '../../api/DocSahabApi';
-import { Button, Overlay } from 'react-native-elements';
+import { Button, Overlay, Tooltip } from 'react-native-elements';
 
 class MyAppointment extends Component {
+  constructor(props) {
+    super(props);
+    // create a ref to store the textInput DOM element
+    this.tooltipRef = React.createRef();
+  }
+
   state = {
     search: '',
     userData: [],
@@ -57,19 +63,18 @@ class MyAppointment extends Component {
     this.setState({ visible: !this.state.visible })
   };
   async changePaymentStatus(appointment) {
-    try{
-      const res = await DocSahabApi.post("/api/change-payment-status", { data: appointment, status: this.state.paymentStatus})
-      if(res.status === 200){
+    try {
+      const res = await DocSahabApi.post("/api/change-payment-status", { data: appointment, status: this.state.paymentStatus })
+      if (res.status === 200) {
         this.setState({ visible: false })
       }
     }
-    catch(e){
+    catch (e) {
       console.log(e)
     }
   }
 
   renderSwitch(appointment) {
-
     return (
       <>
         <Switch
@@ -90,10 +95,8 @@ class MyAppointment extends Component {
     )
   }
 
-
   render() {
     const { search } = this.state;
-
     return (
       // root container
       <View
@@ -109,7 +112,7 @@ class MyAppointment extends Component {
           <View style={styles.containerForMyAppointment}>
             <NavigationBtn
               screenName={'DashboardScreen'}
-              title="Your Appointments"
+              title={this.state.userData.role === 'admin' ? "All Appointments" : "Your Appointnments"}
             />
 
             {/* my appointments details tab navigation */}
@@ -125,9 +128,8 @@ class MyAppointment extends Component {
                     showsVerticalScrollIndicator={false}
                     showsHorizontalScrollIndicator={false}>
                     <View style={styles.SwapableViews}>
-                      <Text style={styles.SwapableViewsTitle}>Upcoming</Text>
+                      <Text style={styles.SwapableViewsTitle}>{this.state.userData.role === 'admin' ? null : 'Upcoming'}</Text>
                     </View>
-
                     {/* Upcoming View Sub Container for my appointments */}
                     <FlatList
                       data={this.state.userData.appointments}
@@ -135,13 +137,21 @@ class MyAppointment extends Component {
                       showsVerticalScrollIndicator={false}
                       onRefresh={this.handleRefresh}
                       renderItem={({ item }) => {
-                        console.log("Item__Appointment",item)
-                        return (
-                          <TouchableOpacity onPress={() => this.state.userData.doctor ? this.toggleOverlay() : null}>
+                        console.log("Items_",item)
+                        return this.state.userData.doctor ? (
+                          <Tooltip ref={this.tooltipRef} popover={
+                            <TouchableOpacity onPress={() => {
+                              this.tooltipRef.current.toggleTooltip()
+                              this.props.navigation.navigate('Meeting', {
+                                id: item._id
+                              })
+                            }}  >
+                              <Text>Join a meeting</Text>
+                            </TouchableOpacity>
+                          } withOverlay={false} containerStyle={{ color: 'white', borderBottomWidth: 0 }} highlightColor="white">
                             <Overlay overlayStyle={styles.overlay} isVisible={this.state.visible} onBackdropPress={this.toggleOverlay}>
                               <Text style={styles.overlayHeading}>Did you get the payment?</Text>
                               {this.renderSwitch(item)}
-
                             </Overlay>
                             <View>
                               <View
@@ -163,7 +173,6 @@ class MyAppointment extends Component {
                                         {item.date}
                                       </Text>
                                     </View>
-
                                     <View
                                       style={{
                                         flexDirection: 'row',
@@ -182,14 +191,14 @@ class MyAppointment extends Component {
                                           textAlign: 'center',
                                         }}>
                                         {' '}
-                                      -{' '}
+                                        -{' '}
                                       </Text>
                                       <Text
                                         style={{
                                           fontSize: 15,
                                           textAlign: 'center',
                                         }}>
-                                        {item.name + "  "}
+                                        {"Patient name: "+item.patientName+" "}
                                       </Text>
                                       <Text
                                         style={{
@@ -240,7 +249,7 @@ class MyAppointment extends Component {
                                             fontWeight: '500',
                                           }}>
                                           Modify
-                                      </Text>
+                                        </Text>
                                       </View>
                                     </TouchableOpacity>
                                   </View>
@@ -255,24 +264,147 @@ class MyAppointment extends Component {
                                 }}
                               />
                             </View>
-                          </TouchableOpacity>
-                        );
+                          </Tooltip>
+                        )
+                          :
+                          (
+                            <TouchableOpacity onPress={() => {
+                              if (this.state.userData.role === 'admin') this.toggleOverlay()
+                              else null
+                            }}>
+                              <Overlay overlayStyle={styles.overlay} isVisible={this.state.visible} onBackdropPress={this.toggleOverlay}>
+                                <Text style={styles.overlayHeading}>Did you get the payment?</Text>
+                                {this.renderSwitch(item)}
+                              </Overlay>
+                              <View>
+                                <View
+                                  style={{
+                                    flexDirection: 'row',
+                                    alignItems: 'center',
+                                  }}>
+                                  <View
+                                    style={{
+                                      flexDirection: 'row',
+                                      width: '70%',
+                                    }}>
+                                    <View
+                                      style={{
+                                        flexDirection: 'column',
+                                      }}>
+                                      <View style={{ marginBottom: '0.3%' }}>
+                                        <Text style={{ fontSize: 12, color: 'grey' }}>
+                                          {item.date}
+                                        </Text>
+                                      </View>
+
+                                      <View
+                                        style={{
+                                          flexDirection: 'row',
+                                          marginBottom: '3%',
+                                        }}>
+                                        <Text
+                                          style={{
+                                            fontSize: 15,
+                                            textAlign: 'center',
+                                          }}>
+                                          {item.specialization}
+                                        </Text>
+                                        <Text
+                                          style={{
+                                            fontSize: 15,
+                                            textAlign: 'center',
+                                          }}>
+                                          {' '}
+                                          -{' '}
+                                        </Text>
+                                        <Text
+                                          style={{
+                                            fontSize: 15,
+                                            textAlign: 'center',
+                                          }}>
+                                          {'Dr. ' + item.doctorName + ' '}
+                                        </Text>
+                                        <Text
+                                          style={{
+                                            fontSize: 15,
+                                            textAlign: 'center',
+                                          }}>
+                                          {item.time}
+                                        </Text>
+                                        <View
+                                          style={{
+                                            marginStart: '3%',
+                                            justifyContent: 'center',
+                                          }}>
+                                          <Icon
+                                            name={'info-circle'}
+                                            size={16}
+                                            color="#2A2AC0"
+                                          />
+                                        </View>
+                                      </View>
+                                      <View>
+                                        {this.state.userData.role === "admin" ?
+                                          <Text
+                                            style={{
+                                              fontSize: 15,
+                                              textAlign: 'center',
+                                              marginTop: 0
+                                            }}>
+                                            {'Patient name: ' + item.patientName + ' '}
+                                          </Text>
+                                          : null
+                                        }
+                                        <Text>Payment status: {item.paymentAcknowlegment ? "Paid" : "Not paid"}</Text>
+                                      </View>
+                                    </View>
+
+                                  </View>
+
+                                  <View
+                                    style={{
+                                      flexDirection: 'row',
+                                      justifyContent: 'flex-end',
+                                      width: '30%',
+                                    }}>
+                                    <View style={{ marginEnd: '3%' }}>
+                                      <Icon
+                                        name={'pencil'}
+                                        size={20}
+                                        color="#2A2AC0"
+                                      />
+                                    </View>
+                                    <View>
+                                      <TouchableOpacity>
+                                        <View>
+                                          <Text
+                                            style={{
+                                              color: '#2A2AC0',
+                                              fontSize: 16,
+                                              fontWeight: '500',
+                                            }}>
+                                            Modify
+                                          </Text>
+                                        </View>
+                                      </TouchableOpacity>
+                                    </View>
+                                  </View>
+                                </View>
+                                <View
+                                  style={{
+                                    borderBottomColor: 'lightgrey',
+                                    borderBottomWidth: 1,
+                                    marginTop: 15,
+                                    marginBottom: 15,
+                                  }}
+                                />
+                              </View>
+                            </TouchableOpacity>
+                          );
                       }}
                       keyExtractor={(item) => item.id}
                     />
                   </ScrollView>
-
-                  {/* button */}
-                  <TouchableOpacity
-                    style={styles.Button}
-                  // onPress={
-                  //     () => navigation.navigate()
-                  // }
-                  >
-                    <Text style={globalStyles.buttonTxt}>
-                      Book A New Appointment
-                    </Text>
-                  </TouchableOpacity>
                 </View>
 
                 {/* Past Screen */}
@@ -289,7 +421,7 @@ class MyAppointment extends Component {
             </View>
           </View>
         </ScrollView>
-      </View>
+      </View >
     );
   }
 }

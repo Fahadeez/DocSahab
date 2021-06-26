@@ -4,8 +4,10 @@ const { Schema } = mongoose;
 
 const appointmentSchema = Schema({
     
-    id: String,
-    name: String,
+    patientId: String,
+    doctorId: String,
+    patientName: String,
+    doctorName: String,
     specialization: String,
     date: String,
     time: String,

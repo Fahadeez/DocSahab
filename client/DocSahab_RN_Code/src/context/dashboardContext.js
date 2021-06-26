@@ -13,6 +13,8 @@ const dashboardReducer = (state, action) => {
         ...state,
         cart: [...state.cart, action.payload]
       }
+    case 'empty_cart':
+      return []
     default:
       return state;
   }
@@ -21,10 +23,18 @@ const dashboardReducer = (state, action) => {
 const addToCart = (dispatch) => {
   return async (item) => {
     try {
-      // const response = await axios.get('http://192.168.10.8:5000/auth/current_user',config);
-      // console.log("Current User",response.data)
       dispatch({ type: 'add_to_cart', payload: item });
       console.log("item in action", item)
+    } catch (err) {
+      console.log(err)
+    }
+  };
+};
+const emptyCart = (dispatch) => {
+  return async (item) => {
+    try {
+
+      dispatch({ type: 'empty_cart' });
     } catch (err) {
       console.log(err)
     }
@@ -34,7 +44,6 @@ const addToCart = (dispatch) => {
 const signUp = (dispatch) => {
   return async (navigate) => {
     try {
-      // console.log("signup data", { email, password, firstName, lastName, contact, city, role })
       const jsonData = await AsyncStorage.getItem('SignUpData');
       if (jsonData) {
         const data = JSON.parse(jsonData);
@@ -93,7 +102,7 @@ const signUp = (dispatch) => {
 // action functions
 export const { Provider, Context } = createDataContext(
   dashboardReducer,
-  { signUp, addToCart },
+  { signUp, addToCart, emptyCart },
   // { isSignedIn: false, errorMessage: ''}
   {
     token: null,

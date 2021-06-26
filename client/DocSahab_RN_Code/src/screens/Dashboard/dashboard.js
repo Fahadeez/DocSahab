@@ -11,6 +11,8 @@ import {
 } from 'react-native';
 import HeaderView from '../../components/headerView';
 import NavigationHeaderWithBar from '../../components/navigationHeaderWithBar';
+import NavigationBtn from '../../components/navigationBtn';
+
 import { globalStyles } from '../../styles/globalStyles';
 import Icon from 'react-native-vector-icons/Feather';
 import DocSahabApi from '../../api/DocSahabApi';
@@ -21,7 +23,7 @@ import IconAD from 'react-native-vector-icons/AntDesign';
 // import MedicalRecord from './MedicalRecord';
 
 const DashboardScreen = ({ navigation }) => {
-  const { state, fetchUser } = useContext(AuthContext);
+  const { state, fetchUser, signOut } = useContext(AuthContext);
 
   const [data, setData] = useState([]);
   // const navigation = useNavigation();
@@ -42,6 +44,38 @@ const DashboardScreen = ({ navigation }) => {
     }
 
   }, []);
+  
+  function navigate() {
+    navigation.navigate('login')
+  }
+
+
+  if (data.role == 'admin') {
+    return (
+      <View style={globalStyles.containerColor}>
+        <Text style={{ fontSize: 25, color: 'darkblue', marginTop: 30, alignSelf: 'center' }}>Admin panel</Text>
+        <View style={styles.parentBox}>
+          <View style={styles.miniParent}>
+            <TouchableOpacity
+              style={styles.childBox}
+              onPress={() =>
+                navigation.navigate(
+                  'MyAppointment',
+                )
+              }>
+              <Image
+                source={require('../../../assets/appointment.png')}
+                style={styles.childBox}
+              />
+            </TouchableOpacity>
+          </View>
+          <TouchableOpacity onPress={() => { signOut(navigate) }}>
+            <Text style={{ fontSize: 18, color: 'darkblue' }}>Sign out</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    )
+  }
 
   return (
     <View style={globalStyles.containerColor}>

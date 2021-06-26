@@ -60,8 +60,8 @@ export default class VideoScreen extends Component {
     GetAllPermissions();
     DocSahabApi.get('/token').then(results => {
       const { identity, token } = results.data;
-      this.setState({ identity, token });
-      console.log("accessToken", token)
+      console.log("res meeting", identity)
+      this.setState({ identity: identity, token });
     });
 
     this.fetchUser();
@@ -102,8 +102,8 @@ export default class VideoScreen extends Component {
     // switches between fronst camera and Rare camera
     this.refs.twilioVideo.flipCamera()
   }
-  _onRoomDidConnect = () => {
-    console.log("room did connected");
+  _onRoomDidConnect = (data) => {
+    console.log("room did connected", data);
     this.setState({ status: 'connected' })
     // console.log("over");
   }
@@ -118,9 +118,11 @@ export default class VideoScreen extends Component {
     console.log("failed to connect");
     this.setState({ status: 'disconnected' })
   }
+
   _onParticipantAddedVideoTrack = ({ participant, track }) => {
     // call everytime a participant joins the same room
     console.log("onParticipantAddedVideoTrack: ", participant, track)
+    this.setState({ userId: participant.identity })
     this.setState({
       videoTracks: new Map([
         ...this.state.videoTracks,
@@ -137,17 +139,18 @@ export default class VideoScreen extends Component {
     videoTracks.delete(track.trackSid)
     this.setState({ videoTracks: { ...videoTracks } })
   }
+
   navigateToReport() {
-    const id = this.props.route.params.id;
-    console.log(this.props.route.params.id)
+    const { id } = this.props.route.params;
     this.props.navigation.navigate('RecordMeeting', {
       id
     })
+
   }
 
   render() {
     return (
-      <View style={{ flex: 1,  backgroundColor: '#ECF1FA',}}>
+      <View style={{ flex: 1, backgroundColor: '#ECF1FA', }}>
         <NavigationBtn
           screenName={'DashboardScreen'}
           styling={{ marginLeft: 20 }}

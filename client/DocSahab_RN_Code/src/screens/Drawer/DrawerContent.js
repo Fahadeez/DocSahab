@@ -112,17 +112,19 @@ export function DrawerContent(props) {
                             label="Medical Records"
                             onPress={() => { props.navigation.navigate('MedicalRecord') }}
                         />
-                        <DrawerItem
-                            icon={({ color, size }) => (
-                                <Icon
-                                    name="file-account-outline"
-                                    color={'#2A2AC0'}
-                                    size={size}
-                                />
-                            )}
-                            label="Join a meeting"
-                            onPress={() => { props.navigation.navigate('Meeting') }}
-                        />
+                        {data.doctor === false ?
+                            <DrawerItem
+                                icon={({ color, size }) => (
+                                    <Icon
+                                        name="file-account-outline"
+                                        color={'#2A2AC0'}
+                                        size={size}
+                                    />
+                                )}
+                                label="Join a meeting"
+                                onPress={() => { props.navigation.navigate('Meeting') }}
+                            /> : null
+                        }
                         <DrawerItem
                             icon={({ color, size }) => (
                                 <Icon

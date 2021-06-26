@@ -101,7 +101,7 @@ module.exports = (app) => {
   });
 
   app.post("/auth/signup", function (req, res, next) {
-    console.log("/auth/signup",req.body)
+    console.log("/auth/signup", req.body)
     const d = Date();
     let date = d.toString();
     let body = req.body,
@@ -476,28 +476,33 @@ module.exports = (app) => {
       }
     });
   });
-  	// Endpoint to generate access token
-	app.get('/token', function (request, response) {
-		var identity = faker.name.findName();
-		// Create an access token which we will sign and return to the client,
-		// containing the grant we just created
-		var token = new AccessToken(
-			keys.TWILIO_ACCOUNT_SID,
-			keys.TWILIO_API_KEY,
-			keys.TWILIO_API_SECRET
-		);
+  // Endpoint to generate access token
+  app.get('/token', function (request, response) {
+    if (request.user) {
 
-		// Assign the generated identity to the token
-		token.identity = identity;
+      var identity = faker.name.findName();
+      // Create an access token which we will sign and return to the client,
+      // containing the grant we just created
+      var token = new AccessToken(
+        keys.TWILIO_ACCOUNT_SID,
+        keys.TWILIO_API_KEY,
+        keys.TWILIO_API_SECRET
+      );
 
-		const grant = new VideoGrant();
-		// Grant token access to the Video API features
-		token.addGrant(grant);
+      // Assign the generated identity to the token
+      token.identity = identity;
 
-		// Serialize the token to a JWT string and include it in a JSON response
-		response.send({
-			identity: identity,
-			token: token.toJwt()
-		});
-	});
+      const grant = new VideoGrant();
+      // Grant token access to the Video API features
+      token.addGrant(grant);
+
+      // Serialize the token to a JWT string and include it in a JSON response
+      response.send({
+        identity: identity,
+        token: token.toJwt()
+      });
+    }
+
+  });
+
 };

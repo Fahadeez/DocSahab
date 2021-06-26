@@ -40,8 +40,8 @@ module.exports = app => {
                             time: time,
                             reason: reason,
                             fees: fees,
-                            id: req.user._id,
-                            name: req.user.firstName + " " + req.user.lastName,
+                            patientId: req.user._id,
+                            patientName: req.user.firstName + " " + req.user.lastName,
                             paymentAcknowlegment: false,
                             uniqueId
                         },
@@ -67,7 +67,10 @@ module.exports = app => {
                 {
                     $push: {
                         appointments: {
-                            name,
+                            doctorName: name,
+                            doctorId: docId,
+                            patientId: req.user._id,
+                            patientName: req.user.firstName + " " + req.user.lastName,
                             specialization,
                             date: moment(dateObj).format('DD/MM/YYYY'),
                             time: time,
@@ -75,14 +78,35 @@ module.exports = app => {
                             paymentAcknowlegment: false,
                             fees: fees,
                             uniqueId
-
                         },
                     },
                 }
             )
             user.save();
-            let meetingID = Math.random().toString(36).substring(2);
+            const admin = await User.findByIdAndUpdate(
+                {
+                    _id: '60d7134a12a758308a41c326'
+                },
+                {
+                    $push: {
+                        appointments: {
+                            doctorName: name,
+                            doctorId: docId,
+                            patientId: req.user._id,
+                            patientName: req.user.firstName + " " + req.user.lastName,
+                            date: moment(dateObj).format('DD/MM/YYYY'),
+                            time: time,
+                            reason: reason,
+                            fees: fees,
+                            paymentAcknowlegment: false,
+                            uniqueId
+                        },
+                    }
 
+                }
+            )
+            admin.save();
+            let meetingID = Math.random().toString(36).substring(2);
             const transporter = nodemailer.createTransport({
                 service: 'gmail',
                 auth: {
@@ -149,31 +173,43 @@ module.exports = app => {
     app.post('/api/change-payment-status', async (req, res) => {
         if (req.body && req.user) {
             console.log("/api/change-payment-status", req.body)
-            const { id, uniqueId } = req.body.data
-
-            User.updateOne({ _id: id, "appointments.uniqueId": uniqueId }, {
+            const { patientId, doctorId, uniqueId } = req.body.data
+            User.updateOne({ _id: patientId, "appointments.uniqueId": uniqueId }, {
                 $set: {
                     "appointments.$.paymentAcknowlegment": req.body.status
                 },
             }, function (err, resp) {
                 if (err) {
-
+                    console.log("err", err)
                 }
                 else {
                     console.log("User record updated")
                 }
             })
-            Doctor.updateOne({ _id: req.user._id, "appointments.uniqueId": uniqueId }, {
+            Doctor.updateOne({ _id: doctorId, "appointments.uniqueId": uniqueId }, {
                 $set: {
                     "appointments.$.paymentAcknowlegment": req.body.status
                 },
             }, function (err, resp) {
                 if (err) {
+                    console.log("err", err)
 
                 }
                 else {
                     console.log("Doctor record updated")
-                    res.send("Record updated").status(200)
+                }
+            })
+            User.updateOne({ _id: '60d7134a12a758308a41c326', "appointments.uniqueId": uniqueId }, {
+                $set: {
+                    "appointments.$.paymentAcknowlegment": req.body.status
+                },
+            }, function (err, resp) {
+                if (err) {
+                    console.log("err", err)
+                }
+                else {
+                    console.log("Admin record updated")
+                    return res.send("Record updated").status(200)
                 }
             })
         }

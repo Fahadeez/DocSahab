@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Image, StyleSheet, ScrollView, FlatList, TouchableOpacity } from 'react-native';
+import { View, Text, Image, StyleSheet, ScrollView, FlatList, TouchableOpacity, ToastAndroid } from 'react-native';
 import { Context as DashboardContext } from '../../context/dashboardContext';
 import { Rating, CheckBox } from 'react-native-elements';
 import NavigationBtn from '../../components/navigationBtn';
@@ -20,14 +20,18 @@ class Checkout extends Component {
     }
     componentDidMount() {
         const { state } = this.context;
-        console.log("state cart", state.cart)
-        let total = 0;
-        state.cart.forEach((item) => {
-            total += Number(item.price)
-        })
-        this.setState({ cartItems: state.cart, subTotal: total })
+        var total = 0;
+        if (state.cart) {
+            state.cart.forEach((item) => {
+                total += Number(item.price)
+            })
+            this.setState({ cartItems: state.cart, subTotal: total })
+        }
+
     }
     onPayPress = async () => {
+        const { state, emptyCart } = this.context;
+
         const option = this.state.cashOnDelivery ? "Cash on delivery" : this.state.creditCard ? "Credit Card" : this.state.easyPaisa ? "Easy paisa" : "null";
         const products = this.state.cartItems.map((item) => {
             return {
@@ -41,6 +45,11 @@ class Checkout extends Component {
                 paymentMethod: option,
                 products
             })
+            if (res.status === 200) {
+                ToastAndroid.show("Order has been placed successfully", ToastAndroid.LONG)
+                emptyCart()
+                this.props.navigation.navigate('DashboardScreen')
+            }
         }
         catch (e) {
             console.log(e)
@@ -127,13 +136,16 @@ class Checkout extends Component {
         }
         else {
             return (
-                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <View style={{ flex: 1 }}>
                     <NavigationBtn
                         screenName={'DashboardScreen'}
                         styling={styles.headerNavigation}
                         title="Checkout"
                     />
-                    <Text>Your cart is empty</Text>
+                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+
+                        <Text style={{ fontSize: 20 }}>Your cart is empty</Text>
+                    </View>
                 </View>
             )
         }
