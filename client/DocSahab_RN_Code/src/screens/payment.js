@@ -88,9 +88,9 @@ const PaymentScreen = ({ navigation, route }) => {
 
       <Overlay overlayStyle={styles.overlay} isVisible={visible} onBackdropPress={toggleOverlay}>
         <Text style={styles.overlayHeading}>Payment Confirmation</Text>
-        <Text style={styles.overlayText}>Please pay amount {docData.fees} at following bank account and wait for your doctor's acknowlegment to confirm your appointment.</Text>
-        <Text style={[styles.overlayText, { marginTop: 20 }]}>Bank name: {docData.Bank}</Text>
-        <Text style={styles.overlayText}>Bank account no: {docData.accountNo}</Text>
+        <Text style={styles.overlayText}>Please pay amount {docData.fees} at our following bank account and wait for acknowlegment.</Text>
+        <Text style={[styles.overlayText, { marginTop: 20 }]}>Bank name: Bank Al Habib</Text>
+        <Text style={styles.overlayText}>Bank account no: 135-23123513-3123</Text>
         <Button
           title="Ok"
           onPress={toggleOverlay}

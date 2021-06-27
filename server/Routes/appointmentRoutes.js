@@ -77,7 +77,8 @@ module.exports = app => {
                             reason: reason,
                             paymentAcknowlegment: false,
                             fees: fees,
-                            uniqueId
+                            uniqueId,
+
                         },
                     },
                 }
@@ -99,7 +100,9 @@ module.exports = app => {
                             reason: reason,
                             fees: fees,
                             paymentAcknowlegment: false,
-                            uniqueId
+                            uniqueId,
+                            doctorsAccNo: accountNo,
+                            doctorsBank: Bank
                         },
                     }
 
@@ -120,10 +123,10 @@ module.exports = app => {
                 subject: 'Appointment confirmation',
                 html: `<div> 
                 <h4>Your appointment has been scheduled on Doc Sahab, Following are your appointment details,</h4>
-                <h3>Please pay amount ${fees} to the following bank account and wait for the doctor's acknowlegment</h3>
+                <h3>Please pay amount ${fees} to the following bank account and wait for the acknowlegment.</h3>
                 <h2>Bank account details </h2>
-                <h3>Bank name: ${Bank}</h3>
-                <h3>Bank Account no: ${accountNo}</h3>
+                <h3>Bank name: Bank Al Habib</h3>
+                <h3>Bank Account no: 332124-123151-12312</h3>
 
                 <h2>Appointment details</h2>
                       <h3>Doctor: ${name}</h3>
@@ -209,6 +212,38 @@ module.exports = app => {
                 }
                 else {
                     console.log("Admin record updated")
+                    return res.send("Record updated").status(200)
+                }
+            })
+        }
+    });
+
+    app.post('/api/save-prescription', async (req, res) => {
+        if (req.body && req.user) {
+            console.log("/api/save-prescription", req.body)
+            const { patientId, doctorId, uniqueId, prescription } = req.body.data
+            User.updateOne({ _id: patientId, "appointments.uniqueId": uniqueId }, {
+                $set: {
+                    "appointments.$.prescription": prescription
+                },
+            }, function (err, resp) {
+                if (err) {
+                    console.log("err", err)
+                }
+                else {
+                    console.log("User record updated")
+                }
+            })
+            Doctor.updateOne({ _id: doctorId, "appointments.uniqueId": uniqueId }, {
+                $set: {
+                    "appointments.$.prescription": prescription
+                },
+            }, function (err, resp) {
+                if (err) {
+                    console.log("err", err)
+                }
+                else {
+                    console.log("Doctor record updated")
                     return res.send("Record updated").status(200)
                 }
             })

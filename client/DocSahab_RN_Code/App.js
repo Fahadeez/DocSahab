@@ -33,6 +33,7 @@ import PatientRecords from './src/screens/Dashboard/PatientRecords';
 import RecordMeeting from './src/screens/Dashboard/RecordMeeting';
 import ProductDetails from './src/screens/Mart/ProductDetails';
 import Checkout from './src/screens/Mart/Checkout';
+import Prescription from './src/screens/Dashboard/Prescription';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -268,6 +269,13 @@ function Auth() {
           }}
           name="checkout"
           component={Checkout}
+        />
+        <Stack.Screen
+          options={{
+            headerShown: null,
+          }}
+          name="prescription"
+          component={Prescription}
         />
 
       </Stack.Navigator>

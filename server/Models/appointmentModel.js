@@ -15,6 +15,9 @@ const appointmentSchema = Schema({
     fees: String,
     paymentAcknowlegment: Boolean,
     uniqueId: String,
+    doctorsBank: String,
+    doctorsAccNo: String,
+    prescription: Array
 
 });
 

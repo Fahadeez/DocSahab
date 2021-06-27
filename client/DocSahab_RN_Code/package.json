@@ -15,7 +15,6 @@
     "test": "jest",
     "lint": "eslint .",
     "postinstall": "node_modules/.bin/rn-nodeify --install crypto,fs --hack"
-    
   },
   "dependencies": {
     "@freakycoder/react-native-bounceable": "^0.2.4",
@@ -82,6 +81,7 @@
     "react-native-update-gradle": "^1.2.0",
     "react-native-uuid": "^2.0.1",
     "react-native-vector-icons": "^8.1.0",
+    "react-native-walkthrough-tooltip": "^1.2.0",
     "rn-fetch-blob": "^0.12.0",
     "scmp": "^2.1.0",
     "socket.io-client": "^2.3.1",

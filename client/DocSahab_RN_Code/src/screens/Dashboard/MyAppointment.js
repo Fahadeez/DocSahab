@@ -14,7 +14,8 @@ import NavigationBtn from '../../components/navigationBtn';
 import { globalStyles } from '../../styles/globalStyles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DocSahabApi from '../../api/DocSahabApi';
-import { Button, Overlay, Tooltip } from 'react-native-elements';
+import { Button, Overlay } from 'react-native-elements';
+import Tooltip from 'react-native-walkthrough-tooltip';
 
 class MyAppointment extends Component {
   constructor(props) {
@@ -28,8 +29,8 @@ class MyAppointment extends Component {
     userData: [],
     refreshing: false,
     visible: false,
-    paymentStatus: false
-
+    paymentStatus: false,
+    tooltipVisible: false
   };
 
   componentDidMount() {
@@ -94,7 +95,9 @@ class MyAppointment extends Component {
       </>
     )
   }
-
+  componentWillUnmount() {
+    this.setState({ tooltipVisible: false })
+  }
   render() {
     const { search } = this.state;
     return (
@@ -122,7 +125,6 @@ class MyAppointment extends Component {
                 showsVerticalScrollIndicator={false}
                 showsHorizontalScrollIndicator={false}>
                 {/* Upcoming Screen */}
-
                 <View style={styles.UpcomingScreen}>
                   <ScrollView
                     showsVerticalScrollIndicator={false}
@@ -137,22 +139,33 @@ class MyAppointment extends Component {
                       showsVerticalScrollIndicator={false}
                       onRefresh={this.handleRefresh}
                       renderItem={({ item }) => {
-                        console.log("Items_",item)
+                        console.log("Items_", item)
                         return this.state.userData.doctor ? (
-                          <Tooltip ref={this.tooltipRef} popover={
-                            <TouchableOpacity onPress={() => {
-                              this.tooltipRef.current.toggleTooltip()
-                              this.props.navigation.navigate('Meeting', {
-                                id: item._id
-                              })
-                            }}  >
-                              <Text>Join a meeting</Text>
-                            </TouchableOpacity>
-                          } withOverlay={false} containerStyle={{ color: 'white', borderBottomWidth: 0 }} highlightColor="white">
-                            <Overlay overlayStyle={styles.overlay} isVisible={this.state.visible} onBackdropPress={this.toggleOverlay}>
-                              <Text style={styles.overlayHeading}>Did you get the payment?</Text>
-                              {this.renderSwitch(item)}
+                          <TouchableOpacity onPress={() => {
+                            this.setState({ tooltipVisible: true })
+                          }} >
+                            <Overlay overlayStyle={styles.overlayToolTip} isVisible={this.state.tooltipVisible} onBackdropPress={() => this.setState({ tooltipVisible: false })}>
+                              <>
+                                <TouchableOpacity onPress={() => {
+                                  this.setState({ tooltipVisible: false })
+                                  this.props.navigation.navigate('Meeting', {
+                                    id: item._id
+                                  })
+                                }} >
+                                  <Text style={{ color: 'darkBlue', marginBottom: 10, fontSize: 20 }}>Join a meeting</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={() => {
+                                  this.setState({ tooltipVisible: false })
+                                  this.props.navigation.navigate('prescription', {
+                                    item, doctorId: this.state.userData._id
+                                  })
+                                }} >
+                                  <Text style={{ color: 'darkBlue', fontSize: 20 }}>Enter prescription</Text>
+                                </TouchableOpacity>
+                              </>
                             </Overlay>
+
+
                             <View>
                               <View
                                 style={{
@@ -198,7 +211,7 @@ class MyAppointment extends Component {
                                           fontSize: 15,
                                           textAlign: 'center',
                                         }}>
-                                        {"Patient name: "+item.patientName+" "}
+                                        {"Patient name: " + item.patientName + " "}
                                       </Text>
                                       <Text
                                         style={{
@@ -264,18 +277,29 @@ class MyAppointment extends Component {
                                 }}
                               />
                             </View>
-                          </Tooltip>
+                          </TouchableOpacity>
                         )
                           :
                           (
                             <TouchableOpacity onPress={() => {
                               if (this.state.userData.role === 'admin') this.toggleOverlay()
-                              else null
+                              else this.setState({ tooltipVisible: true })
                             }}>
                               <Overlay overlayStyle={styles.overlay} isVisible={this.state.visible} onBackdropPress={this.toggleOverlay}>
                                 <Text style={styles.overlayHeading}>Did you get the payment?</Text>
                                 {this.renderSwitch(item)}
                               </Overlay>
+                              <Overlay overlayStyle={styles.overlayToolTip} isVisible={this.state.tooltipVisible} onBackdropPress={() => this.setState({ tooltipVisible: false })}>
+                                <TouchableOpacity onPress={() => {
+                                  this.setState({ tooltipVisible: false })
+                                  this.props.navigation.navigate('prescription', {
+                                    item,
+                                  })
+                                }} >
+                                  <Text style={{ color: 'darkBlue', fontSize: 20 }}>View prescription</Text>
+                                </TouchableOpacity>
+                              </Overlay>
+
                               <View>
                                 <View
                                   style={{
@@ -324,6 +348,7 @@ class MyAppointment extends Component {
                                           }}>
                                           {'Dr. ' + item.doctorName + ' '}
                                         </Text>
+
                                         <Text
                                           style={{
                                             fontSize: 15,
@@ -345,14 +370,27 @@ class MyAppointment extends Component {
                                       </View>
                                       <View>
                                         {this.state.userData.role === "admin" ?
-                                          <Text
-                                            style={{
-                                              fontSize: 15,
-                                              textAlign: 'center',
-                                              marginTop: 0
-                                            }}>
-                                            {'Patient name: ' + item.patientName + ' '}
-                                          </Text>
+                                          <>
+                                            <Text
+                                              style={{
+                                                fontSize: 15,
+                                              }}>
+                                              {'Account no: ' + item.doctorsAccNo + ' '}
+                                            </Text>
+                                            <Text
+                                              style={{
+                                                fontSize: 15,
+                                              }}>
+                                              {'Bank: ' + item.doctorsBank + ' '}
+                                            </Text>
+                                            <Text
+                                              style={{
+                                                fontSize: 15,
+                                                marginTop: 0
+                                              }}>
+                                              {'Patient name: ' + item.patientName + ' '}
+                                            </Text>
+                                          </>
                                           : null
                                         }
                                         <Text>Payment status: {item.paymentAcknowlegment ? "Paid" : "Not paid"}</Text>
@@ -477,6 +515,11 @@ const styles = StyleSheet.create({
   overlay: {
     padding: 20,
     height: 400,
+  },
+  overlayToolTip: {
+    padding: 20,
+    height: 200,
+    justifyContent: 'center'
   },
   overlayText: {
     fontSize: 20,
