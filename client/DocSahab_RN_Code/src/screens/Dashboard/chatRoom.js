@@ -7,7 +7,8 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
-import {globalStyles} from '../../styles/globalStyles';
+import { globalStyles } from '../../styles/globalStyles';
+import NavigationBtn from '../../components/navigationBtn';
 
 class ChatRoom extends React.Component {
   constructor(props) {
@@ -26,6 +27,9 @@ class ChatRoom extends React.Component {
   render() {
     return (
       <View style={styles.container}>
+        <NavigationBtn
+          screenName={'DashboardScreen'}
+        />
         <View style={styles.sub_Container}>
           <View style={styles.inputLabelView}>
             <Text
@@ -46,7 +50,7 @@ class ChatRoom extends React.Component {
               backgroundColor: 'ghostwhite',
             }}
             placeholder="nabeelRoom..."
-            onChangeText={(chat_room_name) => this.setState({chat_room_name})}
+            onChangeText={(chat_room_name) => this.setState({ chat_room_name })}
           />
           <TouchableOpacity
             style={globalStyles.Button}

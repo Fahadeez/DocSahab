@@ -149,7 +149,7 @@ class MyAppointment extends Component {
                                 <TouchableOpacity onPress={() => {
                                   this.setState({ tooltipVisible: false })
                                   this.props.navigation.navigate('Meeting', {
-                                    id: item._id
+                                    id: item.patientId
                                   })
                                 }} >
                                   <Text style={{ color: 'darkBlue', marginBottom: 10, fontSize: 20 }}>Join a meeting</Text>
@@ -164,8 +164,6 @@ class MyAppointment extends Component {
                                 </TouchableOpacity>
                               </>
                             </Overlay>
-
-
                             <View>
                               <View
                                 style={{
