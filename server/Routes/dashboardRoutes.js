@@ -57,7 +57,7 @@ module.exports = app => {
 	});
 
 	app.post('/api/order-details', async (req, res) => {
-		console.log("/api/order-details",req.body);
+		console.log("/api/order-details", req.body);
 		if (req.body && req.user) {
 			const { subTotal, paymentMethod, products } = req.body;
 			const order = new Order();
@@ -75,6 +75,31 @@ module.exports = app => {
 			});
 		}
 	});
+
+	app.post("/api/update-docProfile", async (req, res) => {
+		console.log("/api/update-docProfile", req.body.data)
+		const { specialization, qualification, newDays, startTime, endTime, yearsOfExp, bank, account_no, fees } = req.body.data;
+		if (req.body.data && req.user) {
+			const doctor = await Doctor.findByIdAndUpdate(
+				{
+					_id: req.user._id,
+				},
+				{
+					specialization,
+					qualification,
+					days: newDays,
+					startCheckupTime: moment(startTime).toDate(),
+					endCheckupTime: moment(endTime).toDate(),
+					yearsOfExp,
+					Bank: bank,
+					accountNo: account_no,
+					fees,
+				}
+			);
+			doctor.save();
+			return res.send("Doctor's details updated").status(200)
+		}
+	})
 
 
 	app.post('/api/select-doctor-with-name', async (req, res) => {

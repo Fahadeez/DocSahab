@@ -16,8 +16,8 @@ axios.interceptors.request.use(
 
 export default axios.create({
   // just run the ipconfig in cmd and change the baseurl to IPv4 address here
-  baseURL: 'https://doc-sahab.herokuapp.com',
-  // baseURL: 'http://192.168.10.12:5000', 
+  // baseURL: 'https://doc-sahab.herokuapp.com',
+  baseURL: 'http://192.168.10.20:5000', 
   headers: { "Content-Type": "application/json" },
   withCredentials: true,
   // baseURL: 'https://doc-sahab.herokuapp.com'

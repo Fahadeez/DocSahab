@@ -34,6 +34,7 @@ import RecordMeeting from './src/screens/Dashboard/RecordMeeting';
 import ProductDetails from './src/screens/Mart/ProductDetails';
 import Checkout from './src/screens/Mart/Checkout';
 import Prescription from './src/screens/Dashboard/Prescription';
+import Profile from './src/screens/Dashboard/Profile';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -276,6 +277,13 @@ function Auth() {
           }}
           name="prescription"
           component={Prescription}
+        />
+        <Stack.Screen
+          options={{
+            headerShown: null,
+          }}
+          name="profile"
+          component={Profile}
         />
 
       </Stack.Navigator>

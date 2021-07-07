@@ -88,17 +88,30 @@ export function DrawerContent(props) {
                                 label="New Appointment"
                                 onPress={() => { props.navigation.navigate('SearchDoc') }}
                             />
-                            : <DrawerItem
-                                icon={({ color, size }) => (
-                                    <Icon
-                                        name="heart-plus-outline"
-                                        color={'#2A2AC0'}
-                                        size={size}
-                                    />
-                                )}
-                                label="Patient history"
-                                onPress={() => { props.navigation.navigate('patientHistory') }}
-                            />
+                            : <>
+                                <DrawerItem
+                                    icon={({ color, size }) => (
+                                        <Icon
+                                            name="face-profile"
+                                            color={'#2A2AC0'}
+                                            size={size}
+                                        />
+                                    )}
+                                    label="My Profile"
+                                    onPress={() => { props.navigation.navigate('profile') }}
+                                />
+                                <DrawerItem
+                                    icon={({ color, size }) => (
+                                        <Icon
+                                            name="heart-plus-outline"
+                                            color={'#2A2AC0'}
+                                            size={size}
+                                        />
+                                    )}
+                                    label="Patient history"
+                                    onPress={() => { props.navigation.navigate('patientHistory') }}
+                                />
+                            </>
                         }
 
                         <DrawerItem

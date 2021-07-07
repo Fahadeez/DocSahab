@@ -19,7 +19,6 @@ import RNPickerSelect from 'react-native-picker-select';
 import { Context as AuthContext } from '../../context/AuthContext';
 import moment from 'moment';
 import { Button, Overlay } from 'react-native-elements';
-
 const numStars = 5;
 
 class BookAppoinment extends Component {
@@ -63,19 +62,26 @@ class BookAppoinment extends Component {
     let duration = moment.duration(endTime.diff(startTime));
     let diff = duration.hours();
     let array = [];
+    console.log("times",diff,duration)
+    console.log("DATE", moment(date).format('DD/MM/YYYY'));
     const appt_time = appointments.map((appt) => {
+      console.log("2nd date",moment(appt.date).format('DD/MM/YYYY'))
       if (
-        moment(appt.date).format('DD/MM/YYYY') ===
+        appt.date ===
         moment(date).format('DD/MM/YYYY')
       ) {
+        console.log("CONDITION TRUE ---------");
         return appt.time;
       }
     });
+    console.log("Appt_time",appt_time);
+
     for (i = 0; diff > i; i++) {
       let result = moment(startTime).add(i, 'hours').format('HH:mm');
       if (appt_time.includes(result)) {
         continue;
       }
+      console.log("Appt_time@@@",appt_time);
       array.push({
         label: result,
         value: result,
@@ -85,6 +91,7 @@ class BookAppoinment extends Component {
     console.log(array)
   };
   dateSelected = (date) => {
+    console.log("date selected",date)
     this.setState({ date });
     this.timePickerItems(date);
     console.log(date)
@@ -141,8 +148,6 @@ class BookAppoinment extends Component {
 
   render() {
     const Doc_data = this.props.route.params.doctor;
-    console.log('doc data', Doc_data);
-
     let stars = [];
     for (let x = 1; x <= numStars; x++) {
       stars.push(
@@ -304,7 +309,7 @@ class BookAppoinment extends Component {
                       duration: 200,
                       highlightColor: '#9370db',
                     }}
-                    onDateSelected={this.dateSelected}
+                    onDateSelected={(date) => this.dateSelected(date)}
                   />
 
                   {/* timing header */}
