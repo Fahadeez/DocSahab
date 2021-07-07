@@ -17,6 +17,7 @@ const { client } = require('google-cloud-bucket');
 const storage = client.new({
 	jsonKeyFile: join(__dirname, './serviceAccountKeys.json'),
 });
+const { v4: uuidv4 } = require('uuid');
 const bucket = 'e-tutor-9f2c2.appspot.com/';
 
 
@@ -59,13 +60,17 @@ module.exports = app => {
 	app.post('/api/order-details', async (req, res) => {
 		console.log("/api/order-details", req.body);
 		if (req.body && req.user) {
-			const { subTotal, paymentMethod, products } = req.body;
+			const { userName, subTotal, paymentMethod, products } = req.body;
 			const order = new Order();
 			order.subTotal = subTotal;
 			order.paymentMethod = paymentMethod;
 			order.products = products;
 			order.userId = req.user._id;
+			order.userName = req.user.firstName + " " + req.user.lastName;
 			order.date = JSON.stringify(moment());
+			order.uId = uuidv4();
+			order.alert = null;
+			order.reason = null;
 			order.save().then((resp) => {
 				if (resp) {
 					return res.send("Order saved successfully").status(200);
@@ -73,6 +78,52 @@ module.exports = app => {
 					return res.send("db error").status(400);
 				}
 			});
+
+			const uniqueId = uuidv4();
+			const alert = null;
+			const reason = null;
+			const user = await User.findByIdAndUpdate(
+                { _id: req.user._id },
+                {
+                    $push: {
+                        orders: {
+                            subTotal: subTotal,
+							paymentMethod: paymentMethod,
+							products: products,
+							userId: req.user._id,
+							date: JSON.stringify(moment()),
+							status: false,
+							uId: uniqueId,
+							alert,
+							reason
+
+                        },
+                    },
+                }
+            )
+
+            const admin = await User.findByIdAndUpdate(
+                {
+                    _id: '60d7134a12a758308a41c326'
+                },
+                {
+                    $push: {
+                        orders: {
+                            subTotal: subTotal,
+							paymentMethod: paymentMethod,
+							products: products,
+							userName: req.user.firstName + " " + req.user.lastName,
+							userId: req.user._id,
+							date: JSON.stringify(moment()),
+							status: false,
+							uId: uniqueId,
+							alert,
+							reason
+		                }
+		            }
+		        }
+            )
+            admin.save();
 		}
 	});
 
@@ -100,6 +151,71 @@ module.exports = app => {
 			return res.send("Doctor's details updated").status(200)
 		}
 	})
+	app.post('/api/change-order-payment-status', async (req, res) => {
+        if (req.body && req.user) {
+            console.log("/api/change-payment-status", req.body)
+            const { userId, uId } = req.body.data
+            User.updateOne({ _id: userId, "orders.uId": uId }, {
+                $set: {
+                    "orders.$.status": req.body.status
+                },
+            }, function (err, resp) {
+                if (err) {
+                    console.log("err", err)
+                }
+                else {
+                    console.log("User record updated")
+                }
+            })
+            
+            User.updateOne({ _id: '60d7134a12a758308a41c326', "orders.uId": uId }, {
+                $set: {
+                    "orders.$.status": req.body.status
+                },
+            }, function (err, resp) {
+                if (err) {
+                    console.log("err", err)
+                }
+                else {
+                    console.log("Admin record updated")
+                    return res.send("Record updated").status(200)
+                }
+            })
+        }
+    });
+
+    app.post('/api/cancel-order', async (req, res) => {
+        if (req.body && req.user) {
+            const { userId, uId } = req.body.data
+            User.updateOne({ _id: userId, "orders.uId": uId }, {
+                $set: {
+                    "orders.$.alert": req.body.alert,
+                    "orders.$.reason": req.body.reason,
+                },
+            }, function (err, resp) {
+                if (err) {
+                    console.log("err", err)
+                }
+                else {
+                    console.log("User record updated")
+                }
+            })
+            
+            User.updateOne({ _id: '60d7134a12a758308a41c326', "orders.uId": uId }, {
+                $set: {
+                    "orders.$.alert": req.body.alert,
+                    "orders.$.reason": req.body.reason,
+                },
+            }, function (err, resp) {
+                if (err) {
+                    console.log("err", err)
+                }
+                else {
+                    return res.send("Record updated").status(200)
+                }
+            })
+        }
+    });
 
 
 	app.post('/api/select-doctor-with-name', async (req, res) => {

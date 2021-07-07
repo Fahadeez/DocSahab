@@ -5,11 +5,16 @@ const { Schema } = mongoose;
 const orderSchema = Schema({
 
     id: String,
+    uId: String,
+    userName: String,
     date: String,
     subTotal: String,
     userId: String,
     products: [productSchema],
-    paymentMethod: String
+    paymentMethod: String,
+    status: Boolean,
+    alert: String,
+    reason: String
 
 });
 

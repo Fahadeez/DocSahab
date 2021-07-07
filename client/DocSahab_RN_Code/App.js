@@ -26,6 +26,7 @@ import Chat from './src/screens/Dashboard/Chat';
 import MyAppointment from './src/screens/Dashboard/MyAppointment';
 import PaymentScreen from './src/screens/payment';
 import MartScreen from './src/screens/Mart/Mart';
+import OrderSuccess from './src/screens/Mart/OrderSuccess';
 import VideoScreen from './src/screens/Dashboard/VIDEO_SCREEN/Meeting';
 import ChatRoom from './src/screens/Dashboard/chatRoom';
 import PatientHistory from './src/screens/Dashboard/PatientHistory';
@@ -35,6 +36,7 @@ import ProductDetails from './src/screens/Mart/ProductDetails';
 import Checkout from './src/screens/Mart/Checkout';
 import Prescription from './src/screens/Dashboard/Prescription';
 import Profile from './src/screens/Dashboard/Profile';
+import Orders from './src/screens/Dashboard/Orders';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -120,6 +122,13 @@ function Root({ route, navigation }) {
         name="patientRecords"
         component={PatientRecords}
       />
+      <Drawer.Screen
+        options={{
+          headerShown: null,
+        }}
+        name="OrderSuccess"
+        component={OrderSuccess}
+      />
 
     </Drawer.Navigator>
   );
@@ -136,6 +145,14 @@ function Auth() {
           }}
           name="login"
           component={login}
+        />
+
+        <Stack.Screen
+          options={{
+            headerShown: null,
+          }}
+          name="Orders"
+          component={Orders}
         />
 
         <Stack.Screen
