@@ -2,7 +2,7 @@
 // @refresh reset
 
 import React from 'react';
-import {GiftedChat, Bubble, InputToolbar, Send} from 'react-native-gifted-chat';
+import { GiftedChat, Bubble, InputToolbar, Send } from 'react-native-gifted-chat';
 import {
   View,
   StyleSheet,
@@ -16,6 +16,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as firebase from 'firebase';
 import 'firebase/firestore';
 import axios from 'axios';
+import NavigationBtn from '../../../components/navigationBtn';
 
 // firebase config
 const firebaseConfig = {
@@ -30,7 +31,7 @@ const firebaseConfig = {
 // to not create the app again... due to hot reload
 if (firebase.apps.length === 0) {
   firebase.initializeApp(firebaseConfig);
-  firebase.firestore().settings({experimentalForceLongPolling: true});
+  firebase.firestore().settings({ experimentalForceLongPolling: true });
 }
 
 LogBox.ignoreLogs(['Setting a timer for a long period of time']);
@@ -69,8 +70,8 @@ class Chat_Module extends React.Component {
       // it has all the changed data, listen to all the changes
       const messagesFirestore = querySnapshot
         .docChanges()
-        .filter(({type}) => type == 'added')
-        .map(({doc}) => {
+        .filter(({ type }) => type == 'added')
+        .map(({ doc }) => {
           const message = doc.data();
           return {
             ...message,
@@ -99,7 +100,7 @@ class Chat_Module extends React.Component {
   };
 
   renderSendBtnColor(props) {
-    return <Send {...props} textStyle={{color: '#2A2AC0'}} label={'Send'} />;
+    return <Send {...props} textStyle={{ color: '#2A2AC0' }} label={'Send'} />;
   }
 
   renderInputToolbar(props) {
@@ -119,12 +120,12 @@ class Chat_Module extends React.Component {
       <Bubble
         {...props}
         wrapperStyle={{
-          left: {backgroundColor: '#006AFF'},
-          right: {backgroundColor: '#00B2FF'},
+          left: { backgroundColor: '#006AFF' },
+          right: { backgroundColor: '#00B2FF' },
         }}
         textStyle={{
-          left: {color: 'white'},
-          right: {color: 'white'},
+          left: { color: 'white' },
+          right: { color: 'white' },
         }}
       />
     );
@@ -136,9 +137,9 @@ class Chat_Module extends React.Component {
     console.log('user email from signIn: ', email);
     const _id = await AsyncStorage.getItem('user_Id');
     console.log('user id: ', _id);
-    const user = {email, _id};
+    const user = { email, _id };
     // update the null value of user
-    this.setState({user});
+    this.setState({ user });
     // console the user data
     console.log('User Object: ', user);
   };
@@ -161,7 +162,7 @@ class Chat_Module extends React.Component {
           let response = await axios.post(
             'https://api.imgbb.com/1/upload',
             data,
-            {params: {key: '43b345ff84a4e43307ebd0d8e5f44cf3'}},
+            { params: { key: '43b345ff84a4e43307ebd0d8e5f44cf3' } },
             {
               headers: {
                 'Content-Type': 'multipart/form-data',
@@ -169,7 +170,7 @@ class Chat_Module extends React.Component {
             },
           );
 
-          this.onSend({image: response.data.data.url});
+          this.onSend({ image: response.data.data.url });
 
           if (response.data.status === 200) {
             ToastAndroid.show('Upload successfull', ToastAndroid.LONG);
@@ -199,18 +200,25 @@ class Chat_Module extends React.Component {
 
   render(props) {
     return (
-      <GiftedChat
-        renderAvatar={() => null}
-        showAvatarForEveryMessage={true}
-        renderInputToolbar={this.renderInputToolbar}
-        messagesContainerStyle={{backgroundColor: '#ECF1FA'}}
-        messages={this.state.messages}
-        onSend={this.onSend}
-        user={this.state.user}
-        renderActions={this.renderActions}
-        renderSend={this.renderSendBtnColor}
-        renderBubble={this.renderBubble}
-      />
+      <View style={{ flex: 1 }}>
+        <NavigationBtn
+          screenName={'DashboardScreen'}
+          styling={{ position: 'relative',bottom: 140 }}
+        />
+        <GiftedChat
+          renderAvatar={() => null}
+          showAvatarForEveryMessage={true}
+          renderInputToolbar={this.renderInputToolbar}
+          messagesContainerStyle={{ backgroundColor: '#ECF1FA' }}
+          messages={this.state.messages}
+          onSend={this.onSend}
+          user={this.state.user}
+          renderActions={this.renderActions}
+          renderSend={this.renderSendBtnColor}
+          renderBubble={this.renderBubble}
+        />
+      </View>
+
     );
   }
 }

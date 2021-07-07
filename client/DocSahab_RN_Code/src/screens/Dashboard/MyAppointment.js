@@ -164,8 +164,6 @@ class MyAppointment extends Component {
                                 </TouchableOpacity>
                               </>
                             </Overlay>
-
-
                             <View>
                               <View
                                 style={{
