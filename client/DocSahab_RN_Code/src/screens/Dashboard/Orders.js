@@ -7,6 +7,8 @@ import {
   ScrollView,
   FlatList,
   Switch,
+  ToastAndroid,
+  TextInput
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { SearchBar } from 'react-native-elements';
@@ -17,7 +19,7 @@ import DocSahabApi from '../../api/DocSahabApi';
 import { Button, Overlay } from 'react-native-elements';
 import Tooltip from 'react-native-walkthrough-tooltip';
 
-class MyAppointment extends Component {
+class Orders extends Component {
   constructor(props) {
     super(props);
     // create a ref to store the textInput DOM element
@@ -30,15 +32,17 @@ class MyAppointment extends Component {
     refreshing: false,
     visible: false,
     paymentStatus: false,
-    tooltipVisible: false
+    tooltipVisible: false,
+    alertStatus: "ALERT: Order has been cancelled",
+    cancelReason: ""
   };
 
   componentDidMount() {
-    this.fetchAppointmentDetails();
+    this.fetchOrderDetails();
     this.updateSearch();
   }
 
-  async fetchAppointmentDetails() {
+  async fetchOrderDetails() {
     this.setState({
       refreshing: true,
     });
@@ -57,15 +61,15 @@ class MyAppointment extends Component {
 
   handleRefresh = () => {
     this.setState({ refreshing: false }, () => {
-      this.fetchAppointmentDetails();
+      this.fetchOrderDetails();
     });
   };
   toggleOverlay = () => {
     this.setState({ visible: !this.state.visible })
   };
-  async changePaymentStatus(appointment) {
+  async changePaymentStatus(order) {
     try {
-      const res = await DocSahabApi.post("/api/change-payment-status", { data: appointment, status: this.state.paymentStatus })
+      const res = await DocSahabApi.post("/api/change-order-payment-status", { data: order, status: this.state.paymentStatus })
       if (res.status === 200) {
         this.setState({ visible: false })
       }
@@ -75,7 +79,19 @@ class MyAppointment extends Component {
     }
   }
 
-  renderSwitch(appointment) {
+  async alertStatus(order) {
+    try {
+      const res = await DocSahabApi.post("/api/cancel-order", { data: order, alert: this.state.alertStatus, reason: this.state.cancelReason })
+      if (res.status === 200) {
+        ToastAndroid.show("Order Cancelled.", ToastAndroid.SHORT);
+      }
+    }
+    catch (e) {
+      console.log(e)
+    }
+  }
+
+  renderSwitch(order) {
     return (
       <>
         <Switch
@@ -89,7 +105,7 @@ class MyAppointment extends Component {
         />
         <Button
           title="Ok"
-          onPress={() => this.changePaymentStatus(appointment)}
+          onPress={() => this.changePaymentStatus(order)}
           containerStyle={{ backgroundColor: '#2e2d84', marginTop: 30, width: 200, alignSelf: 'center' }}
         />
       </>
@@ -115,7 +131,7 @@ class MyAppointment extends Component {
           <View style={styles.containerForMyAppointment}>
             <NavigationBtn
               screenName={'DashboardScreen'}
-              title={this.state.userData.role === 'admin' ? "All Appointments" : "Your Appointnments"}
+              title={this.state.userData.role === 'admin' ? "All Orders" : "Your Orders"}
             />
 
             {/* my appointments details tab navigation */}
@@ -130,41 +146,18 @@ class MyAppointment extends Component {
                     showsVerticalScrollIndicator={false}
                     showsHorizontalScrollIndicator={false}>
                     <View style={styles.SwapableViews}>
-                      <Text style={styles.SwapableViewsTitle}>{this.state.userData.role === 'admin' ? null : 'Upcoming'}</Text>
+                      <Text style={styles.SwapableViewsTitle}>{this.state.userData.role === 'admin' ? null : 'Orders'}</Text>
                     </View>
                     {/* Upcoming View Sub Container for my appointments */}
                     <FlatList
-                      data={this.state.userData.appointments}
+                      data={this.state.userData.orders}
                       refreshing={this.state.refreshing}
                       showsVerticalScrollIndicator={false}
                       onRefresh={this.handleRefresh}
                       renderItem={({ item }) => {
                         console.log("Items_", item)
-                        return this.state.userData.doctor ? (
-                          <TouchableOpacity onPress={() => {
-                            this.setState({ tooltipVisible: true })
-                          }} >
-                            <Overlay overlayStyle={styles.overlayToolTip} isVisible={this.state.tooltipVisible} onBackdropPress={() => this.setState({ tooltipVisible: false })}>
-                              <>
-                                <TouchableOpacity onPress={() => {
-                                  this.setState({ tooltipVisible: false })
-                                  this.props.navigation.navigate('Meeting', {
-                                    id: item.patientId
-                                  })
-                                }} >
-                                  <Text style={{ color: 'darkBlue', marginBottom: 10, fontSize: 20 }}>Join a meeting</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity onPress={() => {
-                                  this.setState({ tooltipVisible: false })
-                                  this.props.navigation.navigate('prescription', {
-                                    item, doctorId: this.state.userData._id
-                                  })
-                                }} >
-                                  <Text style={{ color: 'darkBlue', fontSize: 20 }}>Enter prescription</Text>
-                                </TouchableOpacity>
-                              </>
-                            </Overlay>
-
+                        return this.state.userData.role != 'admin' ? (
+                          <TouchableOpacity>
 
                             <View>
                               <View
@@ -186,18 +179,33 @@ class MyAppointment extends Component {
                                         {item.date}
                                       </Text>
                                     </View>
+                                    <View style={{ marginBottom: '0.3%' }}>
+                                      <Text style={{ fontSize: 12, color: 'grey' }}>
+                                        {item.uId}
+                                      </Text>
+                                    </View>
                                     <View
                                       style={{
                                         flexDirection: 'row',
                                         marginBottom: '3%',
                                       }}>
-                                      <Text
-                                        style={{
-                                          fontSize: 15,
-                                          textAlign: 'center',
-                                        }}>
-                                        {item.specialization}
-                                      </Text>
+                                      <View>
+                                        <Text>Products:</Text>
+                                      </View>
+                                      
+                                      <View style = {styles.timingsView}>
+                                        <FlatList
+                                        horizontal
+                                        data={item.products}
+                                        renderItem={({item}) => {
+                                          return (
+                                              <Text style={styles.caption}>{"| " + item.name + " |"}</Text>
+                                          );
+                                        }}
+                                        keyExtractor={(item2) => item2.value}
+                                        showsHorizontalScrollIndicator={false}
+                                      />
+                                    </View>
                                       <Text
                                         style={{
                                           fontSize: 15,
@@ -205,20 +213,6 @@ class MyAppointment extends Component {
                                         }}>
                                         {' '}
                                         -{' '}
-                                      </Text>
-                                      <Text
-                                        style={{
-                                          fontSize: 15,
-                                          textAlign: 'center',
-                                        }}>
-                                        {"Patient name: " + item.patientName + " "}
-                                      </Text>
-                                      <Text
-                                        style={{
-                                          fontSize: 15,
-                                          textAlign: 'center',
-                                        }}>
-                                        {item.time}
                                       </Text>
                                       <View
                                         style={{
@@ -232,9 +226,18 @@ class MyAppointment extends Component {
                                         />
                                       </View>
                                     </View>
-                                    <View>
-                                      <Text>Payment status: {item.paymentAcknowlegment ? "Paid" : "Not paid"}</Text>
+                                    <View><Text
+                                        style={{
+                                          fontSize: 15,
+                                        }}>
+                                        {"Amount: "+item.subTotal}
+                                      </Text>
                                     </View>
+                                    <View>
+                                      <Text>Payment status: {item.status ? "Paid and recieved" : "To be paid and recieved"}</Text>
+                                    </View>
+                                        { item.alert != null ? <Text style = {{color: 'red', marginTop: '3%'}}>{item.alert + ". Reason: " + item.reason}</Text> : null
+                                        }
                                   </View>
 
                                 </View>
@@ -253,18 +256,6 @@ class MyAppointment extends Component {
                                     />
                                   </View>
                                   <View>
-                                    <TouchableOpacity>
-                                      <View>
-                                        <Text
-                                          style={{
-                                            color: '#2A2AC0',
-                                            fontSize: 16,
-                                            fontWeight: '500',
-                                          }}>
-                                          Modify
-                                        </Text>
-                                      </View>
-                                    </TouchableOpacity>
                                   </View>
                                 </View>
                               </View>
@@ -281,23 +272,10 @@ class MyAppointment extends Component {
                         )
                           :
                           (
-                            <TouchableOpacity onPress={() => {
-                              if (this.state.userData.role === 'admin') this.toggleOverlay()
-                              else this.setState({ tooltipVisible: true })
-                            }}>
+                            <TouchableOpacity onPress={() => {this.toggleOverlay()}}>
                               <Overlay overlayStyle={styles.overlay} isVisible={this.state.visible} onBackdropPress={this.toggleOverlay}>
                                 <Text style={styles.overlayHeading}>Did you get the payment?</Text>
                                 {this.renderSwitch(item)}
-                              </Overlay>
-                              <Overlay overlayStyle={styles.overlayToolTip} isVisible={this.state.tooltipVisible} onBackdropPress={() => this.setState({ tooltipVisible: false })}>
-                                <TouchableOpacity onPress={() => {
-                                  this.setState({ tooltipVisible: false })
-                                  this.props.navigation.navigate('prescription', {
-                                    item,
-                                  })
-                                }} >
-                                  <Text style={{ color: 'darkBlue', fontSize: 20 }}>View prescription</Text>
-                                </TouchableOpacity>
                               </Overlay>
 
                               <View>
@@ -321,6 +299,12 @@ class MyAppointment extends Component {
                                         </Text>
                                       </View>
 
+                                      <View style={{ marginBottom: '2%' }}>
+                                      <Text style={{ fontSize: 12, color: 'grey' }}>
+                                        {`Order ID: `+ item.uId}
+                                      </Text>
+                                    </View>
+
                                       <View
                                         style={{
                                           flexDirection: 'row',
@@ -331,7 +315,7 @@ class MyAppointment extends Component {
                                             fontSize: 15,
                                             textAlign: 'center',
                                           }}>
-                                          {item.specialization}
+                                          {item.userName}
                                         </Text>
                                         <Text
                                           style={{
@@ -346,16 +330,9 @@ class MyAppointment extends Component {
                                             fontSize: 15,
                                             textAlign: 'center',
                                           }}>
-                                          {'Dr. ' + item.doctorName + ' '}
+                                          {'ID: ' + item.userId}
                                         </Text>
 
-                                        <Text
-                                          style={{
-                                            fontSize: 15,
-                                            textAlign: 'center',
-                                          }}>
-                                          {item.time}
-                                        </Text>
                                         <View
                                           style={{
                                             marginStart: '3%',
@@ -375,25 +352,58 @@ class MyAppointment extends Component {
                                               style={{
                                                 fontSize: 15,
                                               }}>
-                                              {'Account no: ' + item.doctorsAccNo + ' '}
+                                              {'Amount: ' + item.subTotal + ' '}
                                             </Text>
                                             <Text
                                               style={{
                                                 fontSize: 15,
                                               }}>
-                                              {'Bank: ' + item.doctorsBank + ' '}
+                                              Products:
+                                              {
+                                                <FlatList
+                                                  horizontal
+                                                  data={item.products}
+                                                  renderItem={({item}) => {
+                                                    return (
+                                                        <Text>{" " + item.name + " "}</Text>
+                                                    );
+                                                  }}
+                                                  keyExtractor={(item2) => item2.value}
+                                                  showsHorizontalScrollIndicator={false}
+                                                />
+                                              }
                                             </Text>
                                             <Text
                                               style={{
                                                 fontSize: 15,
                                                 marginTop: 0
                                               }}>
-                                              {'Patient name: ' + item.patientName + ' '}
+                                              {'Address: ' + item.patientName + ' '}
                                             </Text>
                                           </>
                                           : null
                                         }
-                                        <Text>Payment status: {item.paymentAcknowlegment ? "Paid" : "Not paid"}</Text>
+                                        <Text>Payment status: {item.status ? "Paid and recieved" : "To be paid and recieved"}</Text>
+                                        { item.alert != null ? <Text style = {{color: 'red', marginTop: '3%'}}>{item.alert + ". Reason: " + item.reason}</Text> : null
+                                        }
+                                 
+                                        
+                                          <TextInput style = {styles.input}
+                                             underlineColorAndroid = "transparent"
+                                             placeholder = "Cancel reason"
+                                             placeholderTextColor = "#9a73ef"
+                                             autoCapitalize = "none"
+                                             onChangeText = {(value) => {
+                                              this.setState({ cancelReason: value });
+                                            }}/>
+                                       
+                                        <TouchableOpacity onPress = {() => this.alertStatus(item)}>
+                                          <View style = {styles.submitButton}>
+                                            <Text style = {{color: 'white'}}>Cancel Order</Text>
+                                          </View>
+                                        </TouchableOpacity>
+                                        
+                                        
                                       </View>
                                     </View>
 
@@ -405,27 +415,6 @@ class MyAppointment extends Component {
                                       justifyContent: 'flex-end',
                                       width: '30%',
                                     }}>
-                                    <View style={{ marginEnd: '3%' }}>
-                                      <Icon
-                                        name={'pencil'}
-                                        size={20}
-                                        color="#2A2AC0"
-                                      />
-                                    </View>
-                                    <View>
-                                      <TouchableOpacity>
-                                        <View>
-                                          <Text
-                                            style={{
-                                              color: '#2A2AC0',
-                                              fontSize: 16,
-                                              fontWeight: '500',
-                                            }}>
-                                            Modify
-                                          </Text>
-                                        </View>
-                                      </TouchableOpacity>
-                                    </View>
                                   </View>
                                 </View>
                                 <View
@@ -444,22 +433,11 @@ class MyAppointment extends Component {
                     />
                   </ScrollView>
                 </View>
-
-                {/* Past Screen */}
-                <View style={styles.PastScreen}>
-                  <ScrollView
-                    showsVerticalScrollIndicator={false}
-                    showsHorizontalScrollIndicator={false}>
-                    <View style={styles.SwapableViews}>
-                      <Text style={styles.SwapableViewsTitle}>Past</Text>
-                    </View>
-                  </ScrollView>
-                </View>
               </ScrollView>
             </View>
           </View>
         </ScrollView>
-      </View >
+      </View>
     );
   }
 }
@@ -469,10 +447,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#ECF1FA',
     padding: 23,
+    alignSelf: 'center'
   },
   UpcomingInfoTabNavigation: {
     flexDirection: 'row',
     height: 550,
+    marginTop: '5%'
   },
   UpcomingScreen: {
     flexDirection: 'column',
@@ -530,7 +510,24 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: 'darkblue',
     marginBottom: 30
-  }
+  },
+  input: {
+      marginVertical: 10,
+      height: 40,
+      borderColor: '#7a42f4',
+      borderWidth: 1,
+   },
+   submitButton: {
+      backgroundColor: '#7a42f4',
+      padding: 10,
+      marginHorizontal: 10,
+      marginBottom: 5,
+      height: 40,
+      alignSelf: 'center'
+   },
+   submitButtonText:{
+      color: 'white'
+   }
 });
 
-export default MyAppointment;
+export default Orders;

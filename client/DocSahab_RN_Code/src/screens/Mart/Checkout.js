@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Image, StyleSheet, ScrollView, FlatList, TouchableOpacity, ToastAndroid } from 'react-native';
+import { View, Text, Button, Image, StyleSheet, ScrollView, FlatList, TouchableOpacity, ToastAndroid } from 'react-native';
 import { Context as DashboardContext } from '../../context/dashboardContext';
 import { Rating, CheckBox } from 'react-native-elements';
 import NavigationBtn from '../../components/navigationBtn';
@@ -15,7 +15,8 @@ class Checkout extends Component {
             cashOnDelivery: false,
             creditCard: false,
             easyPaisa: false,
-            subTotal: ''
+            subTotal: '',
+            orders: []
         };
     }
     componentDidMount() {
@@ -25,9 +26,36 @@ class Checkout extends Component {
             state.cart.forEach((item) => {
                 total += Number(item.price)
             })
-            this.setState({ cartItems: state.cart, subTotal: total })
+            this.setState({ cartItems: state.cart, subTotal: total+100 })
         }
+        this.fetchUser();
 
+
+    }
+
+    async fetchUser() {
+    try {
+      const response = await DocSahabApi.get('/auth/current_user');
+      this.setState({ orders: response.data.orders});
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  verifyOrder(orders) {
+    if(undefined !== orders && orders.length){
+       orders.some(order => {
+
+        if (order.status === false)
+            return true;
+    }) 
+    }
+    
+  }
+
+    removeItems() {
+        const { state, emptyCart } = this.context;
+        emptyCart();
     }
     onPayPress = async () => {
         const { state, emptyCart } = this.context;
@@ -39,7 +67,13 @@ class Checkout extends Component {
                 price: item.price
             }
         })
-        try {
+        const result = this.verifyOrder(this.state.orders);
+        console.log("lund", result);
+        if(result === true){
+            ToastAndroid.show("Nope.", ToastAndroid.SHORT);
+        }
+        else{
+            try {
             const res = await DocSahabApi.post("/api/order-details", {
                 subTotal: this.state.subTotal,
                 paymentMethod: option,
@@ -48,16 +82,20 @@ class Checkout extends Component {
             if (res.status === 200) {
                 ToastAndroid.show("Order has been placed successfully", ToastAndroid.LONG)
                 emptyCart()
-                this.props.navigation.navigate('DashboardScreen')
+                this.props.navigation.navigate('OrderSuccess', {
+                    products,
+                    total: this.state.subTotal,
+                    option
+                })
             }
         }
         catch (e) {
             console.log(e)
         }
+        }
 
     }
     renderItem(item) {
-        console.log("item", item)
         return (
             <View style={styles.parentView} key={item.index}>
                 <View style={styles.imageContainer}>
@@ -100,6 +138,7 @@ class Checkout extends Component {
                                     showsVerticalScrollIndicator={false}
                                 />
                             </View>
+                            <Button title = "Remove items" onPress = {this.removeItems()}/>
                             <View style={{ marginTop: 20, flex: 1 }}>
                                 <Text style={{ fontSize: 20, color: 'darkblue', marginBottom: 10 }}>Payment methods</Text>
 
@@ -109,17 +148,8 @@ class Checkout extends Component {
                                     onPress={() => this.setState({ cashOnDelivery: !this.state.cashOnDelivery })}
                                 />
 
-                                <CheckBox
-                                    title='Credit card'
-                                    checked={this.state.creditCard}
-                                    onPress={() => this.setState({ creditCard: !this.state.creditCard })}
-                                />
-
-                                <CheckBox
-                                    title='Easy paisa'
-                                    checked={this.state.easyPaisa}
-                                    onPress={() => this.setState({ easyPaisa: !this.state.easyPaisa })}
-                                />
+                                <Text style={{marginTop: '5%', color: 'red'}}>Delivery Fee: Rs 100</Text>
+                                <Text style={{marginTop: '5%', color: 'red'}}>Service only available in Karachi</Text>
                             </View>
                             <View style={{ marginTop: 30 }}>
                                 <Text style={{ fontSize: 20, marginBottom: 20, marginLeft: 15 }}>Sub total: {this.state.subTotal}</Text>

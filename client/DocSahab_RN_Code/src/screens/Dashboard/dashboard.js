@@ -68,6 +68,16 @@ const DashboardScreen = ({ navigation }) => {
                 style={styles.childBox}
               />
             </TouchableOpacity>
+
+            <TouchableOpacity style={styles.childBox}
+              onPress={() => navigation.navigate("Orders")}>
+              <Text style={styles.textStyle}>Orders</Text>
+              <IconAD
+                style={styles.iconsStyle}
+                name="shoppingcart"
+                size={80}
+                color="blue" />
+            </TouchableOpacity>
           </View>
           <TouchableOpacity onPress={() => { signOut(navigate) }}>
             <Text style={{ fontSize: 18, color: 'darkblue' }}>Sign out</Text>

@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 var bcrypt = require('bcrypt');
 const appointmentSchema = require('./appointmentModel')
+const orderSchema = require('./orderModel')
 
 const { Schema } = mongoose;
 
@@ -23,7 +24,8 @@ const userSchema = new Schema({
     profilePic: String,
     reports: Array,
     resetPasswordToken: String,
-    resetPasswordExpires: Date,  
+    resetPasswordExpires: Date,
+    orders: [orderSchema]
   
 
 }, { timestamps: { createdAt: 'dateOfJoin' } })

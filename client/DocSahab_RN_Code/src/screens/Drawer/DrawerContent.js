@@ -139,6 +139,17 @@ export function DrawerContent(props) {
                         <DrawerItem
                             icon={({ color, size }) => (
                                 <Icon
+                                    name="shopping-outline"
+                                    color={'#2A2AC0'}
+                                    size={size}
+                                />
+                            )}
+                            label="Orders"
+                            onPress={() => { props.navigation.navigate('Orders') }}
+                        />
+                        <DrawerItem
+                            icon={({ color, size }) => (
+                                <Icon
                                     name="information-outline"
                                     color={'#2A2AC0'}
                                     size={size}
@@ -146,6 +157,18 @@ export function DrawerContent(props) {
                             )}
                             label="About us"
                             onPress={() => { props.navigation.navigate('aboutUs') }}
+                        />
+
+                        <DrawerItem
+                            icon={({ color, size }) => (
+                                <Icon
+                                    name="information-outline"
+                                    color={'#2A2AC0'}
+                                    size={size}
+                                />
+                            )}
+                            label="Order Success"
+                            onPress={() => { props.navigation.navigate('OrderSuccess') }}
                         />
                     </Drawer.Section>
                 </View>

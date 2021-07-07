@@ -19,7 +19,7 @@ class ProductDetails extends Component {
     }
 
     render() {
-        const { name, ratings, sales, description, price } = this.props.route.params.item;
+        const { name, ratings, sales, description, price, url } = this.props.route.params.item;
         return (
             <View style={{ flex: 1, marginBottom: 40}}>
                 <NavigationBtn
@@ -27,11 +27,11 @@ class ProductDetails extends Component {
                     styling={styles.headerNavigation}
                     title="Product details"
                 />
-                <ScrollView style = {{flex: 1}}>
+                <ScrollView style = {{flex: 1, marginTop: '5%'}}>
 
 
                     <View style={styles.imageContainer}>
-                        <Image source={require('../../../assets/image.jpg')} style={{ width: '100%', height: '100%' }} />
+                        <Image source={{uri:url}} style={{ width: '100%', height: '100%' }} />
                     </View>
                     <View style={styles.textContainer}>
                         <Text style={styles.text}>{name}</Text>
