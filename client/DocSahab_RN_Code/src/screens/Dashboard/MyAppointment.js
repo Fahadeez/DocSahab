@@ -36,7 +36,14 @@ class MyAppointment extends Component {
   componentDidMount() {
     this.fetchAppointmentDetails();
     this.updateSearch();
+    this.props.navigation.addListener('focus', () => this.handleRefresh())
+
   }
+
+  onLoad = () => {
+    this.props.navigation.addListener('didFocus', () => this.handleRefresh())
+    }
+
 
   async fetchAppointmentDetails() {
     this.setState({
@@ -120,10 +127,7 @@ class MyAppointment extends Component {
 
             {/* my appointments details tab navigation */}
             <View style={styles.UpcomingInfoTabNavigation}>
-              <ScrollView
-                horizontal={true}
-                showsVerticalScrollIndicator={false}
-                showsHorizontalScrollIndicator={false}>
+      
                 {/* Upcoming Screen */}
                 <View style={styles.UpcomingScreen}>
                   <ScrollView
@@ -137,7 +141,7 @@ class MyAppointment extends Component {
                       data={this.state.userData.appointments}
                       refreshing={this.state.refreshing}
                       showsVerticalScrollIndicator={false}
-                      onRefresh={this.handleRefresh}
+                      onRefresh={() => this.handleRefresh()}
                       renderItem={({ item }) => {
                         console.log("Items_", item)
                         return this.state.userData.doctor ? (
@@ -442,18 +446,6 @@ class MyAppointment extends Component {
                     />
                   </ScrollView>
                 </View>
-
-                {/* Past Screen */}
-                <View style={styles.PastScreen}>
-                  <ScrollView
-                    showsVerticalScrollIndicator={false}
-                    showsHorizontalScrollIndicator={false}>
-                    <View style={styles.SwapableViews}>
-                      <Text style={styles.SwapableViewsTitle}>Past</Text>
-                    </View>
-                  </ScrollView>
-                </View>
-              </ScrollView>
             </View>
           </View>
         </ScrollView>
