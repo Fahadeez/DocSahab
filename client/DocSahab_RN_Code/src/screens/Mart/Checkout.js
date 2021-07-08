@@ -37,20 +37,21 @@ class Checkout extends Component {
     try {
       const response = await DocSahabApi.get('/auth/current_user');
       this.setState({ orders: response.data.orders});
+      console.log("bruh", response)
     } catch (err) {
       console.log(err);
     }
   }
 
   verifyOrder(orders) {
-    if(undefined !== orders && orders.length){
-       orders.some(order => {
+    if(undefined !== orders && orders.length !== 0){
+    const result = orders.some(order => {
 
-        if (order.status === false)
+        if (order.status == false)
             return true;
     }) 
+    return result;
     }
-    
   }
 
     removeItems() {
@@ -70,7 +71,7 @@ class Checkout extends Component {
         const result = this.verifyOrder(this.state.orders);
         console.log("lund", result);
         if(result === true){
-            ToastAndroid.show("Nope.", ToastAndroid.SHORT);
+            ToastAndroid.show("You already have an active order, try again later.", ToastAndroid.SHORT);
         }
         else{
             try {

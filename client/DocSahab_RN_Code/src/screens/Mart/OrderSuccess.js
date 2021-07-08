@@ -99,7 +99,7 @@ const OrderSuccess = ({ navigation, route }) => {
             }}>
             <Icon name="map-marker-outline" color={'#2A2AC0'} size={25} />
             <View style={{ marginLeft: '5%', marginRight: '5%' }}>
-              <Text style={{ color: 'gray' }}>userData.address</Text>
+              <Text style={{ color: 'gray' }}>{userData.address}</Text>
             </View>
           </View>
 

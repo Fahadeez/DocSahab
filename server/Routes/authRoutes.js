@@ -106,6 +106,7 @@ module.exports = (app) => {
     let date = d.toString();
     let body = req.body,
       email = body.email,
+      address = body.address,
       password = body.password,
       firstName = body.firstName,
       lastName = body.lastName,
@@ -128,6 +129,7 @@ module.exports = (app) => {
             } else {
               const record = new Doctor();
               record.email = email.trim();
+              record.address = address.trim();
               record.firstName = firstName.trim();
               record.lastName = lastName.trim();
               record.contact = contact.trim();
@@ -162,6 +164,7 @@ module.exports = (app) => {
             } else {
               const record = new User();
               record.email = email.trim();
+              record.address = address.trim();
               record.firstName = firstName.trim();
               record.lastName = lastName.trim();
               record.contact = contact.trim();

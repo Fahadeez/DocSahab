@@ -59,6 +59,7 @@ const signUp = (dispatch) => {
         const data = JSON.parse(jsonData);
         let {
           email,
+          address,
           firstName,
           lastName,
           contact,
@@ -70,6 +71,7 @@ const signUp = (dispatch) => {
 
         const response = await DocSahabApi.post('/auth/signup', {
           email,
+          address,
           firstName,
           lastName,
           contact,

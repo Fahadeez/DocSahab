@@ -160,6 +160,43 @@ module.exports = app => {
         }
     });
 
+    app.post('/api/change-address', async (req, res) => {
+        if (req.body && req.user) {
+            const _id = req.body._id
+            const doctor = req.body.doctor
+            if(doctor === false){
+            	User.updateOne({ _id: _id}, {
+                $set: {
+                    "address": req.body.address
+                },
+            }, function (err, resp) {
+                if (err) {
+                    console.log("err", err)
+                }
+                else {
+                    console.log("User address updated");
+                }
+            })
+          	}
+
+          	else{
+          		Doctor.updateOne({ _id: _id}, {
+                $set: {
+                    "address": req.body.address
+                },
+            }, function (err, resp) {
+                if (err) {
+                    console.log("err", err)
+                }
+                else {
+                    console.log("Doctor address updated")
+                }
+            })
+          	}
+            
+        }
+    });
+
     app.post('/api/cancel-order', async (req, res) => {
         if (req.body && req.user) {
             const { userId, uId } = req.body.data

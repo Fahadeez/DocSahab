@@ -69,7 +69,7 @@ class Orders extends Component {
   };
   async changePaymentStatus(order) {
     try {
-      const res = await DocSahabApi.post("/api/change-order-payment-status", { data: order, status: this.state.paymentStatus })
+      const res = await DocSahabApi.post("/api/change-order-payment-status", { data: order, status: this.state.paymentStatus, doctor: this.state.userData.doctor })
       if (res.status === 200) {
         this.setState({ visible: false })
       }

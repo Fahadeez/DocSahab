@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 var bcrypt = require('bcrypt');
 const appointmentSchema = require('./appointmentModel');
 const patientSchema = require('./patientsModel');
+const orderSchema = require('./orderModel')
 
 const { Schema } = mongoose;
 
@@ -10,6 +11,7 @@ const doctorSchema = new Schema({
     firstName: String,
     lastName: String,
     email: String,
+    address: String,
     password: String,
     confirmPassword: String,
     doctor: Boolean,
@@ -38,6 +40,7 @@ const doctorSchema = new Schema({
     noOfReviews: { type: Number, default: 0 },
     resetPasswordToken: String,
     resetPasswordExpires: Date,
+    orders: {orderSchema}
 
 }, { timestamps: { createdAt: 'dateOfJoin' } })
 

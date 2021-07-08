@@ -21,6 +21,9 @@ import {useNavigation} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const SignUpValSchema = yup.object({
+  address: yup
+    .string()
+    .required('Address is required'),
   email: yup
     .string()
     .required('Email is required')
@@ -75,6 +78,7 @@ const signup = () => {
         <Formik
           initialValues={{
             email: '',
+            address: '',
             password: '',
             confirmPassword: '',
             firstName: '',
@@ -160,6 +164,20 @@ const signup = () => {
                       {props.touched.email && props.errors.email}
                     </Text>
 
+                    <View style={globalStyles.modifiedinputView}>
+                      <TextInput
+                        style={globalStyles.inputText}
+                        placeholder="Address"
+                        placeholderTextColor="#003f5c"
+                        onChangeText={props.handleChange('address')}
+                        value={props.values.address}
+                        onBlur={props.handleBlur('address')}
+                      />
+                    </View>
+                    <Text style={globalStyles.errorText}>
+                      {props.touched.address && props.errors.address}
+                    </Text>
+
                     {/* city drop down */}
                     <View style={globalStyles.inputLabel}>
                       <Text style={globalStyles.inputLabelText}>
@@ -193,6 +211,7 @@ const signup = () => {
                     <Text style={globalStyles.errorText}>
                       {props.touched.city && props.errors.city}
                     </Text>
+                
 
                     {/* gender drop down */}
                     <View style={globalStyles.pickerView}>

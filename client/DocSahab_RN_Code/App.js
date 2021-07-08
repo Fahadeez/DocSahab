@@ -21,6 +21,7 @@ import BookAppoinment from './src/screens/Dashboard/bookAppointment';
 import FeedBack from './src/screens/Dashboard/FeedBack';
 import AppointmentConfirm from './src/screens/Dashboard/AppointmentConfirm';
 import MedicalRecord from './src/screens/Dashboard/MedicalRecord';
+import UpdateAddress from './src/screens/Dashboard/UpdateAddress';
 import Help from './src/screens/Dashboard/Help';
 import Chat from './src/screens/Dashboard/Chat';
 import MyAppointment from './src/screens/Dashboard/MyAppointment';
@@ -127,6 +128,14 @@ function Root({ route, navigation }) {
         }}
         name="OrderSuccess"
         component={OrderSuccess}
+      />
+
+      <Drawer.Screen
+        options={{
+          headerShown: null,
+        }}
+        name="UpdateAddress"
+        component={UpdateAddress}
       />
 
     </Drawer.Navigator>
